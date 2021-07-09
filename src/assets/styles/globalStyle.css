@@ -1,0 +1,80 @@
+@import url("https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css");
+@import url("https://fonts.googleapis.com/css?family=Roboto:400,700,500");
+* {
+	box-sizing: border-box;
+}
+.container-center-horizontal {
+	pointer-events: none;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	width: 100%;
+}
+.container-center-horizontal > * {
+	pointer-events: auto;
+	flex-shrink: 0;
+}
+.screen * {
+	box-sizing: border-box;
+	-webkit-font-smoothing: antialiased;
+}
+.screen a {
+	text-decoration: none;
+	display: contents;
+}
+.screen div {
+	-webkit-text-size-adjust: none;
+}
+.screen textarea:focus,
+.screen input:focus {
+	outline: none;
+}
+.mt-30 {
+	margin-top: 30px;
+}
+.vertical-divider {
+	border-left: 2px solid #000000;
+	height: 43px;
+}
+.paddingUnset {
+	padding: unset;
+}
+.lh-22 {
+	line-height: 22px;
+}
+.cursor-pointer {
+	cursor: pointer;
+}
+
+/* Logo Style Start*/
+.logo-home {
+	height: 148px;
+	width: 349px;
+	margin-left: auto;
+	margin-right: auto;
+}
+/* Logo Style End*/
+
+/* Stepper Style Start*/
+.MuiSvgIcon-root {
+	width: 2em !important;
+	height: 2em !important;
+}
+.MuiStepConnector-alternativeLabel {
+	top: 23px !important;
+	left: calc(-50% + 24px) !important;
+	right: calc(50% + 24px) !important;
+}
+.MuiStepIcon-text {
+	display: none;
+}
+.MuiStepIcon-root.MuiStepIcon-active {
+	color: #0a4b7d !important;
+}
+.MuiStepIcon-root.MuiStepIcon-completed {
+	color: #0a4b7d !important;
+}
+.MuiStepIcon-root {
+	color: #bcbcbc !important;
+}
+/* Stepper Style End*/

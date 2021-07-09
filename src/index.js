@@ -1,13 +1,26 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { AppContextProvider } from "./store/app";
+import App from './App';
+
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './assets/styles/globalStyle.css';
+import './assets/styles/styleguide.css';
+
+import CssBaseline from "@material-ui/core/CssBaseline";
+import { ThemeProvider } from "@material-ui/core/styles";
+
+import theme from "./assets/theme/theme.js";
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <AppContextProvider>
+    <ThemeProvider theme={theme}>
+      {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+      <CssBaseline />
+      <App />
+    </ThemeProvider>
+  </AppContextProvider>,
   document.getElementById('root')
 );
 
