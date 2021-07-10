@@ -22,12 +22,12 @@ const reducer =  (state, action) => {
         ...state,
         step: action.step,
       };
-    // case "SET_FORM_DATA":
-    //   updateSession(action.formData);
-    //   return {
-    //     ...state,
-    //     formData: {...state.formData, ...action.formData},
-    //   };
+    case "SET_FORM_DATA":
+      // updateSession(action.formData);
+      return {
+        ...state,
+        formData: {...state.formData, ...action.formData},
+      };
     case "GET_SESSION":
       return {
         ...state,

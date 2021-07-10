@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 function Step1() {
 
   const [state, dispatch] = useContext(AppContext);
+  const { formData } = state;
   const dates = [
     {
       key: '07/12/2021',
@@ -27,8 +28,8 @@ function Step1() {
     },
   ];
   let _slots = [];
-  const [selectedDate, setselectedDate] = useState('07/14/2021');
-  const [selectedSlot, setselectedSlot] = useState(null);
+  const [selectedDate, setselectedDate] = useState(formData.selectedDate ? formData.selectedDate : '07/14/2021');
+  const [selectedSlot, setselectedSlot] = useState(formData.selectedSlot ? formData.selectedSlot : null);
   const [availableSlots, setavailableSlots] = useState(null);
 
   const slots = [
@@ -143,6 +144,13 @@ function Step1() {
     if (selectedSlot) {
       localStorage.setItem('step', state.step + 1);
       dispatch({
+        type: "SET_FORM_DATA",
+        formData: {
+          selectedDate,
+          selectedSlot,
+        }
+      });
+      dispatch({
         type: "SET_STEP",
         step: state.step + 1
       });
@@ -221,8 +229,13 @@ function Step1() {
         </div>
         <div className="col-1"></div>
         <div className="col-7">
-          <img className="rectangle-150"
-            src="https://anima-uploads.s3.amazonaws.com/projects/60d0ce8207f6c272e04c5a8d/releases/60d36369024600c5e63507e4/img/rectangle-150@1x.png" alt="img" />
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2965.2012640176413!2d-87.6917052845552!3d41.99595597921298!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x880fd1dd7c7704d5%3A0x965bfba71b4353b7!2s6301%20N%20Western%20Ave%2C%20Chicago%2C%20IL%2060659%2C%20USA!5e0!3m2!1sen!2sin!4v1625936751040!5m2!1sen!2sin"
+            frameBorder="0"
+            title="Prism Health Lab"
+            style={{ border: 0, height: "100%", width: "100%" }}
+            allowFullScreen=""
+          />
         </div>
       </div>
       <div className="mt-5 mb-5">
@@ -233,7 +246,10 @@ function Step1() {
         {
           dates.map((item, index) => (
             <div className="col-3 pl-0" key={index}>
-              <div className={"btn-date" + (selectedDate === item.key ? ' active' : '')} onClick={() => setselectedDate(item.key)}>
+              <div className={"btn-date" + (selectedDate === item.key ? ' active' : '')} onClick={() => {
+                setselectedSlot(null);
+                setselectedDate(item.key);
+              }}>
                 {item.value}
               </div>
             </div>
