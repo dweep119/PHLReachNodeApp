@@ -78,30 +78,30 @@ function Step1() {
       </div>
       <div className="select-a-time-slot">Select a time slot</div>
       <div className="col-12 p-0">
-        <div className="w-100 mt-3">
+        <div className="w-100 mt-4">
           <div className="row w-100 m-0">
-            <div className="col-2 paddingUnset">
+            <div className="col-2">
               <div className="overlap-group14">
                 <div className="address-3 roboto-normal-black-18px-22">9 AM</div>
               </div>
             </div>
             <div className="d-flex col-10 pr-0">
-              <div className="col-3 pr-0 vertical-divider">
+              <div className="col-3 vertical-divider pl-30">
                 <div className="overlap-group14">
                   <div className="x900-am roboto-normal-black-18px-22">9:00 AM</div>
                 </div>
               </div>
-              <div className="col-3 pr-0">
+              <div className="col-3">
                 <div className="overlap-group14">
                   <div className="x900-am roboto-normal-black-18px-22">9:15 AM</div>
                 </div>
               </div>
-              <div className="col-3 pr-0">
+              <div className="col-3">
                 <div className="overlap-group14">
                   <div className="x900-am roboto-normal-black-18px-22">9:30 AM</div>
                 </div>
               </div>
-              <div className="col-3 pr-0">
+              <div className="col-3">
                 <div className="overlap-group14">
                   <div className="x900-am roboto-normal-black-18px-22">9:45 AM</div>
                 </div>
@@ -110,30 +110,30 @@ function Step1() {
           </div>
         </div>
 
-        <div className="w-100 mt-3">
+        <div className="w-100 mt-4">
           <div className="row w-100 m-0">
-            <div className="col-2 paddingUnset">
+            <div className="col-2">
               <div className="overlap-group14">
                 <div className="address-3 roboto-normal-black-18px-22">10 AM</div>
               </div>
             </div>
             <div className="d-flex col-10 pr-0">
-              <div className="col-3 pr-0 vertical-divider">
+              <div className="col-3 vertical-divider pl-30">
                 <div className="overlap-group6">
                   <div className="x900-am roboto-normal-white-18px-2">10:00 AM</div>
                 </div>
               </div>
-              <div className="col-3 pr-0">
+              <div className="col-3">
                 <div className="overlap-group14">
                   <div className="x900-am roboto-normal-black-18px-22">10:15 AM</div>
                 </div>
               </div>
-              <div className="col-3 pr-0">
+              <div className="col-3">
                 <div className="overlap-group14">
                   <div className="x900-am roboto-normal-black-18px-22">10:30 AM</div>
                 </div>
               </div>
-              <div className="col-3 pr-0">
+              <div className="col-3">
                 <div className="overlap-group14">
                   <div className="x900-am roboto-normal-black-18px-22">10:45 AM</div>
                 </div>
@@ -142,30 +142,30 @@ function Step1() {
           </div>
         </div>
 
-        <div className="w-100 mt-3">
+        <div className="w-100 mt-4">
           <div className="row w-100 m-0">
-            <div className="col-2 paddingUnset">
+            <div className="col-2">
               <div className="overlap-group14">
                 <div className="address-3 roboto-normal-black-18px-22">11 AM</div>
               </div>
             </div>
             <div className="d-flex col-10 pr-0">
-              <div className="col-3 pr-0 vertical-divider">
+              <div className="col-3 vertical-divider pl-30">
                 <div className="overlap-group14">
                   <div className="x900-am roboto-normal-black-18px-22">11:00 AM</div>
                 </div>
               </div>
-              <div className="col-3 pr-0">
+              <div className="col-3">
                 <div className="overlap-group14">
                   <div className="x900-am roboto-normal-black-18px-22">11:15 AM</div>
                 </div>
               </div>
-              <div className="col-3 pr-0">
+              <div className="col-3">
                 <div className="overlap-group14">
                   <div className="x900-am roboto-normal-black-18px-22">11:30 AM</div>
                 </div>
               </div>
-              <div className="col-3 pr-0">
+              <div className="col-3">
                 <div className="overlap-group14">
                   <div className="x900-am roboto-normal-black-18px-22">11:45 AM</div>
                 </div>
@@ -174,30 +174,30 @@ function Step1() {
           </div>
         </div>
 
-        <div className="w-100 mt-3">
+        <div className="w-100 mt-4">
           <div className="row w-100 m-0">
-            <div className="col-2 paddingUnset">
+            <div className="col-2">
               <div className="overlap-group14">
                 <div className="address-3 roboto-normal-black-18px-22">12 AM</div>
               </div>
             </div>
             <div className="d-flex col-10 pr-0">
-              <div className="col-3 pr-0 vertical-divider">
+              <div className="col-3 vertical-divider pl-30">
                 <div className="overlap-group14">
                   <div className="x900-am roboto-normal-black-18px-22">12:00 AM</div>
                 </div>
               </div>
-              <div className="col-3 pr-0">
+              <div className="col-3">
                 <div className="overlap-group14">
                   <div className="x900-am roboto-normal-black-18px-22">12:15 AM</div>
                 </div>
               </div>
-              <div className="col-3 pr-0">
+              <div className="col-3">
                 <div className="overlap-group14">
                   <div className="x900-am roboto-normal-black-18px-22">12:30 AM</div>
                 </div>
               </div>
-              <div className="col-3 pr-0">
+              <div className="col-3">
                 <div className="overlap-group14">
                   <div className="x900-am roboto-normal-black-18px-22">12:45 AM</div>
                 </div>

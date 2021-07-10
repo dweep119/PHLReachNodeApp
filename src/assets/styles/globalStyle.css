@@ -13,6 +13,9 @@
 .lh-22 {
   line-height: 22px;
 }
+.pl-30 {
+  padding-left: 30px !important;
+}
 .cursor-pointer {
   cursor: pointer;
 }
