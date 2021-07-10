@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import '../assets/styles/mainPage.css';
 import { AppContext } from "../store/app";
 
 function Step1() {
@@ -201,7 +200,7 @@ function Step1() {
         <div className="text-7 roboto-medium-black-18px-2">Only 1 time slot per service</div>
       </div>
       <div className="mt-5 mb-3 float-right">
-        <button className="overlap-group19 border-1-4px-mercury roboto-bold-white-20-3px" onClick={handleNext}>CONTINUE</button>
+        <button className="overlap-group13 border-1-4px-mercury roboto-bold-white-20-3px" onClick={handleNext}>NEXT</button>
       </div>
     </div>
   );

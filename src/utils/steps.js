@@ -17,18 +17,14 @@ export const Steps = [
   },
   {
     step_number: 5,
-    name: "Vaccine Questionnaire",
+    name: "Medical Questionnaire",
   },
   {
     step_number: 6,
-    name: "Additional Information",
-  },
-  {
-    step_number: 7,
     name: "Consent Forms",
   },
   {
-    step_number: 8,
+    step_number: 7,
     name: "Review & Submit",
   }
 ];

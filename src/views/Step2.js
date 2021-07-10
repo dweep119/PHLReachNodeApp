@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { AppContext } from "../store/app";
-import '../assets/styles/contactPage.css';
 
 function Step2() {
 
@@ -26,7 +25,7 @@ function Step2() {
 
   return (
     <div className="App">
-      <div className="mt-5 mb-5 col-12 d-flex pr-0 pl-0">
+      <div className="mb-5 col-12 d-flex pr-0 pl-0">
         <div className="overlap-group2 col-4 pl-0">
           <label className="first-name-1 roboto-medium-black-24px w-100">First Name
             <span className="roboto-medium-tia-maria-24px ml-1">*</span>
@@ -141,13 +140,9 @@ function Step2() {
             placeholder="Emergency Contact Relation" />
         </div>
       </div>
-      <div className="w-100 d-flex justify-content-around">
-        <div className="overlap-group101 border-1-4px-mercury cursor-pointer" onClick={handleBack}>
-          <div className="previous roboto-bold-white-20-3px">PREVIOUS</div>
-        </div>
-        <div className="overlap-group13 border-1-4px-mercury cursor-pointer" onClick={handleNext}>
-          <div className="continue roboto-bold-white-20-3px">CONTINUE</div>
-        </div>
+      <div className="w-100 d-flex justify-content-end mt-5 mb-3">
+        <button className="overlap-group101 roboto-bold-white-20-3px" onClick={handleBack}>PREVIOUS</button>
+        <button className="overlap-group13 border-1-4px-mercury roboto-bold-white-20-3px ml-3" onClick={handleNext}>NEXT</button>
       </div>
     </div>
   );

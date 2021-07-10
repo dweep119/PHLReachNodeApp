@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import '../assets/styles/demographicsPage.css';
 import { AppContext } from "../store/app";
 
 function Step3() {
@@ -28,8 +27,8 @@ function Step3() {
 		<div className="App">
 			<div className="mb-5 col-12 d-flex pr-0 pl-0">
 				<div className="overlap-group2 col-5 pl-0">
-					<label className="first-name-1 roboto-medium-black-24px w-100">Preferred Language
-						<span className="roboto-medium-tia-maria-24px">*</span>
+					<label className="first-name roboto-medium-black-24px w-100">Preferred Language
+						<span className="roboto-medium-tia-maria-24px ml-1">*</span>
 					</label>
 					<div className="w-100 d-flex mt-3">
 						<div className="row">
@@ -68,8 +67,8 @@ function Step3() {
 				</div>
 				<div className="col-2"></div>
 				<div className="overlap-group2 col-5 pr-0">
-					<label className="first-name-1 roboto-medium-black-24px w-100">Race
-						<span className="roboto-medium-tia-maria-24px">*</span>
+					<label className="first-name roboto-medium-black-24px w-100">Race
+						<span className="roboto-medium-tia-maria-24px ml-1">*</span>
 					</label>
 					<div className="w-100 d-flex mt-3">
 						<div className="row">
@@ -97,8 +96,8 @@ function Step3() {
 			</div>
 			<div className="mb-5 col-12 d-flex pr-0 pl-0">
 				<div className="overlap-group2 col-5 pl-0">
-					<label className="first-name-1 roboto-medium-black-24px w-100">Ethnicity
-						<span className="roboto-medium-tia-maria-24px">*</span>
+					<label className="first-name roboto-medium-black-24px w-100">Ethnicity
+						<span className="roboto-medium-tia-maria-24px ml-1">*</span>
 					</label>
 					<div className="w-100 d-flex mt-3">
 						<div className="row">
@@ -116,8 +115,8 @@ function Step3() {
 				</div>
 				<div className="col-2"></div>
 				<div className="overlap-group2 col-5 pr-0">
-					<label className="first-name-1 roboto-medium-black-24px w-100">Gender
-						<span className="roboto-medium-tia-maria-24px">*</span>
+					<label className="first-name roboto-medium-black-24px w-100">Gender
+						<span className="roboto-medium-tia-maria-24px ml-1">*</span>
 					</label>
 					<div className="w-100 d-flex mt-3">
 						<div className="row">
@@ -139,36 +138,28 @@ function Step3() {
 			</div>
 			<div className="mb-5 col-12 d-flex pr-0 pl-0">
 				<div className="overlap-group2 col-5 pl-0">
-					<label className="first-name-1 roboto-medium-black-24px w-100">Height
+					<label className="first-name roboto-medium-black-24px w-100">Height
 					</label>
 					<div className="w-100 d-flex mt-3">
-						<input className="overlap-group first-name-1 border-1px-mist-gray" id="height" name="lastname"
+						<input className="overlap-group first-name border-1px-mist-gray" id="height" name="lastname"
 							placeholder="5’6”" />
 						<div className="flex-row-item roboto-normal-black-18px-2">feet/inches</div>
 					</div>
 				</div>
 				<div className="col-2"></div>
 				<div className="overlap-group2 col-5 pr-0">
-					<label className="first-name-1 roboto-medium-black-24px w-100">Weight
+					<label className="first-name roboto-medium-black-24px w-100">Weight
 					</label>
 					<div className="w-100 d-flex mt-3">
-						<input className="overlap-group first-name-1 border-1px-mist-gray" id="weight" name="lastname"
+						<input className="overlap-group first-name border-1px-mist-gray" id="weight" name="lastname"
 							placeholder="132 lbs" />
 						<div className="flex-row-item roboto-normal-black-18px-2">pounds</div>
 					</div>
 				</div>
 			</div>
-			<div className="w-100 d-flex justify-content-around">
-				<a href="./contactPage.html">
-					<div className="overlap-group101 border-1-4px-mercury cursor-pointer" onClick={handleBack}>
-						<div className="previous roboto-bold-white-20-3px">PREVIOUS</div>
-					</div>
-				</a>
-				<a href="./demographicsPage.html">
-					<div className="overlap-group13 border-1-4px-mercury cursor-pointer" onClick={handleNext}>
-						<div className="continue roboto-bold-white-20-3px">CONTINUE</div>
-					</div>
-				</a>
+			<div className="w-100 d-flex justify-content-end mt-5 mb-3">
+				<button className="overlap-group101 roboto-bold-white-20-3px" onClick={handleBack}>PREVIOUS</button>
+				<button className="overlap-group13 border-1-4px-mercury roboto-bold-white-20-3px ml-3" onClick={handleNext}>NEXT</button>
 			</div>
 		</div>
 	);

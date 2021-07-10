@@ -1,80 +1,217 @@
 @import url("https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css");
 @import url("https://fonts.googleapis.com/css?family=Roboto:400,700,500");
-* {
-	box-sizing: border-box;
-}
-.container-center-horizontal {
-	pointer-events: none;
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	width: 100%;
-}
-.container-center-horizontal > * {
-	pointer-events: auto;
-	flex-shrink: 0;
-}
-.screen * {
-	box-sizing: border-box;
-	-webkit-font-smoothing: antialiased;
-}
-.screen a {
-	text-decoration: none;
-	display: contents;
-}
-.screen div {
-	-webkit-text-size-adjust: none;
-}
-.screen textarea:focus,
-.screen input:focus {
-	outline: none;
-}
 .mt-30 {
-	margin-top: 30px;
+  margin-top: 30px;
 }
 .vertical-divider {
-	border-left: 2px solid #000000;
-	height: 43px;
+  border-left: 2px solid #000000;
+  height: 43px;
 }
 .paddingUnset {
-	padding: unset;
+  padding: unset;
 }
 .lh-22 {
-	line-height: 22px;
+  line-height: 22px;
 }
 .cursor-pointer {
-	cursor: pointer;
+  cursor: pointer;
 }
-
-/* Logo Style Start*/
+.overlap-group101 {
+  background-color: white;
+  border: 1px solid #5fa9d5;
+  color: #5fa9d5 !important;
+  border-radius: 8.699999809265137px;
+  height: 50px;
+  padding: 0px 27px;
+}
 .logo-home {
-	height: 148px;
-	width: 349px;
-	margin-left: auto;
-	margin-right: auto;
+  height: 148px;
+  width: 349px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
 }
-/* Logo Style End*/
+.overlap-group {
+  align-items: flex-end;
+  background-color: var(--mercury);
+  display: flex;
+  height: 36px;
+  min-width: 77px;
+  padding: 4px 8px;
+}
+.overlap-group13 {
+  background-color: #5fa9d5;
+  border-radius: 8.699999809265137px;
+  height: 50px;
+  padding: 0px 50px;
+}
+.options {
+  padding: 5px 17px;
+  border: 1px solid #77838f;
+  border-radius: 4px;
+}
+.options.active {
+  background: #0a4b7d;
+  color: white;
+}
 
 /* Stepper Style Start*/
 .MuiSvgIcon-root {
-	width: 2em !important;
-	height: 2em !important;
+  width: 2em !important;
+  height: 2em !important;
 }
 .MuiStepConnector-alternativeLabel {
-	top: 23px !important;
-	left: calc(-50% + 24px) !important;
-	right: calc(50% + 24px) !important;
+  top: 23px !important;
+  left: calc(-50% + 24px) !important;
+  right: calc(50% + 24px) !important;
 }
 .MuiStepIcon-text {
-	display: none;
+  display: none;
 }
 .MuiStepIcon-root.MuiStepIcon-active {
-	color: #0a4b7d !important;
+  color: #0a4b7d !important;
 }
 .MuiStepIcon-root.MuiStepIcon-completed {
-	color: #0a4b7d !important;
+  color: #0a4b7d !important;
 }
 .MuiStepIcon-root {
-	color: #bcbcbc !important;
+  color: #bcbcbc !important;
 }
 /* Stepper Style End*/
+
+/* Step-1 Style Start*/
+.address-3 {
+  text-align: center;
+  vertical-align: middle;
+  line-height: 43px;
+}
+.date {
+  margin-top: 8px;
+}
+.overlap-group10 {
+  height: 38px;
+}
+.overlap-group14 {
+  background-color: var(--mercury);
+  height: 43px;
+}
+.overlap-group6 {
+  background-color: var(--midnight-blue);
+  height: 43px;
+}
+.rectangle-150 {
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+}
+.rectangle-8 {
+  background-color: var(--mercury);
+  height: 38px;
+  padding: 1px 10px;
+}
+.select-a-time-slot {
+  color: var(--dark-tan);
+  font-family: var(--font-family-roboto);
+  font-size: var(--font-size-xxxl);
+}
+.selecte-more-times {
+  color: #0a85e0;
+  font-family: var(--font-family-roboto);
+  font-size: var(--font-size-xs);
+}
+.rectangle-8::placeholder {
+  color: var(--silver);
+  font-family: var(--font-family-roboto);
+  font-size: var(--font-size-xs);
+  font-style: normal;
+  font-weight: 400;
+}
+.text-field-box::placeholder {
+  color: var(--black);
+  font-family: var(--font-family-roboto);
+  font-size: var(--font-size-xs);
+  font-style: normal;
+  font-weight: 400;
+  padding: 1px 10px;
+}
+.x900-am {
+  text-align: center;
+  vertical-align: middle;
+  line-height: 43px;
+}
+.clearfix:after {
+  clear: both;
+  content: "";
+  display: block;
+  height: 0;
+}
+/* Step-1 Style End*/
+
+/* Step-2 Style Start*/
+.first-name-1::placeholder {
+  color: var(--silver);
+  font-family: var(--font-family-roboto);
+  font-size: var(--font-size-xs);
+  font-style: normal;
+  font-weight: 400;
+}
+.continue {
+  letter-spacing: 0;
+  min-height: 22px;
+  min-width: 141px;
+  mix-blend-mode: normal;
+  text-align: center;
+  width: 141px;
+}
+.previous {
+  letter-spacing: 0;
+  min-height: 22px;
+  min-width: 141px;
+  mix-blend-mode: normal;
+  text-align: center;
+  width: 141px;
+}
+.verify {
+  letter-spacing: 0;
+  min-height: 16px;
+  mix-blend-mode: normal;
+  width: 50px;
+}
+.verify-button {
+  align-items: flex-start;
+  background-color: var(--midnight-blue);
+  border-radius: 5px;
+  display: flex;
+  height: 36px;
+  justify-content: flex-end;
+  margin-left: 18px;
+  min-width: 128px;
+  padding: 6.8px 38px;
+}
+/* Step-2 Style End*/
+
+/* Step-3 Style Start*/
+.first-name::placeholder {
+  color: var(--black);
+  font-family: var(--font-family-roboto);
+  font-size: var(--font-size-xs);
+  font-style: normal;
+  font-weight: 400;
+}
+.flex-row-item {
+  margin-left: 8px;
+  margin-top: 6px;
+}
+
+.overlap-group17 {
+  background-color: var(--congress-blue);
+  height: 36px;
+  padding: 7px 8px;
+}
+.surname {
+  letter-spacing: 0;
+  min-height: 21px;
+  min-width: 61px;
+  mix-blend-mode: normal;
+}
+/* Step-3 Style End*/

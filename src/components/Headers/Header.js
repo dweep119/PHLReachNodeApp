@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import ReactLogo from '../../assets/img/PHL-Logo.svg';
 
 const ImageFlex = styled.div`
   & {
@@ -13,7 +14,7 @@ const ImageFlex = styled.div`
 const Header = () => {
   return (
     <ImageFlex>
-      <img className="logo-home" src="https://anima-uploads.s3.amazonaws.com/projects/60d0ce8207f6c272e04c5a8d/img/logo---home@2x.png" alt="img"/>
+      <img className="logo-home" src={ReactLogo} alt="img"/>
     </ImageFlex>
   );
 };

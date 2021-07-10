@@ -1,21 +1,20 @@
-import React from "react";
+import React, { useContext } from "react";
 import Steps from "../components/Stepper/Steps";
 import {
   StepsFlex
 } from "../components/styledComponents";
 import Footer from "../components/Footers/Footer";
 import Header from "../components/Headers/Header";
+import { AppContext } from "../store/app";
 
 // import MobileHeader from "./MobileHeader";
 import _ from "lodash";
 import { Steps as steps_ } from "../utils/steps";
 
 export default (ComposedComponent, title, options) => {
-  const withLayout = (props) => {
-    const state = localStorage.getItem('step');
-    // const [state, dispatch] = useContext(AppContext);
-    const activeStep = _.find(steps_, { step_number: parseInt(state) });
-    console.log('activeStep: ', activeStep);
+  const WithLayout = (props) => {
+    const [state] = useContext(AppContext);
+    const activeStep = _.find(steps_, { step_number: state.step });
 //     const onPrevClick = () => {
 //       if (state.step > 1) {
 //         dispatch({ type: "SET_STEP", step: state.step - 1 });
@@ -49,7 +48,7 @@ export default (ComposedComponent, title, options) => {
               style={{ height: "100px" }}
             >
               <h1
-                className="text-2 roboto-normal-dark-tan-48px"
+                className="text-center roboto-normal-dark-tan-48px"
                 style={{
                   // borderBottom: "1px solid #959595",
                   // padding: "10px 30px"
@@ -84,5 +83,5 @@ export default (ComposedComponent, title, options) => {
     );
   };
 
-  return withLayout;
+  return WithLayout;
 };
