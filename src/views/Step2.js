@@ -25,22 +25,22 @@ function Step2() {
 
   return (
     <div className="App">
-      <div className="mb-5 col-12 d-flex pr-0 pl-0">
-        <div className="overlap-group2 col-4 pl-0">
+      <div className="row">
+        <div className="mb-5 overlap-group2 col-lg-4  col-md-4 col-12">
           <label className="first-name-1 roboto-medium-black-24px w-100">First Name
             <span className="roboto-medium-tia-maria-24px ml-1">*</span>
           </label>
           <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="fname" name="lastname"
             placeholder="First Name" />
         </div>
-        <div className="overlap-group2 col-4">
+        <div className="mb-5 overlap-group2 col-lg-4  col-md-4 col-12">
           <label className="first-name-1 roboto-medium-black-24px w-100">Last Name
             <span className="roboto-medium-tia-maria-24px ml-1">*</span>
           </label>
           <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="lname" name="lastname"
             placeholder="Last Name" />
         </div>
-        <div className="overlap-group2 col-4 pr-0">
+        <div className="mb-5 overlap-group2 col-lg-4  col-md-4 col-12">
           <label className="first-name-1 roboto-medium-black-24px w-100">Date of Birth
             <span className="roboto-medium-tia-maria-24px ml-1">*</span>
           </label>
@@ -48,15 +48,15 @@ function Step2() {
             placeholder="Date of Birth" />
         </div>
       </div>
-      <div className="mb-5 col-12 d-flex pr-0 pl-0">
-        <div className="overlap-group2 col-6 pl-0">
+      <div className="row">
+        <div className="mb-5 overlap-group2 col-lg-6 col-md-6 col-12">
           <label className="first-name-1 roboto-medium-black-24px w-100">Street Address
             <span className="roboto-medium-tia-maria-24px ml-1">*</span>
           </label>
           <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="add" name="lastname"
             placeholder="Street Address" />
         </div>
-        <div className="overlap-group2 col-6 pr-0">
+        <div className="mb-5 overlap-group2 col-lg-6 col-md-6 col-12">
           <label className="first-name-1 roboto-medium-black-24px w-100">Street Address 2
             <span className="roboto-medium-tia-maria-24px ml-1">*</span>
           </label>
@@ -64,22 +64,22 @@ function Step2() {
             placeholder="Street Address 2" />
         </div>
       </div>
-      <div className="mb-5 col-12 d-flex pr-0 pl-0">
-        <div className="overlap-group2 col-4 pl-0">
+      <div className="row">
+        <div className="mb-5 overlap-group2 col-lg-4 col-md-4 col-12">
           <label className="first-name-1 roboto-medium-black-24px w-100">State
             <span className="roboto-medium-tia-maria-24px ml-1">*</span>
           </label>
           <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="state" name="lastname"
             placeholder="State" />
         </div>
-        <div className="overlap-group2 col-4">
+        <div className="mb-5 overlap-group2 col-lg-4 col-md-4 col-12">
           <label className="first-name-1 roboto-medium-black-24px w-100">City
             <span className="roboto-medium-tia-maria-24px ml-1">*</span>
           </label>
           <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="city" name="lastname"
             placeholder="City" />
         </div>
-        <div className="overlap-group2 col-4 pr-0">
+        <div className="mb-5 overlap-group2 col-lg-4 col-md-4 col-12">
           <label className="first-name-1 roboto-medium-black-24px w-100">Zipcode
             <span className="roboto-medium-tia-maria-24px ml-1">*</span>
           </label>
@@ -87,8 +87,8 @@ function Step2() {
             placeholder="Zipcode" />
         </div>
       </div>
-      <div className="mb-5 col-12 d-flex pr-0 pl-0">
-        <div className="overlap-group2 col-6 pl-0">
+      <div className="row">
+        <div className="mb-5 overlap-group2 col-lg-6 col-md-6 col-12">
           <label className="first-name-1 roboto-medium-black-24px w-100">Phone Number
             <span className="roboto-medium-tia-maria-24px ml-1">*</span>
           </label>
@@ -100,7 +100,7 @@ function Step2() {
             </div>
           </div>
         </div>
-        <div className="overlap-group2 col-6 pr-0">
+        <div className="mb-5 overlap-group2 col-lg-6 col-md-6 col-12">
           <label className="first-name-1 roboto-medium-black-24px w-100">Email Address
             <span className="roboto-medium-tia-maria-24px ml-1">*</span>
           </label>
@@ -115,24 +115,24 @@ function Step2() {
       </div>
       <div>
         <hr />
-        <div className="mt-5 text-7 roboto-normal-black-36px">Emergency Contact Information</div>
+        <div className="mt-5 mb-5 text-7 roboto-normal-black-36px">Emergency Contact Information</div>
       </div>
-      <div className="mt-5 mb-5 col-12 d-flex pr-0 pl-0">
-        <div className="overlap-group2 col-4 pl-0">
+      <div className="row">
+        <div className="mb-5 overlap-group2 col-lg-4 col-md-4 col-12">
           <label className="first-name-1 roboto-medium-black-24px w-100">Emergency Contact Name
             <span className="roboto-medium-tia-maria-24px ml-1">*</span>
           </label>
           <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="ename" name="lastname"
             placeholder="Emergency Contact Name" />
         </div>
-        <div className="overlap-group2 col-4">
+        <div className="mb-5 overlap-group2 col-lg-4 col-md-4 col-12">
           <label className="first-name-1 roboto-medium-black-24px w-100">Emergency Contact Phone
             <span className="roboto-medium-tia-maria-24px ml-1">*</span>
           </label>
           <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="ephone" name="lastname"
             placeholder="Emergency Contact Phone" />
         </div>
-        <div className="overlap-group2 col-4 pr-0">
+        <div className="mb-5 overlap-group2 col-lg-4 col-md-4 col-12">
           <label className="first-name-1 roboto-medium-black-24px w-100">Emergency Contact Relation
             <span className="roboto-medium-tia-maria-24px ml-1">*</span>
           </label>
