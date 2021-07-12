@@ -81,6 +81,13 @@
   font-style: normal;
   font-weight: 400;
 }
+.roboto-normal-white-24px {
+  color: var(--white);
+  font-family: var(--font-family-roboto);
+  font-size: var(--font-size-m2);
+  font-style: normal;
+  font-weight: 400;
+}
 .roboto-medium-black-18px-2 {
   color: var(--black);
   font-family: var(--font-family-roboto);

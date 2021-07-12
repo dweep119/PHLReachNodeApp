@@ -132,7 +132,6 @@ function Step3() {
 	const [selectedGender, setselectedGender] = useState(formData.selectedGender ? formData.selectedGender : genderList[0].value);
 
 	const handleNext = () => {
-		localStorage.setItem('step', state.step + 1);
 		dispatch({
 			type: "SET_FORM_DATA",
 			formData: {
@@ -150,7 +149,6 @@ function Step3() {
 	};
 
 	const handleBack = () => {
-		localStorage.setItem('step', state.step + 1);
 		dispatch({
 			type: "SET_STEP",
 			step: state.step - 1
@@ -248,7 +246,7 @@ function Step3() {
 					</div>
 				</div>
 			</div> */}
-			<div className="w-100 d-flex justify-content-end mt-5 mb-3">
+			<div className="w-100 d-flex justify-content-end mt-5 mb-5 pb-5">
 				<button className="overlap-group101 roboto-bold-white-20-3px" onClick={handleBack}>PREVIOUS</button>
 				<button className="overlap-group13 border-1-4px-mercury roboto-bold-white-20-3px ml-3" onClick={handleNext}>NEXT</button>
 			</div>

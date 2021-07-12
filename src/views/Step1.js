@@ -142,7 +142,6 @@ function Step1() {
 
   const handleNext = () => {
     if (selectedSlot) {
-      localStorage.setItem('step', state.step + 1);
       dispatch({
         type: "SET_FORM_DATA",
         formData: {
@@ -285,7 +284,7 @@ function Step1() {
         <div className="selecte-more-times">Selecte more times</div>
         <div className="text-7 roboto-medium-black-18px-2">Only 1 time slot per service</div>
       </div>
-      <div className="mt-5 mb-3 float-right">
+      <div className="mt-5 mb-5 pb-5 float-right">
         <button className="overlap-group13 border-1-4px-mercury roboto-bold-white-20-3px" onClick={handleNext}>NEXT</button>
       </div>
       <ToastContainer />

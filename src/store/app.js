@@ -3,12 +3,10 @@ import React, { useReducer, createContext } from "react";
 
 export const AppContext = createContext();
 
-localStorage.setItem('step', 1);
-
 const initialState = {
   loading: false,
   error: null,
-  step: 1,
+  step: 4,
   formData: {
   },
   covid19Modal: false,
