@@ -45,12 +45,138 @@ function Step4() {
 		setinsuredDOB(date);
 	};
 
+	const onFileChangeFront = async (event) => {
+		const selectedFile = event.target.files[0];
+		if (selectedFile.size > 1000000) {
+
+			toast.error('Image size must be less than 1mb', {
+				position: "top-right",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+			});
+			return;
+		}
+		const base64Image = await toBase64(selectedFile);
+
+		setselectedFrontPhoto(base64Image);
+	};
+
+	const onFileChangeBack = async (event) => {
+		const selectedFile = event.target.files[0];
+
+		if (selectedFile.size > 1000000) {
+
+			toast.error('Image size must be less than 1mb', {
+				position: "top-right",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+			});
+			return;
+		}
+		const base64Image = await toBase64(selectedFile);
+		setselectedBackPhoto(base64Image);
+	};
+
+	const toBase64 = file => new Promise((resolve, reject) => {
+		const reader = new FileReader();
+		reader.readAsDataURL(file);
+		reader.onload = () => resolve(reader.result);
+		reader.onerror = error => reject(error);
+	});
+
 	const handleNext = () => {
-		dispatch({
-			type: "SET_STEP",
-			step: state.step + 1
-		});
-		return;
+		if (isInsured) {
+			if (selectedInsuranceCompany && insuranceId && groupNumber && planName) {
+				if (!isInsuredPersonSame) {
+					if (patientInsuredRelation && insuredDOB && insuredFirstName && insuredLastName) {
+						dispatch({
+							type: "SET_FORM_DATA",
+							formData: {
+								isInsured,
+								selectedFrontPhoto,
+								selectedBackPhoto,
+								selectedInsuranceCompany,
+								insuranceId,
+								groupNumber,
+								planName,
+								isInsuredPersonSame,
+								patientInsuredRelation,
+								insuredDOB,
+								insuredFirstName,
+								insuredLastName,
+								insuredMiddleName,
+								insuredSuffix,
+							}
+						});
+						dispatch({
+							type: "SET_STEP",
+							step: state.step + 1
+						});
+						return;
+					} else {
+						toast.error("Please fill mandatory fields.", {
+							position: "top-right",
+							autoClose: 5000,
+							hideProgressBar: false,
+							closeOnClick: true,
+							pauseOnHover: true,
+							draggable: true,
+							progress: undefined,
+						});
+					}
+				} else {
+					dispatch({
+						type: "SET_FORM_DATA",
+						formData: {
+							isInsured,
+							selectedFrontPhoto,
+							selectedBackPhoto,
+							selectedInsuranceCompany,
+							insuranceId,
+							groupNumber,
+							planName,
+							isInsuredPersonSame
+						}
+					});
+					dispatch({
+						type: "SET_STEP",
+						step: state.step + 1
+					});
+					return;
+				}
+			} else {
+				toast.error("Please fill mandatory fields.", {
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+				});
+			}
+		} else {
+			dispatch({
+				type: "SET_FORM_DATA",
+				formData: {
+					isInsured
+				}
+			});
+			dispatch({
+				type: "SET_STEP",
+				step: state.step + 1
+			});
+			return;
+
+		}
 	};
 
 	const handleBack = () => {
@@ -90,14 +216,32 @@ function Step4() {
 								<div className="mb-5  overlap-group2 col-lg-6  col-md-6 col-12">
 									<label className="first-name-1 roboto-medium-black-24px w-100">Photo of Insurance Card - Front
 									</label>
-									<input type="file" className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="add" name="lastname"
-										placeholder="Street Address" />
+									{
+										selectedFrontPhoto ?
+											<div>
+												<img src={selectedFrontPhoto} style={{ display: "block", width: "100%" }} alt="img"></img>
+												<i className="fa fa-times-circle" onClick={() => setselectedFrontPhoto(null)}
+												style={{ right: 0, top: 5, cursor: "pointer" }} aria-hidden="true"></i>
+											</div>
+											:
+											<input type="file" className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="add" name="lastname"
+												placeholder="Street Address" onChange={onFileChangeFront} />
+									}
 								</div>
 								<div className="mb-5  overlap-group2 col-lg-6  col-md-6 col-12">
 									<label className="first-name-1 roboto-medium-black-24px w-100">Photo of Insurance Card - Back
 									</label>
-									<input type="file" className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="add2" name="lastname"
-										placeholder="Street Address 2" />
+									{
+										selectedBackPhoto ?
+											<div>
+												<img src={selectedBackPhoto} style={{ display: "block", width: "100%" }} alt="img"></img>
+												<i className="fa fa-times-circle" onClick={() => setselectedBackPhoto(null)}
+												style={{ right: 0, top: 5, cursor: "pointer" }} aria-hidden="true"></i>
+											</div>
+											:
+											<input type="file" className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="add" name="lastname"
+												placeholder="Street Address" onChange={onFileChangeBack} />
+									}
 								</div>
 							</div>
 							<div className="row">
@@ -280,6 +424,7 @@ function Step4() {
 					<button className="overlap-group13 border-1-4px-mercury roboto-bold-white-20-3px ml-3" onClick={handleNext}>NEXT</button>
 				</div>
 			</ValidatorForm>
+			<ToastContainer />
 		</div>
 	);
 }

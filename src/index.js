@@ -8,6 +8,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './assets/styles/globalStyle.css';
 import './assets/styles/styleguide.css';
 import "react-toastify/dist/ReactToastify.css";
+import 'font-awesome/css/font-awesome.min.css';
 
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { ThemeProvider } from "@material-ui/core/styles";
