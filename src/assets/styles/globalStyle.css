@@ -127,6 +127,26 @@ p.MuiTypography-root.heading {
   .medicalQuestinnaorie {
     margin-top: 45px !important;
   }
+  .MuiSvgIcon-root.MuiStepIcon-root {
+    width: 1.5em !important;
+    height: 1.5em !important;
+  }
+  .MuiStepConnector-root.MuiStepConnector-horizontal.MuiStepConnector-alternativeLabel {
+    top: 17px !important;
+    left: calc(-50% + 18px) !important;
+    right: calc(50% + 18px) !important;
+  }
+  .MuiPaper-root.MuiStepper-root.MuiStepper-horizontal.MuiStepper-alternativeLabel.MuiPaper-elevation0 {
+    padding: 0px !important;
+  }
+  .MuiStep-root.MuiStep-horizontal.MuiStep-alternativeLabel {
+    padding: 0px !important;
+  }
+}
+@media (max-width: 768px) {
+  .MuiStepLabel-label.MuiStepLabel-alternativeLabel {
+    display: none !important;
+  }
 }
 /* Media Style End */
 
@@ -270,12 +290,12 @@ p.MuiTypography-root.heading {
 }
 .MuiFormControl-root.MuiTextField-root {
   width: 100% !important;
-  padding: 4px 10px;
+  /* padding: 4px 10px; */
 }
 .MuiTextField-root {
   margin-top: 0px !important;
   border: 1px solid var(--mist-gray) !important;
-  background-color: var(--mercury) !important;
+  background-color: var(--white) !important;
   height: 36px !important;
   border-radius: 4px !important;
 }
@@ -341,3 +361,43 @@ p.MuiTypography-root.heading {
   border-radius: 4px;
 }
 /* Step-3 Style End*/
+
+/* Step-6 Style Start */
+.consentForm {
+  border: 1px solid #40749b;
+  border-radius: 8px;
+  padding: 15px;
+}
+.consentFormBtn {
+  border-radius: 4px;
+  background: white;
+  color: black;
+  cursor: pointer;
+}
+.consentFormBtn.active {
+  background: #0a4b7d !important;
+  color: white !important;
+}
+.signLabel {
+  color: #0a4b7d !important;
+  text-decoration: underline;
+  font-family: var(--font-family-roboto);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+}
+.signDiv {
+  border: 1.4px solid #175786;
+  border-radius: 4px;
+  padding: 20px;
+}
+.signCanvas {
+  width: 100%;
+}
+.consentHR {
+  border-top: 1px solid black !important;
+}
+.consentFormBtn.signature {
+  padding: 8px 16px !important;
+}
+/* Step-6 Style End */

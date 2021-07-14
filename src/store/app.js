@@ -6,7 +6,7 @@ export const AppContext = createContext();
 const initialState = {
   loading: false,
   error: null,
-  step: 5,
+  step: 6,
   formData: {
   },
   covid19Modal: false,
