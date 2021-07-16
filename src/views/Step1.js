@@ -141,7 +141,7 @@ function Step1() {
   });
 
   const handleNext = () => {
-    if (selectedSlot) {
+    // if (selectedSlot) {
       dispatch({
         type: "SET_FORM_DATA",
         formData: {
@@ -154,17 +154,17 @@ function Step1() {
         step: state.step + 1
       });
       return;
-    } else {
-      toast.error("Please Select a Slot.", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    }
+    // } else {
+    //   toast.error("Please Select a Slot.", {
+    //     position: "top-right",
+    //     autoClose: 5000,
+    //     hideProgressBar: false,
+    //     closeOnClick: true,
+    //     pauseOnHover: true,
+    //     draggable: true,
+    //     progress: undefined,
+    //   });
+    // }
   };
 
   const getAvailableSlots = async () => {

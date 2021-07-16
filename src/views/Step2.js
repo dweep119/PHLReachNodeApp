@@ -45,43 +45,43 @@ function Step2() {
   };
 
   const handleNext = () => {
-    if (firstName && lastName && selectedDOB && streetAddress1 &&
-      selectedstate && selectedcity && selectedZipcode && phoneNumber && email &&
-      eContactName && eContactPhone && eContactRelation) {
-      dispatch({
-        type: "SET_FORM_DATA",
-        formData: {
-          firstName,
-          lastName,
-          selectedDOB,
-          streetAddress1,
-          streetAddress2,
-          selectedstate,
-          selectedcity,
-          selectedZipcode,
-          phoneNumber,
-          email,
-          eContactName,
-          eContactPhone,
-          eContactRelation
-        }
-      })
-      dispatch({
-        type: "SET_STEP",
-        step: state.step + 1
-      });
-      return;
-    } else {
-      toast.error("Please fill mandatory fields.", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    }
+    // if (firstName && lastName && selectedDOB && streetAddress1 &&
+    //   selectedstate && selectedcity && selectedZipcode && phoneNumber && email &&
+    //   eContactName && eContactPhone && eContactRelation) {
+    dispatch({
+      type: "SET_FORM_DATA",
+      formData: {
+        firstName,
+        lastName,
+        selectedDOB,
+        streetAddress1,
+        streetAddress2,
+        selectedstate,
+        selectedcity,
+        selectedZipcode,
+        phoneNumber,
+        email,
+        eContactName,
+        eContactPhone,
+        eContactRelation
+      }
+    })
+    dispatch({
+      type: "SET_STEP",
+      step: state.step + 1
+    });
+    return;
+    // } else {
+    //   toast.error("Please fill mandatory fields.", {
+    //     position: "top-right",
+    //     autoClose: 5000,
+    //     hideProgressBar: false,
+    //     closeOnClick: true,
+    //     pauseOnHover: true,
+    //     draggable: true,
+    //     progress: undefined,
+    //   });
+    // }
   };
 
   const handleBack = () => {
