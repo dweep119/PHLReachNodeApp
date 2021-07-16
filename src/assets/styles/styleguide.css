@@ -9,6 +9,7 @@
   --silver: #bcbcbc;
   --tia-maria: #bf350d;
   --white: #ffffff;
+  --dark-silver: #8a8787;
 
   --font-size-20_3px: 20.3px;
   --font-size-l2: 48px;
@@ -37,7 +38,7 @@
   font-family: var(--font-family-roboto);
   font-size: var(--font-size-xs);
   font-style: normal;
-  font-weight: 400;
+  font-weight: 500;
 }
 .roboto-normal-black-18px-2 {
   color: var(--black);
@@ -60,8 +61,8 @@
   font-style: normal;
   font-weight: 700;
 }
-.roboto-normal-silver-18px {
-  color: var(--silver);
+.roboto-normal-dark-silver-18px {
+  color: var(--dark-silver);
   font-family: var(--font-family-roboto);
   font-size: var(--font-size-xs);
   font-style: normal;
@@ -92,6 +93,13 @@
   color: var(--dark-tan);
   font-family: var(--font-family-roboto);
   font-size: 30px;
+  font-style: normal;
+  font-weight: 600;
+}
+.roboto-normal-dark-tan-22px {
+  color: var(--dark-tan);
+  font-family: var(--font-family-roboto);
+  font-size: 22px;
   font-style: normal;
   font-weight: 600;
 }

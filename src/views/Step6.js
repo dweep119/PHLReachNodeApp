@@ -8,10 +8,7 @@ import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { useTheme } from '@material-ui/core/styles';
 
 function Step6() {
 
@@ -23,7 +20,6 @@ function Step6() {
   const [signatureImage, setsignatureImage] = useState(formData.signature ? formData.signature : null);
 
   const [open, setOpen] = React.useState(false);
-  const theme = useTheme();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -177,17 +173,17 @@ function Step6() {
         <DialogTitle id="responsive-dialog-title">{"Consent Form"}</DialogTitle>
         <DialogContent>
           <embed src="https://prism.org/wp-content/uploads/2021/05/Prism-Health-Lab-Consent-Form.pdf"
-            frameBorder="0" width="100%" height="450px"/>
+            frameBorder="0" width="100%" height="450px" />
         </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose} color="primary" autoFocus>
-              Close
-            </Button>
-          </DialogActions>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary" autoFocus>
+            Close
+          </Button>
+        </DialogActions>
       </Dialog>
-        <ToastContainer />
+      <ToastContainer />
     </div>
-      );
+  );
 }
 
-      export default Step6;
+export default Step6;

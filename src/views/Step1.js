@@ -262,7 +262,7 @@ function Step1() {
           <div className="row mr-0 slot" key={index}>
             <div className="col-lg-2 col-md-2 col-3 slotTime">
               <div className="overlap-group14">
-                <div className="address-3 roboto-normal-black-18px-22">{slot}</div>
+                <div className="address-3 roboto-normal-black-18px-2">{slot}</div>
               </div>
             </div>
             <div className="col-lg-10 col-md-10 col-9">
@@ -270,7 +270,7 @@ function Step1() {
                 {availableSlots[slot].map((item, i) => (
                   <div className="col-lg-3 col-md-3 col-4 pr-0 timeSlot" key={i}>
                     <div className={(selectedSlot && selectedSlot.time_12hr === item.time_12hr ? 'overlap-group6' : 'overlap-group14')} onClick={() => setselectedSlot(item)}>
-                      <div className={"x900-am" + (selectedSlot && selectedSlot.time_12hr === item.time_12hr ? ' roboto-normal-white-18px-2' : ' roboto-normal-black-18px-22')}>{item.time_12hr}</div>
+                      <div className={"x900-am" + (selectedSlot && selectedSlot.time_12hr === item.time_12hr ? ' roboto-normal-white-18px-2' : ' roboto-normal-black-18px-2')}>{item.time_12hr}</div>
                     </div>
                   </div>
                 ))

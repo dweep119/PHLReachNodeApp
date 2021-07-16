@@ -26,5 +26,9 @@ export const Steps = [
   {
     step_number: 7,
     name: "Review & Submit",
+  },
+  {
+    step_number: 8,
+    name: "Summary",
   }
 ];

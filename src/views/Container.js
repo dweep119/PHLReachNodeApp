@@ -5,6 +5,8 @@ import Step3 from "./Step3";
 import Step4 from "./Step4";
 import Step5 from "./Step5";
 import Step6 from "./Step6";
+import Step7 from "./Step7";
+import Step8 from "./Step8";
 import { AppContext } from "../store/app";
 
 const Container = (props) => {
@@ -17,6 +19,8 @@ const Container = (props) => {
       {state.step === 4 && <Step4 {...props} />}
       {state.step === 5 && <Step5 {...props} />}
       {state.step === 6 && <Step6 {...props} />}
+      {state.step === 7 && <Step7 {...props} />}
+      {state.step === 8 && <Step8 {...props} />}
     </div>
   );
 };

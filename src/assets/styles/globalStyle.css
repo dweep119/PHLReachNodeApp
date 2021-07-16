@@ -161,7 +161,7 @@ p.MuiTypography-root.heading {
   right: calc(50% + 24px) !important;
 }
 .MuiStepIcon-text {
-  display: none;
+  /* display: none; */
 }
 .MuiStepIcon-root.MuiStepIcon-active {
   color: #0a4b7d !important;
@@ -401,3 +401,25 @@ p.MuiTypography-root.heading {
   padding: 8px 16px !important;
 }
 /* Step-6 Style End */
+
+/* Step-7 Style Start */
+.summaryChevronIcon {
+  margin: auto;
+  text-align: center;
+  cursor: pointer;
+}
+div.summaryChevronIcon[aria-expanded="true"] .fa-chevron-down {
+  display: none;
+}
+div.summaryChevronIcon[aria-expanded="false"] .fa-chevron-up {
+  display: none;
+}
+.summarySidebar {
+  border-right: 2px solid gray;
+  padding: 10px 20px;
+  height: 100%;
+}
+.sidebarDiv {
+  cursor: pointer;
+}
+/* Step-7 Style End */
