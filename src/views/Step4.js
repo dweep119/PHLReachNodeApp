@@ -92,6 +92,14 @@ function Step4() {
     reader.onerror = error => reject(error);
   });
 
+  const goToSummary = () => {
+    dispatch({
+      type: "SET_STEP",
+      step: 7
+    });
+    return;
+  }
+
   const handleNext = () => {
     // if (isInsured) {
     // 	if (selectedInsuranceCompany && insuranceId && groupNumber && planName) {
@@ -277,6 +285,7 @@ function Step4() {
               <div className="row">
                 <div className="mb-5  overlap-group2 col-lg-6  col-md-6 col-12">
                   <label className="first-name-1 roboto-medium-black-24px w-100">Group Number
+                  <span className="roboto-medium-tia-maria-24px ml-1">*</span>
                   </label>
                   <TextValidator
                     onChange={(event) => setgroupNumber(event.target.value)}
@@ -290,6 +299,7 @@ function Step4() {
                 </div>
                 <div className="mb-5  overlap-group2 col-lg-6  col-md-6 col-12">
                   <label className="first-name-1 roboto-medium-black-24px w-100">Plan Name
+                  <span className="roboto-medium-tia-maria-24px ml-1">*</span>
                   </label>
                   <TextValidator
                     onChange={(event) => setplanName(event.target.value)}
@@ -422,6 +432,11 @@ function Step4() {
         <div className="w-100 d-flex justify-content-end mt-5 mb-5 pb-5">
           <button className="overlap-group101 roboto-bold-white-20-3px" onClick={handleBack}>PREVIOUS</button>
           <button className="overlap-group13 border-1-4px-mercury roboto-bold-white-20-3px ml-3" onClick={handleNext}>NEXT</button>
+          {
+            formData && formData.signature ?
+              <button className="overlap-group15 border-1-4px-mercury roboto-bold-white-20-3px ml-3" onClick={goToSummary}>GO TO SUMMARY</button>
+              : null
+          }
         </div>
       </ValidatorForm>
       <ToastContainer />

@@ -7,8 +7,8 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+// import { ToastContainer, toast } from 'react-toastify';
+// import 'react-toastify/dist/ReactToastify.css';
 import { makeStyles } from "@material-ui/core/styles";
 const useStyles = makeStyles({
   underline: {
@@ -43,6 +43,14 @@ function Step2() {
   const handleDateChange = (date) => {
     setselectedDOB(date);
   };
+
+  const goToSummary = () => {
+    dispatch({
+      type: "SET_STEP",
+      step: 7
+    });
+    return;
+  }
 
   const handleNext = () => {
     // if (firstName && lastName && selectedDOB && streetAddress1 &&
@@ -139,6 +147,7 @@ function Step2() {
                 value={selectedDOB}
                 onChange={handleDateChange}
                 InputProps={{ classes }}
+                autoOk={true}
                 KeyboardButtonProps={{
                   'aria-label': 'change date',
                 }}
@@ -179,18 +188,18 @@ function Step2() {
         </div>
         <div className="row">
           <div className="mb-5 overlap-group2 col-lg-4 col-md-4 col-12">
-            <label className="first-name-1 roboto-medium-black-24px w-100">State
+            <label className="first-name-1 roboto-medium-black-24px w-100">Zipcode
               <span className="roboto-medium-tia-maria-24px ml-1">*</span>
             </label>
             <TextValidator
-              onChange={(event) => setselectedstate(event.target.value)}
+              onChange={(event) => setselectedZipcode(event.target.value)}
               InputProps={{ classes }}
-              value={selectedstate}
+              value={selectedZipcode}
               validators={['required']}
               errorMessages={['This field is required']}
             />
-            {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="state" name="lastname"
-              placeholder="State" /> */}
+            {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="zipcode" name="lastname"
+              placeholder="Zipcode" /> */}
           </div>
           <div className="mb-5 overlap-group2 col-lg-4 col-md-4 col-12">
             <label className="first-name-1 roboto-medium-black-24px w-100">City
@@ -207,18 +216,18 @@ function Step2() {
               placeholder="City" /> */}
           </div>
           <div className="mb-5 overlap-group2 col-lg-4 col-md-4 col-12">
-            <label className="first-name-1 roboto-medium-black-24px w-100">Zipcode
+            <label className="first-name-1 roboto-medium-black-24px w-100">State
               <span className="roboto-medium-tia-maria-24px ml-1">*</span>
             </label>
             <TextValidator
-              onChange={(event) => setselectedZipcode(event.target.value)}
+              onChange={(event) => setselectedstate(event.target.value)}
               InputProps={{ classes }}
-              value={selectedZipcode}
+              value={selectedstate}
               validators={['required']}
               errorMessages={['This field is required']}
             />
-            {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="zipcode" name="lastname"
-              placeholder="Zipcode" /> */}
+            {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="state" name="lastname"
+              placeholder="State" /> */}
           </div>
         </div>
         <div className="row">
@@ -231,8 +240,8 @@ function Step2() {
                 onChange={(event) => setphoneNumber(event.target.value)}
                 InputProps={{ classes }}
                 value={phoneNumber}
-                validators={['required']}
-                errorMessages={['This field is required']}
+                validators={['matchRegexp:^[0-9]{10}$']}
+                errorMessages={['Please enter valid Phone Number']}
               />
               {/* <input className="overlap-group first-name-1 w-100 border-1px-mist-gray" id="phone" name="lastname"
                 placeholder="Phone Number" /> */}
@@ -250,8 +259,8 @@ function Step2() {
                 onChange={(event) => setemail(event.target.value)}
                 InputProps={{ classes }}
                 value={email}
-                validators={['required']}
-                errorMessages={['This field is required']}
+                validators={['required', 'isEmail']}
+                errorMessages={['This field is required', 'Email is not valid']}
               />
               {/* <input className="overlap-group first-name-1 w-100 border-1px-mist-gray" id="email" name="lastname"
                 placeholder="Email Address" /> */}
@@ -314,8 +323,13 @@ function Step2() {
       <div className="w-100 d-flex justify-content-end mt-5 mb-5 pb-5">
         <button className="overlap-group101 roboto-bold-white-20-3px" onClick={handleBack}>PREVIOUS</button>
         <button className="overlap-group13 border-1-4px-mercury roboto-bold-white-20-3px ml-3" onClick={handleNext}>NEXT</button>
+        {
+          formData && formData.signature ?
+            <button className="overlap-group15 border-1-4px-mercury roboto-bold-white-20-3px ml-3" onClick={goToSummary}>GO TO SUMMARY</button>
+            : null
+        }
       </div>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
     </div>
   );
 }

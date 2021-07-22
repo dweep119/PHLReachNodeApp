@@ -1,20 +1,15 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { AppContext } from "../store/app";
-import logoPath from "../assets/img/logo-home@2x.png"
 
-function Step6() {
+import qrCodePath from "../assets/img/qrCode.svg";
+import travelPack from "../assets/img/COVID-19 Travel Pack.jpg";
+import vaccination from "../assets/img/COVID-19 Vaccination.jpg";
+
+function Step7() {
 
   const [state, dispatch] = useContext(AppContext);
-  const { formData } = state;
-  const signatureImage = formData.signatureImage;
 
-  const onEditIconClick = (stepNo) => {
-    dispatch({
-      type: "SET_STEP",
-      step: stepNo
-    });
-    return;
-  }
+  const [isDisplayDetails, setisDisplayDetails] = useState(false);
 
   const handleNext = () => {
     dispatch({
@@ -32,435 +27,468 @@ function Step6() {
     return;
   };
 
+  const onEditIconClick = (stepNo) => {
+    dispatch({
+      type: "SET_STEP",
+      step: stepNo
+    });
+    return;
+  }
+
   return (
     <div className="App">
-      <div className="row">
-        <div className="mb-3 overlap-group2 col-11">
-          <label className="roboto-medium-black-24px w-100">Appointment
-          </label>
-        </div>
-        <div className="col-1 d-flex pl-0 pr-0">
-          <div className="summaryChevronIcon">
-            <i className="fa fa-pencil fa-lg" aria-hidden="true" onClick={() => onEditIconClick(1)}></i>
-          </div>
-          <div className="summaryChevronIcon" data-toggle="collapse" data-target="#collapseExample1" aria-expanded="false" aria-controls="collapseExample1">
-            <i className="fa fa-chevron-up fa-lg" aria-hidden="true"></i>
-            <i className="fa fa-chevron-down fa-lg" aria-hidden="true"></i>
-          </div>
-        </div>
-      </div>
-      <div className="border-1px-mercury mb-3"></div>
-      <div className="row collapse" id="collapseExample1">
-        <div className="col-lg-6 col-md-6 col-12">
-          <div className="row mb-3">
-            <div className="col-12">
-              <label className="roboto-normal-black-18px-22 w-100"> Date/Time</label>
-              <label className="roboto-normal-dark-silver-18px w-100"> 07/15/2021 10:30 AM</label>
+      <div className="p-5">
+        <div className="row mb-5 w-100 justify-content-between">
+          <div className="col-lg-5 col-md-6 col-12">
+            <div className="roboto-normal-dark-tan-24px">
+              We'll See You There!
+            </div>
+            <div className="mt-3">
+              <label className="roboto-medium-black-24px">
+                This is your express pass to Check-in once you arrive at Prism.
+              </label>
+            </div>
+            <div className="mt-3">
+              <label className="roboto-medium-black-24px">
+                This is QR Code will also be sent to you in your confirmation email.
+              </label>
             </div>
           </div>
-          <div className="row mb-3">
-            <div className="col-12">
-              <label className="roboto-normal-black-18px-22 w-100"> Office Phone Number</label>
-              <label className="roboto-normal-dark-silver-18px w-100"> (800)-325-1812</label>
-            </div>
-          </div>
-        </div>
-        <div className="col-lg-6 col-md-6 col-12">
-          <div className="row mb-3">
-            <div className="col-12">
-              <label className="roboto-normal-black-18px-22 w-100"> Office Location</label>
-              <label className="roboto-normal-dark-silver-18px w-100"> 6301 N. Western Ave Chicago, IL 60659</label>
-            </div>
-          </div>
-          <div className="row mb-3">
-            <div className="col-12">
-              <label className="roboto-normal-black-18px-22 w-100"> Office Email</label>
-              <label className="roboto-normal-dark-silver-18px w-100"> info@prism.org</label>
+          <div className="col-lg-5 col-md-6 col-12">
+            <div className="text-center">
+              <img className="summaryQRCode" src={qrCodePath} alt="img" />
             </div>
           </div>
         </div>
       </div>
-
-      <div className="row">
-        <div className="mb-3 overlap-group2 col-11">
-          <label className="roboto-medium-black-24px w-100">Contact
-          </label>
-        </div>
-        <div className="col-1 d-flex pl-0 pr-0">
-          <div className="summaryChevronIcon">
-            <i className="fa fa-pencil fa-lg" aria-hidden="true" onClick={() => onEditIconClick(2)}></i>
-          </div>
-          <div className="summaryChevronIcon" data-toggle="collapse" data-target="#collapseExample2" aria-expanded="false" aria-controls="collapseExample2">
-            <i className="fa fa-chevron-up fa-lg" aria-hidden="true"></i>
-            <i className="fa fa-chevron-down fa-lg" aria-hidden="true"></i>
-          </div>
-        </div>
-      </div>
-      <div className="border-1px-mercury mb-3"></div>
-      <div className="row collapse" id="collapseExample2">
-        <div className="col-lg-6 col-md-6 col-12">
-          <div className="row mb-3">
-            <div className="col-12">
-              <label className="roboto-normal-black-18px-22 w-100"> Name</label>
-              <label className="roboto-normal-dark-silver-18px w-100"> Dweep Patel</label>
-            </div>
-          </div>
-          <div className="row mb-3">
-            <div className="col-12">
-              <label className="roboto-normal-black-18px-22 w-100"> Address</label>
-              <label className="roboto-normal-dark-silver-18px w-100"> C-112 Girdharpark Society Vadodara, Gujarat 390009</label>
-            </div>
-          </div>
-          <div className="row mb-3">
-            <div className="col-12">
-              <label className="roboto-normal-black-18px-22 w-100"> Email</label>
-              <label className="roboto-normal-dark-silver-18px w-100"> neha.dweep@gmail.com</label>
-            </div>
-          </div>
-          <div className="row mb-3">
-            <div className="col-12">
-              <label className="roboto-normal-black-18px-22 w-100"> Emergency Contact Phone Number</label>
-              <label className="roboto-normal-dark-silver-18px w-100"> +919925032084</label>
-            </div>
-          </div>
-        </div>
-        <div className="col-lg-6 col-md-6 col-12">
-          <div className="row mb-3">
-            <div className="col-12">
-              <label className="roboto-normal-black-18px-22 w-100"> Date of Birth</label>
-              <label className="roboto-normal-dark-silver-18px w-100"> 09/11/1995</label>
-            </div>
-          </div>
-          <div className="row mb-3">
-            <div className="col-12">
-              <label className="roboto-normal-black-18px-22 w-100"> Phone Number</label>
-              <label className="roboto-normal-dark-silver-18px w-100"> +919978532084</label>
-            </div>
-          </div>
-          <div className="row mb-3">
-            <div className="col-12">
-              <label className="roboto-normal-black-18px-22 w-100"> Emergency Contact Name</label>
-              <label className="roboto-normal-dark-silver-18px w-100"> Upendra Patel</label>
-            </div>
-          </div>
-          <div className="row mb-3">
-            <div className="col-12">
-              <label className="roboto-normal-black-18px-22 w-100"> Emergency Contact Relation</label>
-              <label className="roboto-normal-dark-silver-18px w-100"> Father</label>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="row">
-        <div className="mb-3 overlap-group2 col-11">
-          <label className="roboto-medium-black-24px w-100">Demographics
-          </label>
-        </div>
-        <div className="col-1 d-flex pl-0 pr-0">
-          <div className="summaryChevronIcon">
-            <i className="fa fa-pencil fa-lg" aria-hidden="true" onClick={() => onEditIconClick(3)}></i>
-          </div>
-          <div className="summaryChevronIcon" data-toggle="collapse" data-target="#collapseExample3" aria-expanded="false" aria-controls="collapseExample3">
-            <i className="fa fa-chevron-up fa-lg" aria-hidden="true"></i>
-            <i className="fa fa-chevron-down fa-lg" aria-hidden="true"></i>
-          </div>
-        </div>
-      </div>
-      <div className="border-1px-mercury mb-3"></div>
-      <div className="row collapse" id="collapseExample3">
-        <div className="col-lg-6 col-md-6 col-12">
-          <div className="row mb-3">
-            <div className="col-12">
-              <label className="roboto-normal-black-18px-22 w-100"> Preferred Language</label>
-              <label className="roboto-normal-dark-silver-18px w-100"> English</label>
-            </div>
-          </div>
-          <div className="row mb-3">
-            <div className="col-12">
-              <label className="roboto-normal-black-18px-22 w-100"> Ethnicity</label>
-              <label className="roboto-normal-dark-silver-18px w-100"> Hispanic or Latinx</label>
-            </div>
-          </div>
-        </div>
-        <div className="col-lg-6 col-md-6 col-12">
-          <div className="row mb-3">
-            <div className="col-12">
-              <label className="roboto-normal-black-18px-22 w-100"> Race</label>
-              <label className="roboto-normal-dark-silver-18px w-100"> American Indian or Alaskan Native</label>
-            </div>
-          </div>
-          <div className="row mb-3">
-            <div className="col-12">
-              <label className="roboto-normal-black-18px-22 w-100"> Gender</label>
-              <label className="roboto-normal-dark-silver-18px w-100"> Male</label>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="row">
-        <div className="mb-3 overlap-group2 col-11">
-          <label className="roboto-medium-black-24px w-100">Insurance
-          </label>
-        </div>
-        <div className="col-1 d-flex pl-0 pr-0">
-          <div className="summaryChevronIcon">
-            <i className="fa fa-pencil fa-lg" aria-hidden="true" onClick={() => onEditIconClick(4)}></i>
-          </div>
-          <div className="summaryChevronIcon" data-toggle="collapse" data-target="#collapseExample4" aria-expanded="false" aria-controls="collapseExample4">
-            <i className="fa fa-chevron-up fa-lg" aria-hidden="true"></i>
-            <i className="fa fa-chevron-down fa-lg" aria-hidden="true"></i>
-          </div>
-        </div>
-      </div>
-      <div className="border-1px-mercury mb-3"></div>
-      <div className="row collapse" id="collapseExample4">
-        <div className="col-lg-6 col-md-6 col-12">
-          <div className="row mb-3">
-            <div className="col-12">
-              <label className="roboto-normal-black-18px-22 w-100"> Insurance Company</label>
-              <label className="roboto-normal-dark-silver-18px w-100"> Medicare</label>
-            </div>
-          </div>
-          <div className="row mb-3">
-            <div className="col-12">
-              <label className="roboto-normal-black-18px-22 w-100"> Group Number</label>
-              <label className="roboto-normal-dark-silver-18px w-100"> 456</label>
-            </div>
-          </div>
-          <div className="row mb-3">
-            <div className="col-12">
-              <label className="roboto-normal-black-18px-22 w-100"> Insured Person Name</label>
-              <label className="roboto-normal-dark-silver-18px w-100"> Upendra Patel</label>
-            </div>
-          </div>
-          <div className="row mb-3">
-            <div className="col-12">
-              <label className="roboto-normal-black-18px-22 w-100"> Insured Person DOB</label>
-              <label className="roboto-normal-dark-silver-18px w-100"> 08/30/1964</label>
-            </div>
-          </div>
-        </div>
-        <div className="col-lg-6 col-md-6 col-12">
-          <div className="row mb-3">
-            <div className="col-12">
-              <label className="roboto-normal-black-18px-22 w-100"> Insurance ID</label>
-              <label className="roboto-normal-dark-silver-18px w-100"> 5418715</label>
-            </div>
-          </div>
-          <div className="row mb-3">
-            <div className="col-12">
-              <label className="roboto-normal-black-18px-22 w-100"> Plan Name</label>
-              <label className="roboto-normal-dark-silver-18px w-100"> Family</label>
-            </div>
-          </div>
-          <div className="row mb-3">
-            <div className="col-12">
-              <label className="roboto-normal-black-18px-22 w-100"> Insured Relationship to Patient</label>
-              <label className="roboto-normal-dark-silver-18px w-100"> Father</label>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="row">
-        <div className="mb-3 overlap-group2 col-11">
-          <label className="roboto-medium-black-24px w-100">Medical Questionnaire
-          </label>
-        </div>
-        <div className="col-1 d-flex pl-0 pr-0">
-          <div className="summaryChevronIcon">
-            <i className="fa fa-pencil fa-lg" aria-hidden="true" onClick={() => onEditIconClick(5)}></i>
-          </div>
-          <div className="summaryChevronIcon" data-toggle="collapse" data-target="#collapseExample5" aria-expanded="false" aria-controls="collapseExample5">
-            <i className="fa fa-chevron-up fa-lg" aria-hidden="true"></i>
-            <i className="fa fa-chevron-down fa-lg" aria-hidden="true"></i>
-          </div>
-        </div>
-      </div>
-      <div className="border-1px-mercury mb-3"></div>
-      <div className="row collapse" id="collapseExample5">
-        <div className="roboto-normal-dark-tan-22px col-12 mb-3">
-          COVID-19 Testing
-        </div>
-        <div className="col-12">
-          <div className="col-lg-12 col-md-12 col-12">
-            <div className="row mb-3">
-              <div className="col-12">
-                <label className="roboto-normal-black-18px-22 w-100"> Are you currently experiencing COVID-19 symptoms or have you been exposed to COVID-19?</label>
-                <label className="roboto-normal-dark-silver-18px w-100"> No</label>
+      <div className="row mt-3">
+        <div className="col-lg-6 col-md-12 col-12">
+          <div class="card summaryCard">
+            <div class="card-header summaryCardHeader">
+              <div className="roboto-bold-white-20px">
+                My Services
               </div>
             </div>
-            <div className="row mb-3">
+            <div class="card-body">
               <div className="col-12">
-                <label className="roboto-normal-black-18px-22 w-100"> Have you been in any public gatherings(i.e prayer hall, protests, parties/events/restaurant, etc)?</label>
-                <label className="roboto-normal-dark-silver-18px w-100"> No</label>
+                <div className="col-lg-5 col-md-5 col-12">
+                  <div className="row">
+                    <div className="d-flex">
+                      <img src={travelPack} alt="img" style={{ height: 70 }} />
+                      <label className="ml-2 roboto-normal-black-18px-22">COVID-19 Travel Pack</label>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className="row mb-3">
-              <div className="col-12">
-                <label className="roboto-normal-black-18px-22 w-100"> Are you a health care worker‚ nursing home worker‚ first responder?</label>
-                <label className="roboto-normal-dark-silver-18px w-100"> No</label>
+              <div className="mt-3 col-12">
+                <div className="row">
+                  <div className="col-lg-6 col-md-6 col-12">
+                    <i class="fa fa-calendar-o fa-lg" aria-hidden="true"></i>
+                    <label className="ml-2 roboto-normal-black-18px-22">July 20, 2021</label>
+                  </div>
+                  <div className="col-lg-6 col-md-6 col-12">
+                    <i class="fa fa-clock-o fa-lg" aria-hidden="true"></i>
+                    <label className="ml-2 roboto-normal-black-18px-22">10:15 AM</label>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className="row mb-3">
-              <div className="col-12">
-                <label className="roboto-normal-black-18px-22 w-100"> Have you experienced any symptoms in the last 14 days?</label>
-                <label className="roboto-normal-dark-silver-18px w-100"> No</label>
+              <div className="mt-3 col-12">
+                <div className="row">
+                  <div className="col-12">
+                    <i class="fa fa-map-marker fa-lg" aria-hidden="true"></i>
+                    <label className="ml-2 roboto-normal-black-18px-22">6301 N. Western Ave Chicago, IL 60659</label>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className="row mb-3">
-              <div className="col-12">
-                <label className="roboto-normal-black-18px-22 w-100"> Do you have any pre-existing medical conditions?</label>
-                <label className="roboto-normal-dark-silver-18px w-100"> No</label>
-              </div>
-            </div>
-            <div className="row mb-3">
-              <div className="col-12">
-                <label className="roboto-normal-black-18px-22 w-100"> Do you smoke cigarettes or use other tobacco?</label>
-                <label className="roboto-normal-dark-silver-18px w-100"> No</label>
-              </div>
-            </div>
-            <div className="row mb-3">
-              <div className="col-12">
-                <label className="roboto-normal-black-18px-22 w-100"> Do you use vaping products?</label>
-                <label className="roboto-normal-dark-silver-18px w-100"> No</label>
-              </div>
-            </div>
-            <div className="row mb-3">
-              <div className="col-12">
-                <label className="roboto-normal-black-18px-22 w-100"> Have you experienced any of these symptoms</label>
-                <label className="roboto-normal-dark-silver-18px w-100"> Cough, Rash, Fever above 100 degrees</label>
-              </div>
-            </div>
-            <div className="row mb-3">
-              <div className="col-12">
-                <label className="roboto-normal-black-18px-22 w-100"> How long have you been experiencing these symptoms (in days)</label>
-                <label className="roboto-normal-dark-silver-18px w-100"> 5</label>
+              <div className="mt-3 col-12">
+                <div className="row">
+                  <div className="col-12">
+                    <button className="summaryBodyBtn roboto-bold-white-20-3px" onClick={handleBack}>GET DIRECTIONS</button>
+                    <button className="summaryBodyBtn roboto-bold-white-20-3px ml-3" onClick={handleBack}>ADD TO CALENDER</button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-
-        <div className="roboto-normal-dark-tan-22px col-12 mb-3">
-          COVID-19 Vaccine
-        </div>
-        <div className="col-12">
-          <div className="col-lg-12 col-md-12 col-12">
-            <div className="row mb-3">
-              <div className="col-12">
-                <label className="roboto-normal-black-18px-22 w-100"> Are you currently experiencing COVID-19 symptoms or have you been exposed to COVID-19?</label>
-                <label className="roboto-normal-dark-silver-18px w-100"> No</label>
+        <div className="col-lg-6 col-md-12 col-12">
+          <div class="card summaryCard">
+            <div class="card-header summaryCardHeader">
+              <div className="roboto-bold-white-20px">
+                My Services
               </div>
             </div>
-            <div className="row mb-3">
+            <div class="card-body">
               <div className="col-12">
-                <label className="roboto-normal-black-18px-22 w-100"> Have you received any vaccinations in the past 2 weeks?</label>
-                <label className="roboto-normal-dark-silver-18px w-100"> No</label>
+                <div className="col-lg-7 col-md-7 col-12">
+                  <div className="row">
+                    <div className="d-flex">
+                      <img src={vaccination} alt="img" style={{ height: 70 }} />
+                      <label className="ml-2 roboto-normal-black-18px-22">COVID-19 Pfizer Vaccination</label>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className="row mb-3">
-              <div className="col-12">
-                <label className="roboto-normal-black-18px-22 w-100"> Have you receiveed a COVID-19 vaccine from different manufacturer at any time, or did you participate in a COVID-19 vaccine trial?</label>
-                <label className="roboto-normal-dark-silver-18px w-100"> No</label>
+              <div className="mt-3 col-12">
+                <div className="row">
+                  <div className="col-lg-6 col-md-6 col-12">
+                    <i class="fa fa-calendar-o fa-lg" aria-hidden="true"></i>
+                    <label className="ml-2 roboto-normal-black-18px-22">July 20, 2021</label>
+                  </div>
+                  <div className="col-lg-6 col-md-6 col-12">
+                    <i class="fa fa-clock-o fa-lg" aria-hidden="true"></i>
+                    <label className="ml-2 roboto-normal-black-18px-22">10:15 AM</label>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className="row mb-3">
-              <div className="col-12">
-                <label className="roboto-normal-black-18px-22 w-100"> Have you ever had a serious reaction or fainted after receiving any vaccination?</label>
-                <label className="roboto-normal-dark-silver-18px w-100"> No</label>
+              <div className="mt-3 col-12">
+                <div className="row">
+                  <div className="col-12">
+                    <i class="fa fa-map-marker fa-lg" aria-hidden="true"></i>
+                    <label className="ml-2 roboto-normal-black-18px-22">6301 N. Western Ave Chicago, IL 60659</label>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className="row mb-3">
-              <div className="col-12">
-                <label className="roboto-normal-black-18px-22 w-100"> Have you been diagnosed with COVID-19 infection in the last 90 days?</label>
-                <label className="roboto-normal-dark-silver-18px w-100"> No</label>
-              </div>
-            </div>
-            <div className="row mb-3">
-              <div className="col-12">
-                <label className="roboto-normal-black-18px-22 w-100"> Have you ever had an anaphylactic reaction or had other severe symptoms after receiving another vaccination?</label>
-                <label className="roboto-normal-dark-silver-18px w-100"> No</label>
-              </div>
-            </div>
-            <div className="row mb-3">
-              <div className="col-12">
-                <label className="roboto-normal-black-18px-22 w-100"> Do you have a medical condition or take medication(s) that may weaken your immune system?</label>
-                <label className="roboto-normal-dark-silver-18px w-100"> No</label>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="roboto-normal-dark-tan-22px col-12 mb-3">
-          Additional Info
-        </div>
-        <div className="col-12">
-          <div className="col-lg-12 col-md-12 col-12">
-            <div className="row mb-3">
-              <div className="col-12">
-                <label className="roboto-normal-black-18px-22 w-100"> Are you disabled?</label>
-                <label className="roboto-normal-dark-silver-18px w-100"> No</label>
-              </div>
-            </div>
-            <div className="row mb-3">
-              <div className="col-12">
-                <label className="roboto-normal-black-18px-22 w-100"> Any additional personal health information you would like us to be aware of?</label>
-                <label className="roboto-normal-dark-silver-18px w-100"> No</label>
-              </div>
-            </div>
-            <div className="row mb-3">
-              <div className="col-12">
-                <label className="roboto-normal-black-18px-22 w-100"> How did you here about us?</label>
-                <label className="roboto-normal-dark-silver-18px w-100"> Facebook</label>
-              </div>
-            </div>
-            <div className="row mb-3">
-              <div className="col-12">
-                <label className="roboto-normal-black-18px-22 w-100"> In the future, what other services would you like Prism Health lab to provide?</label>
-                <label className="roboto-normal-dark-silver-18px w-100"> Immigration</label>
+              <div className="mt-3 col-12">
+                <div className="row">
+                  <div className="col-12">
+                    <button className="summaryBodyBtn roboto-bold-white-20-3px" onClick={handleBack}>GET DIRECTIONS</button>
+                    <button className="summaryBodyBtn roboto-bold-white-20-3px ml-3" onClick={handleBack}>ADD TO CALENDER</button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      <div className="row">
-        <div className="mb-3 overlap-group2 col-11">
-          <label className="roboto-medium-black-24px w-100">Consent Form
-          </label>
-        </div>
-        <div className="col-1 d-flex pl-0 pr-0">
-          <div className="summaryChevronIcon">
-            <i className="fa fa-pencil fa-lg" aria-hidden="true" onClick={() => onEditIconClick(6)}></i>
-          </div>
-          <div className="summaryChevronIcon" data-toggle="collapse" data-target="#collapseExample6" aria-expanded="false" aria-controls="collapseExample6">
-            <i className="fa fa-chevron-up fa-lg" aria-hidden="true"></i>
-            <i className="fa fa-chevron-down fa-lg" aria-hidden="true"></i>
-          </div>
-        </div>
-      </div>
-      <div className="border-1px-mercury mb-3"></div>
-      <div className="row collapse" id="collapseExample6">
-        <div className="col-lg-6 col-md-6 col-12">
-          <div className="row mb-3">
-            <div className="col-12">
-              <label className="roboto-normal-black-18px-22 w-100"> e-Signature</label>
-              <img src={signatureImage ? signatureImage : logoPath} alt="img"
-                style={{ width: "100%", height: "100%" }} />
+      {
+        !isDisplayDetails ?
+          <div>
+            <div className="row mt-5">
+              <div className="col-lg-4 col-md-4 col-12">
+                <div class="card summaryCard">
+                  <div class="card-header summaryCardHeader d-flex w-100">
+                    <div className="roboto-bold-white-20px text-center col-11">
+                      Contact
+                    </div>
+                    <div className="col-1 cursor-pointer">
+                      <i className="fa fa-pencil fa-lg" aria-hidden="true" onClick={() => onEditIconClick(2)}></i>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div className="row">
+                      <div className="col-12 text-center">
+                        <label className="roboto-normal-black-18px-2">John Doe</label>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-12 text-center">
+                        <label className="roboto-normal-black-18px-2">6113 N Chester Ave</label>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-12 text-center">
+                        <label className="roboto-normal-black-18px-2">johndoe54@gmail.com</label>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-12 text-center">
+                        <label className="roboto-normal-black-18px-2">773-475-9904</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-lg-4 col-md-4 col-12">
+                <div class="card summaryCard">
+                  <div class="card-header summaryCardHeader d-flex w-100">
+                    <div className="roboto-bold-white-20px text-center col-11">
+                      Demographics
+                    </div>
+                    <div className="col-1 cursor-pointer">
+                      <i className="fa fa-pencil fa-lg" aria-hidden="true" onClick={() => onEditIconClick(3)}></i>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div className="row">
+                      <div className="col-12 text-center">
+                        <label className="roboto-normal-black-18px-2">English</label>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-12 text-center">
+                        <label className="roboto-normal-black-18px-2">Asian</label>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-12 text-center">
+                        <label className="roboto-normal-black-18px-2">Non Hispanic or Latinx</label>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-12 text-center">
+                        <label className="roboto-normal-black-18px-2">Male</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-lg-4 col-md-4 col-12">
+                <div class="card summaryCard">
+                  <div class="card-header summaryCardHeader d-flex w-100">
+                    <div className="roboto-bold-white-20px text-center col-11">
+                      Insurance
+                    </div>
+                    <div className="col-1 cursor-pointer">
+                      <i className="fa fa-pencil fa-lg" aria-hidden="true" onClick={() => onEditIconClick(4)}></i>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div className="row">
+                      <div className="col-12 text-center">
+                        <label className="roboto-normal-black-18px-2">Complete</label>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-12 text-center">
+                        <label className="roboto-normal-black-18px-2">Blue Cross Blue Shield</label>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-12 text-center">
+                        <label className="roboto-normal-black-18px-2">ID# 389047</label>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-12 text-center">
+                        <label className="roboto-normal-black-18px-2"></label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="row mt-5">
+              <div className="col-lg-4 col-md-4 col-12">
+                <div class="card summaryCard">
+                  <div class="card-header summaryCardHeader d-flex w-100">
+                    <div className="roboto-bold-white-20px text-center col-11">
+                      Medical Questionnaire
+                    </div>
+                    <div className="col-1 cursor-pointer">
+                      <i className="fa fa-pencil fa-lg" aria-hidden="true" onClick={() => onEditIconClick(5)}></i>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div className="row">
+                      <div className="col-12 text-center">
+                        <label className="roboto-normal-black-18px-2">Covid-19 Vaccine: Complete</label>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-12 text-center">
+                        <label className="roboto-normal-black-18px-2">Covid-19 Testing: Complete</label>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-12 text-center">
+                        <label className="roboto-normal-black-18px-2">Additional Info: Complete</label>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-12 text-center">
+                        <label className="roboto-normal-black-18px-2"></label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-lg-4 col-md-4 col-12">
+                <div class="card summaryCard">
+                  <div class="card-header summaryCardHeader d-flex w-100">
+                    <div className="roboto-bold-white-20px text-center col-11">
+                      Consent Forms
+                    </div>
+                    <div className="col-1 cursor-pointer">
+                      <i className="fa fa-pencil fa-lg" aria-hidden="true" onClick={() => onEditIconClick(6)}></i>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div className="row">
+                      <div className="col-12 text-center">
+                        <label className="roboto-normal-black-18px-2">Signed and acknowledged</label>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-12 text-center">
+                        <label className="roboto-normal-black-18px-2"></label>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-12 text-center">
+                        <label className="roboto-normal-black-18px-2"></label>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-12 text-center">
+                        <label className="roboto-normal-black-18px-2"></label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-lg-4 col-md-4 col-12">
+                <div class="card summaryCard">
+                  <div class="card-header summaryCardHeader d-flex w-100">
+                    <div className="roboto-bold-white-20px text-center col-11">
+                      Policies
+                    </div>
+                    <div className="col-1 cursor-pointer">
+                      <i className="fa fa-pencil fa-lg" aria-hidden="true" onClick={() => onEditIconClick(6)}></i>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div className="row">
+                      <div className="col-12 text-center">
+                        <label className="roboto-normal-black-18px-2">Read and acknowledged</label>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-12 text-center">
+                        <label className="roboto-normal-black-18px-2"></label>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-12 text-center">
+                        <label className="roboto-normal-black-18px-2"></label>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-12 text-center">
+                        <label className="roboto-normal-black-18px-2"></label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="row mt-5">
+              <div className="col-12 text-center">
+                <div>
+                  <label className="roboto-normal-dark-tan-22px cursor-pointer" onClick={() => setisDisplayDetails(true)}>
+                    More Details
+                  </label>
+                  <i className="fa fa-chevron-down fa-lg ml-2 moreDetailsIcon cursor-pointer" aria-hidden="true" onClick={() => setisDisplayDetails(true)}></i>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-
-
+          :
+          <div>
+            <div className="row mt-5">
+              <div className="col-12 text-center">
+                <div>
+                  <label className="roboto-normal-dark-tan-22px cursor-pointer" onClick={() => setisDisplayDetails(false)}>
+                    More Details
+                  </label>
+                  <i className="fa fa-chevron-up fa-lg ml-2 moreDetailsIcon cursor-pointer" aria-hidden="true" onClick={() => setisDisplayDetails(false)}></i>
+                </div>
+              </div>
+            </div>
+            <div className="row mt-5 moreDetails">
+              <div className="col-lg-4 col-md-4 col-12">
+                <div className="mt-3">
+                  <label className="roboto-bold-black-18px">Contact Information:</label>
+                  <div className="col-12">
+                    <ul className="ul-list">
+                      <li>Gartett Boileve</li>
+                      <li>03/04/1987</li>
+                      <li>2928 W Sherwin</li>
+                      <li>Chicago, IL 60645</li>
+                    </ul>
+                  </div>
+                </div>
+                <div className="mt-3">
+                  <label className="roboto-bold-black-18px">Emergency Contact:</label>
+                  <div className="col-12">
+                    <ul className="ul-list">
+                      <li>Carlos Boileve</li>
+                      <li>773-972-5167</li>
+                      <li>Father</li>
+                    </ul>
+                  </div>
+                </div>
+                <div className="mt-3">
+                  <label className="roboto-bold-black-18px">Demographics:</label>
+                  <div className="col-12">
+                    <ul className="ul-list">
+                      <li>English</li>
+                      <li>Asian</li>
+                      <li>Non Hispanic or Latinx</li>
+                      <li>Male</li>
+                    </ul>
+                  </div>
+                </div>
+                <div className="mt-3">
+                  <label className="roboto-bold-black-18px">Insurance:</label>
+                  <div className="col-12">
+                    <ul className="ul-list">
+                      <li>Yes</li>
+                      <li>Blue Cross Blue Shield</li>
+                      <li>ID#: 930293472</li>
+                      <li>Group#: BD20391</li>
+                      <li>Plan Name: PRO+</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div className="col-lg-8 col-md-8 col-12">
+                <div className="mt-3">
+                  <label className="roboto-bold-black-18px">Medical Questionnaire:</label>
+                  <div className="col-12">
+                    <ul className="ul-list">
+                      <li>Are you currently experiencing COVID-19 symptoms or have you been exposed to COVID-19? <b>Yes</b></li>
+                      <li>Have you been in any public gatherings? <b>Yes</b></li>
+                      <li>Are you a health care worker‚ nursing home worker‚ first responder? <b>No</b></li>
+                      <li>Have you experienced any symptoms in the last 14 days? <b>Yes</b></li>
+                      <li>Have you experienced any of these symptoms? <b>Shortness of Breath, Cough, Sore Throat, Chest Pain</b></li>
+                      <li>How long have you been experiencing these symptoms? <b>5 Days</b></li>
+                      <li>Do you have any pre-existing medical conditions? <b>Yes</b></li>
+                      <li>Do you smoke cigarettes or use other tobacco? <b>No</b></li>
+                      <li>Do you use vaping products? <b>No</b></li>
+                    </ul>
+                  </div>
+                </div>
+                <div className="mt-3">
+                  <label className="roboto-bold-black-18px">Consent Form:</label>
+                  <div className="col-12">
+                    <ul className="ul-list">
+                      <li>You agreed that you read consent documents.</li>
+                      <img src={vaccination} alt="img" style={{ height: 150 }} />
+                    </ul>
+                  </div>
+                </div>
+                <div className="mt-3">
+                  <label className="roboto-bold-black-18px">Policies:</label>
+                  <div className="col-12">
+                    <ul className="ul-list">
+                      <li>Read and acknowledged.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div className="col-12 text-center mt-5">
+                <button className="summaryBodyBtn roboto-bold-white-20-3px">DOWNLOAD</button>
+                <button className="summaryBodyBtn roboto-bold-white-20-3px ml-3">PRINT</button>
+              </div>
+            </div>
+          </div>
+      }
       <div className="w-100 d-flex justify-content-end mt-5 mb-5 pb-5">
         <button className="overlap-group101 roboto-bold-white-20-3px" onClick={handleBack}>PREVIOUS</button>
-        <button className="overlap-group13 border-1-4px-mercury roboto-bold-white-20-3px ml-3" onClick={handleNext}>NEXT</button>
-      </div>
-    </div >
+        <button className="overlap-group13 border-1-4px-mercury roboto-bold-white-20-3px ml-3" onClick={handleNext}>NEXT</button>      </div>
+    </div>
   );
 }
 
-export default Step6;
+export default Step7;

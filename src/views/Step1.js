@@ -1,14 +1,16 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useRef } from 'react';
 import { AppContext } from "../store/app";
 import moment from "moment";
 import _ from "lodash";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Recaptcha from 'react-google-invisible-recaptcha';
 
 function Step1() {
 
   const [state, dispatch] = useContext(AppContext);
   const { formData } = state;
+  const refRecaptcha = useRef(null);
   const dates = [
     {
       key: '07/12/2021',
@@ -140,8 +142,25 @@ function Step1() {
     }, 0);
   });
 
+  const onResolved = () => {
+    dispatch({
+      type: "SET_STEP",
+      step: state.step + 1
+    });
+    return;
+  };
+
+  const goToSummary = () => {
+    dispatch({
+      type: "SET_STEP",
+      step: 7
+    });
+    return;
+  }
+
   const handleNext = () => {
-    // if (selectedSlot) {
+    if (selectedSlot) {
+      refRecaptcha.current.execute();
       dispatch({
         type: "SET_FORM_DATA",
         formData: {
@@ -149,22 +168,18 @@ function Step1() {
           selectedSlot,
         }
       });
-      dispatch({
-        type: "SET_STEP",
-        step: state.step + 1
+    } else {
+      refRecaptcha.current.reset();
+      toast.error("Please Select a Slot.", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
       });
-      return;
-    // } else {
-    //   toast.error("Please Select a Slot.", {
-    //     position: "top-right",
-    //     autoClose: 5000,
-    //     hideProgressBar: false,
-    //     closeOnClick: true,
-    //     pauseOnHover: true,
-    //     draggable: true,
-    //     progress: undefined,
-    //   });
-    // }
+    }
   };
 
   const getAvailableSlots = async () => {
@@ -286,7 +301,17 @@ function Step1() {
       </div>
       <div className="mt-5 mb-5 pb-5 float-right">
         <button className="overlap-group13 border-1-4px-mercury roboto-bold-white-20-3px" onClick={handleNext}>NEXT</button>
+        {
+          formData && formData.signature ?
+            <button className="overlap-group15 border-1-4px-mercury roboto-bold-white-20-3px ml-3" onClick={goToSummary}>GO TO SUMMARY</button>
+            : null
+        }
       </div>
+      <Recaptcha
+        onResolved={onResolved}
+        ref={refRecaptcha}
+        sitekey="6Ld-96kbAAAAANMg6o3MbINxeqVFrKP7VFiRAmpz"
+      />
       <ToastContainer />
     </div>
   );

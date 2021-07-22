@@ -1,12 +1,11 @@
 import React, { useReducer, createContext } from "react";
-// import {getSession, updateSession} from "../libs/api";
 
 export const AppContext = createContext();
 
 const initialState = {
   loading: false,
   error: null,
-  step: 1,
+  step: 2,
   formData: {
   },
   covid19Modal: false,

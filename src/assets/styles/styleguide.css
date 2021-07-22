@@ -1,7 +1,8 @@
 :root {
   --black: #000000;
   --congress-blue: #074b7d;
-  --dark-tan: #690a18;
+  /* --dark-tan: #690a18; */
+  --dark-tan: #960f29;
   --green: #1cb45c;
   --mercury: #e6e6e6;
   --midnight-blue: #0a4b7d;
@@ -32,6 +33,14 @@
   font-size: var(--font-size-m2);
   font-style: normal;
   font-weight: 500;
+}
+.roboto-medium-midnight-blue-24px {
+  color: var(--midnight-blue);
+  font-family: var(--font-family-roboto);
+  font-size: var(--font-size-m2);
+  font-style: normal;
+  font-weight: 500;
+  text-decoration: underline;
 }
 .roboto-normal-black-18px-22 {
   color: var(--black);
@@ -103,6 +112,13 @@
   font-style: normal;
   font-weight: 600;
 }
+.roboto-normal-dark-tan-18px {
+  color: var(--dark-tan);
+  font-family: var(--font-family-roboto);
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+}
 .roboto-medium-black-18px-2 {
   color: var(--black);
   font-family: var(--font-family-roboto);
@@ -123,6 +139,13 @@
   font-size: var(--font-size-20_3px);
   font-style: normal;
   font-weight: 700;
+}
+.roboto-bold-white-20px {
+  color: var(--white);
+  font-family: var(--font-family-roboto);
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
 }
 .roboto-medium-white-24px {
   font-family: var(--font-family-roboto);
@@ -145,4 +168,12 @@
 }
 .border-1-4px-mercury {
   border: 1.4px solid var(--mercury);
+}
+/* Change the white to any color */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active
+{
+ box-shadow: 0 0 0 30px white inset !important;
 }

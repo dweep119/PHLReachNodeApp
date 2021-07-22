@@ -31,6 +31,12 @@ function Step6() {
 
   const handleNext = () => {
     dispatch({
+      type: "SET_FORM_DATA",
+      formData: {
+        signature: signatureImage
+      }
+    });
+    dispatch({
       type: "SET_STEP",
       step: state.step + 1
     });
@@ -89,10 +95,17 @@ function Step6() {
         </div>
         <div className="col-12 mt-3">
           <div className="signDiv">
-            <div style={{ position: "relative", marginBottom: 20 }}>
-              <SignaturePad penColor='black' ref={signature}
-                canvasProps={{ height: 250, className: 'signCanvas' }} backgroundColor={"white"} />
-            </div>
+            {
+              signatureImage ?
+                <div style={{ position: "relative", marginBottom: 20 }}>
+                  <img src={signatureImage} alt="img" style={{ width: "100%", height: "100%" }} />
+                </div>
+                :
+                <div style={{ position: "relative", marginBottom: 20 }}>
+                  <SignaturePad penColor='black' ref={signature}
+                    canvasProps={{ height: 250, className: 'signCanvas' }} backgroundColor={"white"} />
+                </div>
+            }
             <div className="mt-3 mb-3">
               <hr className="consentHR" />
             </div>
@@ -149,7 +162,7 @@ function Step6() {
                   }
                   <div className="roboto-normal-black-18px-2">
                     <button className="border-1px-mist-gray consentFormBtn signature ml-3" onClick={() => {
-                      signature.current.clear();
+                      signature.current && signature.current.clear();
                       setsignatureImage(null);
                     }}>Clear</button>
                   </div>

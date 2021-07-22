@@ -127,6 +127,14 @@ function Step5() {
     setExpanded(isExpanded ? panel : false);
   };
 
+  const goToSummary = () => {
+    dispatch({
+      type: "SET_STEP",
+      step: 7
+    });
+    return;
+  }
+
   const handleNext = () => {
     dispatch({
       type: "SET_FORM_DATA",
@@ -622,6 +630,11 @@ function Step5() {
       <div className="w-100 d-flex justify-content-end mt-5 mb-5 pb-5">
         <button className="overlap-group101 roboto-bold-white-20-3px" onClick={handleBack}>PREVIOUS</button>
         <button className="overlap-group13 border-1-4px-mercury roboto-bold-white-20-3px ml-3" onClick={handleNext}>NEXT</button>
+        {
+          formData && formData.signature ?
+            <button className="overlap-group15 border-1-4px-mercury roboto-bold-white-20-3px ml-3" onClick={goToSummary}>GO TO SUMMARY</button>
+            : null
+        }
       </div>
     </div>
   );
