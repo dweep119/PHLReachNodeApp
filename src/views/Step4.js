@@ -93,7 +93,7 @@ function Step4() {
   const [insuranceId, setinsuranceId] = useState(formData.Insurance && formData.Insurance.InsuranceId ? formData.Insurance.InsuranceId : '');
   const [groupNumber, setgroupNumber] = useState(formData.Insurance && formData.Insurance.GroupNumber ? formData.Insurance.GroupNumber : '');
   const [planName, setplanName] = useState(formData.Insurance && formData.Insurance.PlanName ? formData.Insurance.PlanName : '');
-  const [isInsuredPersonSame, setisInsuredPersonSame] = useState(formData.Insurance && formData.Insurance.SameInsuredPerson ? true : formData.Insurance.SameInsuredPerson);
+  const [isInsuredPersonSame, setisInsuredPersonSame] = useState(formData.Insurance && formData.Insurance.SameInsuredPerson === false ? formData.Insurance.SameInsuredPerson : true);
   const [patientInsuredRelation, setpatientInsuredRelation] = useState(formData.Insurance && formData.Insurance.InsuredPersonRelation ? formData.Insurance.InsuredPersonRelation : relationShipList[0]);
   const [insuredDOB, setinsuredDOB] = useState(formData.Insurance && formData.Insurance.InsuredPersonDOB ? formData.Insurance.InsuredPersonDOB : new Date('2014-08-18T21:11:54'));
   const [insuredFirstName, setinsuredFirstName] = useState(formData.Insurance && formData.Insurance.InsuredPersonFirstName ? formData.Insurance.InsuredPersonFirstName : '');
