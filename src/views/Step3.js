@@ -126,10 +126,10 @@ function Step3() {
     }
   ];
 
-  const [selectedLanguage, setselectedLanguage] = useState(formData.selectedLanguage ? formData.selectedLanguage : languageList[0].value);
-  const [selectedRace, setselectedRace] = useState(formData.selectedRace ? formData.selectedRace : raceList[0].value);
-  const [selectedEthnicity, setselectedEthnicity] = useState(formData.selectedEthnicity ? formData.selectedEthnicity : ethnicityList[0].value);
-  const [selectedGender, setselectedGender] = useState(formData.selectedGender ? formData.selectedGender : genderList[0].value);
+  const [selectedLanguage, setselectedLanguage] = useState(formData.Demographics && formData.Demographics.PreferredLanguage ? formData.Demographics.PreferredLanguage : languageList[0].value);
+  const [selectedRace, setselectedRace] = useState(formData.Demographics && formData.Demographics.Race ? formData.Demographics.Race : raceList[0].value);
+  const [selectedEthnicity, setselectedEthnicity] = useState(formData.Demographics && formData.Demographics.Ethnicity ? formData.Demographics.Ethnicity : ethnicityList[0].value);
+  const [selectedGender, setselectedGender] = useState(formData.Demographics && formData.Demographics.Gender ? formData.Demographics.Gender : genderList[0].value);
 
   const goToSummary = () => {
     dispatch({
@@ -143,10 +143,12 @@ function Step3() {
     dispatch({
       type: "SET_FORM_DATA",
       formData: {
-        selectedLanguage,
-        selectedRace,
-        selectedEthnicity,
-        selectedGender
+        "Demographics":{
+          "PreferredLanguage": selectedLanguage,
+          "Race": selectedRace,
+          "Ethnicity": selectedEthnicity,
+          "Gender": selectedGender
+        }
       }
     });
     dispatch({

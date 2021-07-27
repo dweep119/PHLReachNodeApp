@@ -10,6 +10,7 @@ function Step1() {
 
   const [state, dispatch] = useContext(AppContext);
   const { formData } = state;
+
   const refRecaptcha = useRef(null);
   const dates = [
     {
@@ -30,8 +31,8 @@ function Step1() {
     },
   ];
   let _slots = [];
-  const [selectedDate, setselectedDate] = useState(formData.selectedDate ? formData.selectedDate : '07/14/2021');
-  const [selectedSlot, setselectedSlot] = useState(formData.selectedSlot ? formData.selectedSlot : null);
+  const [selectedDate, setselectedDate] = useState(formData.DateOfService ? formData.DateOfService : '07/14/2021');
+  const [selectedSlot, setselectedSlot] = useState(formData.TimeOfService ? formData.TimeOfService : null);
   const [availableSlots, setavailableSlots] = useState(null);
 
   const slots = [
@@ -164,8 +165,8 @@ function Step1() {
       dispatch({
         type: "SET_FORM_DATA",
         formData: {
-          selectedDate,
-          selectedSlot,
+          "DateOfService": selectedDate,
+          "TimeOfService": selectedSlot,
         }
       });
     } else {

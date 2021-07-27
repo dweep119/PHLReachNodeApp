@@ -16,7 +16,7 @@ function Step8() {
   const handleNext = () => {
     dispatch({
       type: "SET_STEP",
-      step: 1
+      step: state.step + 1
     });
     return;
   };

@@ -122,7 +122,6 @@ function Step5() {
   const [hearAboutUs, sethearAboutUs] = useState(formData.hearAboutUs ? formData.hearAboutUs : []);
   const [otherService, setotherService] = useState(formData.otherService ? formData.otherService : '');
 
-
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
@@ -177,9 +176,9 @@ function Step5() {
     return;
   };
 
-  const setClassName = (value) => {
-    if (selectedSymptoms.length > 0) {
-      let res = selectedSymptoms.filter(item => item === value);
+  const setClassName = (value, arr) => {
+    if (arr.length > 0) {
+      let res = arr.filter(item => item === value);
       if (res.length > 0) {
         return 'border-1px-mist-gray ml-2 mt-2 cursor-pointer overlap-group17';
       } else {
@@ -190,35 +189,9 @@ function Step5() {
     }
   }
 
-  const setLabelClassName = (value) => {
-    if (selectedSymptoms.length > 0) {
-      let res = selectedSymptoms.filter(item => item === value);
-      if (res.length > 0) {
-        return 'roboto-normal-white-18px-2';
-      } else {
-        return "roboto-normal-black-18px-2";
-      }
-    } else {
-      return "roboto-normal-black-18px-2";
-    }
-  }
-
-  const setAdditionalClassName = (value) => {
-    if (hearAboutUs.length > 0) {
-      let res = hearAboutUs.filter(item => item === value);
-      if (res.length > 0) {
-        return 'border-1px-mist-gray ml-2 mt-2 cursor-pointer overlap-group17';
-      } else {
-        return "border-1px-mist-gray ml-2 mt-2 cursor-pointer overlap-group";
-      }
-    } else {
-      return "border-1px-mist-gray ml-2 mt-2 cursor-pointer overlap-group";
-    }
-  }
-
-  const setLabelAdditionalClassName = (value) => {
-    if (hearAboutUs.length > 0) {
-      let res = hearAboutUs.filter(item => item === value);
+  const setLabelClassName = (value, arr) => {
+    if (arr.length > 0) {
+      let res = arr.filter(item => item === value);
       if (res.length > 0) {
         return 'roboto-normal-white-18px-2';
       } else {
@@ -369,14 +342,23 @@ function Step5() {
                         <div className="row">
                           {
                             symptomsList.map((item, index) => (
-                              <div className={setClassName(item.value)} key={index} onClick={() => {
+                              <div className={setClassName(item.value, selectedSymptoms)} key={index} onClick={() => {
                                 if (selectedSymptoms.length === 0) {
                                   setselectedSymptoms([item.value])
                                 } else {
-                                  setselectedSymptoms([...selectedSymptoms, item.value]);
+                                  let res = selectedSymptoms.filter(itm => itm === item.value);
+                                  if (res.length > 0) {
+                                    const index = selectedSymptoms.indexOf(item.value);
+                                    if (index > -1) {
+                                      selectedSymptoms.splice(index, 1);
+                                    }
+                                    setselectedSymptoms([...selectedSymptoms]);
+                                  } else {
+                                    setselectedSymptoms([...selectedSymptoms, item.value]);
+                                  }
                                 }
                               }}>
-                                <div className={setLabelClassName(item.value)}>{item.value}</div>
+                                <div className={setLabelClassName(item.value, selectedSymptoms)}>{item.value}</div>
                               </div>
                             ))
                           }
@@ -587,14 +569,23 @@ function Step5() {
                         <div className="row">
                           {
                             aboutUSList.map((item, index) => (
-                              <div className={setAdditionalClassName(item.value)} key={index} onClick={() => {
+                              <div className={setClassName(item.value, hearAboutUs)} key={index} onClick={() => {
                                 if (hearAboutUs.length === 0) {
                                   sethearAboutUs([item.value])
                                 } else {
-                                  sethearAboutUs([...hearAboutUs, item.value]);
+                                  let res = hearAboutUs.filter(itm => itm === item.value);
+                                  if (res.length > 0) {
+                                    const index = hearAboutUs.indexOf(item.value);
+                                    if (index > -1) {
+                                      hearAboutUs.splice(index, 1);
+                                    }
+                                    sethearAboutUs([...hearAboutUs]);
+                                  } else {
+                                    sethearAboutUs([...hearAboutUs, item.value]);
+                                  }
                                 }
                               }}>
-                                <div className={setLabelAdditionalClassName(item.value)}>{item.value}</div>
+                                <div className={setLabelClassName(item.value, hearAboutUs)}>{item.value}</div>
                               </div>
                             ))
                           }

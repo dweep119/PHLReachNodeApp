@@ -7,8 +7,8 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
-// import { ToastContainer, toast } from 'react-toastify';
-// import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { makeStyles } from "@material-ui/core/styles";
 const useStyles = makeStyles({
   underline: {
@@ -26,19 +26,19 @@ function Step2() {
   const [state, dispatch] = useContext(AppContext);
   const { formData } = state;
   // The first commit of Material-UI
-  const [firstName, setfirstName] = useState(formData.firstName ? formData.firstName : '');
-  const [lastName, setlastName] = useState(formData.lastName ? formData.lastName : '');
-  const [selectedDOB, setselectedDOB] = useState(formData.selectedDOB ? formData.selectedDOB : new Date('2014-08-18T21:11:54'));
-  const [streetAddress1, setstreetAddress1] = useState(formData.streetAddress1 ? formData.streetAddress1 : '');
-  const [streetAddress2, setstreetAddress2] = useState(formData.streetAddress2 ? formData.streetAddress2 : '');
-  const [selectedstate, setselectedstate] = useState(formData.selectedstate ? formData.selectedstate : '');
-  const [selectedcity, setselectedcity] = useState(formData.selectedcity ? formData.selectedcity : '');
-  const [selectedZipcode, setselectedZipcode] = useState(formData.selectedZipcode ? formData.selectedZipcode : '');
-  const [phoneNumber, setphoneNumber] = useState(formData.phoneNumber ? formData.phoneNumber : '');
-  const [email, setemail] = useState(formData.email ? formData.email : '');
-  const [eContactName, seteContactName] = useState(formData.eContactName ? formData.eContactName : '');
-  const [eContactPhone, seteContactPhone] = useState(formData.eContactPhone ? formData.eContactPhone : '');
-  const [eContactRelation, seteContactRelation] = useState(formData.eContactRelation ? formData.eContactRelation : '');
+  const [firstName, setfirstName] = useState(formData.Contact && formData.Contact.FirstName ? formData.Contact.FirstName : '');
+  const [lastName, setlastName] = useState(formData.Contact && formData.Contact.LastName ? formData.Contact.LastName : '');
+  const [selectedDOB, setselectedDOB] = useState(formData.Contact && formData.Contact.DateOfBirth ? formData.Contact.DateOfBirth : new Date('2014-08-18T21:11:54'));
+  const [streetAddress1, setstreetAddress1] = useState(formData.Contact && formData.Contact.StreetAddress1 ? formData.Contact.StreetAddress1 : '');
+  const [streetAddress2, setstreetAddress2] = useState(formData.Contact && formData.Contact.StreetAddress2 ? formData.Contact.StreetAddress2 : '');
+  const [selectedZipcode, setselectedZipcode] = useState(formData.Contact && formData.Contact.Zipcode ? formData.Contact.Zipcode : '');
+  const [selectedcity, setselectedcity] = useState(formData.Contact && formData.Contact.City ? formData.Contact.City : '');
+  const [selectedstate, setselectedstate] = useState(formData.Contact && formData.Contact.State ? formData.Contact.State : '');
+  const [phoneNumber, setphoneNumber] = useState(formData.Contact && formData.Contact.PhoneNumber ? formData.Contact.PhoneNumber : '');
+  const [email, setemail] = useState(formData.Contact && formData.Contact.EmailAddress ? formData.Contact.EmailAddress : '');
+  const [eContactName, seteContactName] = useState(formData.Contact && formData.Contact.EmergencyContact && formData.Contact.EmergencyContact.ContactName ? formData.Contact.EmergencyContact.ContactName : '');
+  const [eContactPhone, seteContactPhone] = useState(formData.Contact && formData.Contact.EmergencyContact && formData.Contact.EmergencyContact.ContactPhone ? formData.Contact.EmergencyContact.ContactPhone : '');
+  const [eContactRelation, seteContactRelation] = useState(formData.Contact && formData.Contact.EmergencyContact && formData.Contact.EmergencyContact.ContactRelation ? formData.Contact.EmergencyContact.ContactRelation : '');
 
   const handleDateChange = (date) => {
     setselectedDOB(date);
@@ -52,44 +52,65 @@ function Step2() {
     return;
   }
 
-  const handleNext = () => {
-    // if (firstName && lastName && selectedDOB && streetAddress1 &&
-    //   selectedstate && selectedcity && selectedZipcode && phoneNumber && email &&
-    //   eContactName && eContactPhone && eContactRelation) {
-    dispatch({
-      type: "SET_FORM_DATA",
-      formData: {
-        firstName,
-        lastName,
-        selectedDOB,
-        streetAddress1,
-        streetAddress2,
-        selectedstate,
-        selectedcity,
-        selectedZipcode,
-        phoneNumber,
-        email,
-        eContactName,
-        eContactPhone,
-        eContactRelation
-      }
-    })
-    dispatch({
-      type: "SET_STEP",
-      step: state.step + 1
-    });
-    return;
-    // } else {
-    //   toast.error("Please fill mandatory fields.", {
-    //     position: "top-right",
-    //     autoClose: 5000,
-    //     hideProgressBar: false,
-    //     closeOnClick: true,
-    //     pauseOnHover: true,
-    //     draggable: true,
-    //     progress: undefined,
-    //   });
+  const onZipCodeChange = async (e) => {
+    const { value } = e.target;
+    setselectedZipcode(value);
+    // if (value.length == 5) {
+    const data = await fetch(`https://ziptasticapi.com/${value}`);
+    const _data = await data.json();
+    if (_data && !_data.error) {
+      console.log('_data.city: ', _data.city);
+      setselectedcity(_data.city);
+      setselectedstate(_data.state);
+    } else {
+      setselectedcity('');
+      setselectedstate('');
+    }
     // }
+  };
+
+  const handleNext = () => {
+    if (firstName && lastName && selectedDOB && streetAddress1 &&
+      selectedstate && selectedcity && selectedZipcode && phoneNumber && email &&
+      eContactName && eContactPhone && eContactRelation) {
+      dispatch({
+        type: "SET_FORM_DATA",
+        formData: {
+          "Contact": {
+            "FirstName": firstName,
+            "LastName": lastName,
+            "DateOfBirth": selectedDOB,
+            "StreetAddress1": streetAddress1,
+            "StreetAddress2": streetAddress2,
+            "Zipcode": selectedZipcode,
+            "City": selectedcity,
+            "State": selectedstate,
+            "PhoneNumber": phoneNumber,
+            "EmailAddress": email,
+            "EmergencyContact": {
+              "ContactName": eContactName,
+              "ContactPhone": eContactPhone,
+              "ContactRelation": eContactRelation
+            }
+          }
+        }
+      })
+      dispatch({
+        type: "SET_STEP",
+        step: state.step + 1
+      });
+      return;
+    } else {
+      toast.error("Please fill mandatory fields.", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
   };
 
   const handleBack = () => {
@@ -115,8 +136,8 @@ function Step2() {
               onChange={(event) => setfirstName(event.target.value)}
               InputProps={{ classes }}
               value={firstName}
-              validators={['required']}
-              errorMessages={['This field is required']}
+              validators={['required', 'matchRegexp:^[a-zA-Z ]*$', 'minStringLength:2', 'maxStringLength:50']}
+              errorMessages={['This field is required', 'The field First Name should contain alphabets only.', 'The field First Name with a length of min 2', 'The field First Name with a length of max 50']}
             />
             {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="fname" name="lastname"
               placeholder="First Name" /> */}
@@ -129,8 +150,8 @@ function Step2() {
               onChange={(event) => setlastName(event.target.value)}
               InputProps={{ classes }}
               value={lastName}
-              validators={['required']}
-              errorMessages={['This field is required']}
+              validators={['required', 'matchRegexp:^[a-zA-Z ]*$', 'minStringLength:2', 'maxStringLength:50']}
+              errorMessages={['This field is required', 'The field Last Name should contain alphabets only.', 'The field Last Name with a length of min 2', 'The field Last Name with a length of max 50']}
             />
             {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="lname" name="lastname"
               placeholder="Last Name" /> */}
@@ -145,6 +166,10 @@ function Step2() {
                 id="date-picker-dialog"
                 format="MM/dd/yyyy"
                 value={selectedDOB}
+                // disableFuture={true}
+                variant="inline"
+                maxDate={Date()}
+                minDate={"01/01/1921"}
                 onChange={handleDateChange}
                 InputProps={{ classes }}
                 autoOk={true}
@@ -166,8 +191,8 @@ function Step2() {
               onChange={(event) => setstreetAddress1(event.target.value)}
               InputProps={{ classes }}
               value={streetAddress1}
-              validators={['required']}
-              errorMessages={['This field is required']}
+              validators={['required', 'maxStringLength:250']}
+              errorMessages={['This field is required', 'The field Street Address with a length of max 250']}
             />
             {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="add" name="lastname"
               placeholder="Street Address" /> */}
@@ -192,11 +217,11 @@ function Step2() {
               <span className="roboto-medium-tia-maria-24px ml-1">*</span>
             </label>
             <TextValidator
-              onChange={(event) => setselectedZipcode(event.target.value)}
+              onChange={(event) => onZipCodeChange(event)}
               InputProps={{ classes }}
               value={selectedZipcode}
-              validators={['required']}
-              errorMessages={['This field is required']}
+              validators={['required', 'matchRegexp:^[0-9]*$', 'maxStringLength:15']}
+              errorMessages={['This field is required', 'Please enter a valid Zipcode', 'Please enter a valid Zipcode']}
             />
             {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="zipcode" name="lastname"
               placeholder="Zipcode" /> */}
@@ -209,8 +234,8 @@ function Step2() {
               onChange={(event) => setselectedcity(event.target.value)}
               InputProps={{ classes }}
               value={selectedcity}
-              validators={['required']}
-              errorMessages={['This field is required']}
+              validators={['required', 'maxStringLength:50']}
+              errorMessages={['This field is required', 'The field City with a length of max 50']}
             />
             {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="city" name="lastname"
               placeholder="City" /> */}
@@ -223,8 +248,8 @@ function Step2() {
               onChange={(event) => setselectedstate(event.target.value)}
               InputProps={{ classes }}
               value={selectedstate}
-              validators={['required']}
-              errorMessages={['This field is required']}
+              validators={['required', 'maxStringLength:50']}
+              errorMessages={['This field is required', 'The field State with a length of max 50']}
             />
             {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="state" name="lastname"
               placeholder="State" /> */}
@@ -235,13 +260,13 @@ function Step2() {
             <label className="first-name-1 roboto-medium-black-24px w-100">Phone Number
               <span className="roboto-medium-tia-maria-24px ml-1">*</span>
             </label>
-            <div className="w-100 d-flex mt-2">
+            <div className="w-100 d-flex mt-2 phoneEmail">
               <TextValidator
                 onChange={(event) => setphoneNumber(event.target.value)}
                 InputProps={{ classes }}
                 value={phoneNumber}
-                validators={['matchRegexp:^[0-9]{10}$']}
-                errorMessages={['Please enter valid Phone Number']}
+                validators={['required', 'matchRegexp:^[0-9]{10}$']}
+                errorMessages={['This field is required', 'Please enter valid Phone Number']}
               />
               {/* <input className="overlap-group first-name-1 w-100 border-1px-mist-gray" id="phone" name="lastname"
                 placeholder="Phone Number" /> */}
@@ -254,7 +279,7 @@ function Step2() {
             <label className="first-name-1 roboto-medium-black-24px w-100">Email Address
               <span className="roboto-medium-tia-maria-24px ml-1">*</span>
             </label>
-            <div className="w-100 d-flex mt-2">
+            <div className="w-100 d-flex mt-2 phoneEmail">
               <TextValidator
                 onChange={(event) => setemail(event.target.value)}
                 InputProps={{ classes }}
@@ -283,8 +308,8 @@ function Step2() {
               onChange={(event) => seteContactName(event.target.value)}
               InputProps={{ classes }}
               value={eContactName}
-              validators={['required']}
-              errorMessages={['This field is required']}
+              validators={['required', 'matchRegexp:^[a-zA-Z ]*$', 'minStringLength:2', 'maxStringLength:50']}
+              errorMessages={['This field is required', 'The field Emergency Contact Name should contain alphabets only.', 'The field Emergency Contact Name with a length of min 2', 'The field Emergency Contact Name with a length of max 50']}
             />
             {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="ename" name="lastname"
               placeholder="Emergency Contact Name" /> */}
@@ -297,8 +322,8 @@ function Step2() {
               onChange={(event) => seteContactPhone(event.target.value)}
               InputProps={{ classes }}
               value={eContactPhone}
-              validators={['required']}
-              errorMessages={['This field is required']}
+              validators={['required', 'matchRegexp:^[0-9]{10}$']}
+              errorMessages={['This field is required', 'Please enter valid Emergency Contact Phone']}
             />
             {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="ephone" name="lastname"
               placeholder="Emergency Contact Phone" /> */}
@@ -311,25 +336,25 @@ function Step2() {
               onChange={(event) => seteContactRelation(event.target.value)}
               InputProps={{ classes }}
               value={eContactRelation}
-              validators={['required']}
-              errorMessages={['This field is required']}
+              validators={['required', 'matchRegexp:^[a-zA-Z ]*$']}
+              errorMessages={['This field is required', 'The field Emergency Contact Relation should contain alphabets only.']}
             />
             {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="ephone2" name="lastname"
               placeholder="Emergency Contact Relation" /> */}
           </div>
         </div>
 
+        <div className="w-100 d-flex justify-content-end mt-5 mb-5 pb-5">
+          <button className="overlap-group101 roboto-bold-white-20-3px" onClick={handleBack}>PREVIOUS</button>
+          <button className="overlap-group13 border-1-4px-mercury roboto-bold-white-20-3px ml-3" onClick={handleNext}>NEXT</button>
+          {
+            formData && formData.signature ?
+              <button className="overlap-group15 border-1-4px-mercury roboto-bold-white-20-3px ml-3" onClick={goToSummary}>GO TO SUMMARY</button>
+              : null
+          }
+        </div>
       </ValidatorForm>
-      <div className="w-100 d-flex justify-content-end mt-5 mb-5 pb-5">
-        <button className="overlap-group101 roboto-bold-white-20-3px" onClick={handleBack}>PREVIOUS</button>
-        <button className="overlap-group13 border-1-4px-mercury roboto-bold-white-20-3px ml-3" onClick={handleNext}>NEXT</button>
-        {
-          formData && formData.signature ?
-            <button className="overlap-group15 border-1-4px-mercury roboto-bold-white-20-3px ml-3" onClick={goToSummary}>GO TO SUMMARY</button>
-            : null
-        }
-      </div>
-      {/* <ToastContainer /> */}
+      <ToastContainer />
     </div>
   );
 }

@@ -10,6 +10,9 @@ import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { makeStyles } from "@material-ui/core/styles";
+import CreatableSelect from 'react-select/creatable';
+import Select from 'react-select';
+
 const useStyles = makeStyles({
   underline: {
     "&&&:before": {
@@ -21,26 +24,84 @@ const useStyles = makeStyles({
   }
 });
 
+const relationShipList = [
+  { label: "Spouse", value: "Spouse" },
+  { label: "Grandparent", value: "Grandparent" },
+  { label: "Grandchild", value: "Grandchild" },
+  { label: "Nephew or Niece", value: "Nephew or Niece" },
+  { label: "Foster Child", value: "Foster Child" },
+  { label: "Ward", value: "Ward" },
+  { label: "Stepson or Stepdaughter", value: "Stepson or Stepdaughter" },
+  { label: "Child", value: "Child" },
+  { label: "Employee", value: "Employee" },
+  { label: "Unknown", value: "Unknown" },
+  { label: "Handicapped Dependent", value: "Handicapped Dependent" },
+  { label: "Sponsored Dependent", value: "Sponsored Dependent" },
+  { label: "Dependent of a Minor Dependent", value: "Dependent of a Minor Dependent" },
+  { label: "Significant Other", value: "Significant Other" },
+  { label: "Mother", value: "Mother" },
+  { label: "Father", value: "Father" },
+  { label: "Emancipated Minor", value: "Emancipated Minor" },
+  { label: "Organ Donor", value: "Organ Donor" },
+  { label: "Cadaver Donor", value: "Cadaver Donor" },
+  { label: "Injured Plaintiff", value: "Injured Plaintiff" },
+  { label: "Child Where Insured Has No Financial Responsibility", value: "Child Where Insured Has No Financial Responsibility" },
+  { label: "Life Partner", value: "Life Partner" },
+  { label: "Dependent", value: "Dependent" },
+  { label: "Other Relationship", value: "Other Relationship" },
+]
+
+const insuranceCompanies = [
+  { label: "NO INSURANCE - HRSA PROGRAM", value: "NO INSURANCE - HRSA PROGRAM" },
+  { label: "BCBS", value: "BCBS" },
+  { label: "Zelis Payments", value: "Zelis Payments" },
+  { label: "SELF PAY CASH", value: "SELF PAY CASH" },
+  { label: "SELF PAY CREDIT CARD", value: "SELF PAY CREDIT CARD" },
+  { label: "AETNA", value: "AETNA" },
+  { label: "Amerigroup,", value: "Amerigroup," },
+  { label: "Anthem and their affiliates", value: "Anthem and their affiliates" },
+  { label: "ANTHEM MAINE HEALTH", value: "ANTHEM MAINE HEALTH" },
+  { label: "BLUE CHOICE", value: "BLUE CHOICE" },
+  { label: "CIGNA", value: "CIGNA" },
+  { label: "EMPIRE", value: "EMPIRE" },
+  { label: "GOLDEN RULE", value: "GOLDEN RULE" },
+  { label: "HEALTH PLAN", value: "HEALTH PLAN" },
+  { label: "HEALTH PLAN OF SC", value: "HEALTH PLAN OF SC" },
+  { label: "HEALTHY BLUE", value: "HEALTHY BLUE" },
+  { label: "HUMANA", value: "HUMANA" },
+  { label: "MEDICAID", value: "MEDICAID" },
+  { label: "MEDICARE", value: "MEDICARE" },
+  { label: "MOLINA", value: "MOLINA" },
+  { label: "TRAVELERS", value: "TRAVELERS" },
+  { label: "UNICARE", value: "UNICARE" },
+  { label: "UNITED HEALTH CARE", value: "UNITED HEALTH CARE" },
+  { label: "WPS-TRICARE East Region", value: "WPS-TRICARE East Region" },
+  { label: "WPS-TRICARE For Life (TDEFIC)", value: "WPS-TRICARE For Life (TDEFIC)" },
+  { label: "OTHER", value: "OTHER" }
+]
+
 function Step4() {
 
   const [state, dispatch] = useContext(AppContext);
   const { formData } = state;
+  console.log('formData: ', formData);
 
-  const [isInsured, setisInsured] = useState(formData.isInsured ? formData.isInsured : false);
-  const [selectedFrontPhoto, setselectedFrontPhoto] = useState(formData.selectedFrontPhoto ? formData.selectedFrontPhoto : null);
-  const [selectedBackPhoto, setselectedBackPhoto] = useState(formData.selectedBackPhoto ? formData.selectedBackPhoto : null);
-  const [selectedInsuranceCompany, setselectedInsuranceCompany] = useState(formData.selectedInsuranceCompany ? formData.selectedInsuranceCompany : '');
-  const [insuranceId, setinsuranceId] = useState(formData.insuranceId ? formData.insuranceId : '');
-  const [groupNumber, setgroupNumber] = useState(formData.groupNumber ? formData.groupNumber : '');
-  const [planName, setplanName] = useState(formData.planName ? formData.planName : '');
-  const [isInsuredPersonSame, setisInsuredPersonSame] = useState(formData.isInsuredPersonSame ? formData.isInsuredPersonSame : true);
-  const [patientInsuredRelation, setpatientInsuredRelation] = useState(formData.patientInsuredRelation ? formData.patientInsuredRelation : '');
-  const [insuredDOB, setinsuredDOB] = useState(formData.insuredDOB ? formData.insuredDOB : new Date('2014-08-18T21:11:54'));
-  const [insuredFirstName, setinsuredFirstName] = useState(formData.insuredFirstName ? formData.insuredFirstName : '');
-  const [insuredLastName, setinsuredLastName] = useState(formData.insuredLastName ? formData.eContactPhone : '');
-  const [insuredMiddleName, setinsuredMiddleName] = useState(formData.insuredMiddleName ? formData.insuredMiddleName : '');
-  const [insuredSuffix, setinsuredSuffix] = useState(formData.insuredSuffix ? formData.insuredSuffix : '');
-
+  const [isInsured, setisInsured] = useState(formData.Insurance && formData.Insurance.HasInsurance ? formData.Insurance.HasInsurance : false);
+  const [selectedFrontPhoto, setselectedFrontPhoto] = useState(formData.Insurance && formData.Insurance.PhotoFront ? formData.Insurance.PhotoFront : null);
+  const [selectedBackPhoto, setselectedBackPhoto] = useState(formData.Insurance && formData.Insurance.PhotoBack ? formData.Insurance.PhotoBack : null);
+  const [selectedInsuranceCompany, setselectedInsuranceCompany] = useState(formData.Insurance && formData.Insurance.PrimaryInsurance ? formData.Insurance.PrimaryInsurance : insuranceCompanies[0]);
+  const [insuranceId, setinsuranceId] = useState(formData.Insurance && formData.Insurance.InsuranceId ? formData.Insurance.InsuranceId : '');
+  const [groupNumber, setgroupNumber] = useState(formData.Insurance && formData.Insurance.GroupNumber ? formData.Insurance.GroupNumber : '');
+  const [planName, setplanName] = useState(formData.Insurance && formData.Insurance.PlanName ? formData.Insurance.PlanName : '');
+  const [isInsuredPersonSame, setisInsuredPersonSame] = useState(formData.Insurance && formData.Insurance.SameInsuredPerson ? true : formData.Insurance.SameInsuredPerson);
+  const [patientInsuredRelation, setpatientInsuredRelation] = useState(formData.Insurance && formData.Insurance.InsuredPersonRelation ? formData.Insurance.InsuredPersonRelation : relationShipList[0]);
+  const [insuredDOB, setinsuredDOB] = useState(formData.Insurance && formData.Insurance.InsuredPersonDOB ? formData.Insurance.InsuredPersonDOB : new Date('2014-08-18T21:11:54'));
+  const [insuredFirstName, setinsuredFirstName] = useState(formData.Insurance && formData.Insurance.InsuredPersonFirstName ? formData.Insurance.InsuredPersonFirstName : '');
+  const [insuredLastName, setinsuredLastName] = useState(formData.Insurance && formData.Insurance.InsuredPersonLastName ? formData.Insurance.InsuredPersonLastName : '');
+  const [insuredMiddleName, setinsuredMiddleName] = useState(formData.Insurance && formData.Insurance.InsuredPersonMiddleName ? formData.Insurance.InsuredPersonMiddleName : '');
+  const [insuredSuffix, setinsuredSuffix] = useState(formData.Insurance && formData.Insurance.InsuredPersonSuffix ? formData.Insurance.InsuredPersonSuffix : '');
+  console.log('isInsuredPersonSame: ', isInsuredPersonSame);
+  
   const handleDateChange = (date) => {
     setinsuredDOB(date);
   };
@@ -92,6 +153,18 @@ function Step4() {
     reader.onerror = error => reject(error);
   });
 
+  const handleChange = (newValue, actionMeta) => {
+    console.log(`action: ${actionMeta.action}`);
+    setselectedInsuranceCompany(newValue)
+  };
+
+  const handleInputChange = (inputValue, actionMeta) => {
+    console.group('Input Changed');
+    console.log(inputValue);
+    console.log(`action: ${actionMeta.action}`);
+    console.groupEnd();
+  };
+
   const goToSummary = () => {
     dispatch({
       type: "SET_STEP",
@@ -101,90 +174,95 @@ function Step4() {
   }
 
   const handleNext = () => {
-    // if (isInsured) {
-    // 	if (selectedInsuranceCompany && insuranceId && groupNumber && planName) {
-    // 		if (!isInsuredPersonSame) {
-    // 			if (patientInsuredRelation && insuredDOB && insuredFirstName && insuredLastName) {
-    dispatch({
-      type: "SET_FORM_DATA",
-      formData: {
-        isInsured,
-        selectedFrontPhoto,
-        selectedBackPhoto,
-        selectedInsuranceCompany,
-        insuranceId,
-        groupNumber,
-        planName,
-        isInsuredPersonSame,
-        patientInsuredRelation,
-        insuredDOB,
-        insuredFirstName,
-        insuredLastName,
-        insuredMiddleName,
-        insuredSuffix,
+    if (isInsured) {
+      if (selectedInsuranceCompany && insuranceId && groupNumber && planName) {
+        if (!isInsuredPersonSame) {
+          if (patientInsuredRelation && insuredDOB && insuredFirstName && insuredLastName) {
+            dispatch({
+              type: "SET_FORM_DATA",
+              formData: {
+                "Insurance":{
+                  "HasInsurance": isInsured,
+                  "PhotoFront": selectedFrontPhoto,
+                  "PhotoBack": selectedBackPhoto,
+                  "PrimaryInsurance": selectedInsuranceCompany,
+                  "InsuranceId": insuranceId,
+                  "GroupNumber": groupNumber,
+                  "PlanName": planName,
+                  "SameInsuredPerson": isInsuredPersonSame,
+                  "InsuredPersonRelation": patientInsuredRelation,
+                  "InsuredPersonDOB": insuredDOB,
+                  "InsuredPersonFirstName": insuredFirstName,
+                  "InsuredPersonLastName": insuredLastName,
+                  "InsuredPersonMiddleName": insuredMiddleName,
+                  "InsuredPersonSuffix": insuredSuffix,
+                }
+              }
+            });
+            dispatch({
+              type: "SET_STEP",
+              step: state.step + 1
+            });
+            return;
+          } else {
+            toast.error("Please fill mandatory fields.", {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            });
+          }
+        } else {
+          dispatch({
+            type: "SET_FORM_DATA",
+            formData: {
+              "Insurance":{
+                "HasInsurance": isInsured,
+                "PhotoFront": selectedFrontPhoto,
+                "PhotoBack": selectedBackPhoto,
+                "PrimaryInsurance": selectedInsuranceCompany,
+                "InsuranceId": insuranceId,
+                "GroupNumber": groupNumber,
+                "PlanName": planName,
+                "SameInsuredPerson": isInsuredPersonSame
+              }
+            }
+          });
+          dispatch({
+            type: "SET_STEP",
+            step: state.step + 1
+          });
+          return;
+        }
+      } else {
+        toast.error("Please fill mandatory fields.", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       }
-    });
-    dispatch({
-      type: "SET_STEP",
-      step: state.step + 1
-    });
-    return;
-    // 	} else {
-    // 		toast.error("Please fill mandatory fields.", {
-    // 			position: "top-right",
-    // 			autoClose: 5000,
-    // 			hideProgressBar: false,
-    // 			closeOnClick: true,
-    // 			pauseOnHover: true,
-    // 			draggable: true,
-    // 			progress: undefined,
-    // 		});
-    // 	}
-    // } else {
-    // 	dispatch({
-    // 		type: "SET_FORM_DATA",
-    // 		formData: {
-    // 			isInsured,
-    // 			selectedFrontPhoto,
-    // 			selectedBackPhoto,
-    // 			selectedInsuranceCompany,
-    // 			insuranceId,
-    // 			groupNumber,
-    // 			planName,
-    // 			isInsuredPersonSame
-    // 		}
-    // 	});
-    // 	dispatch({
-    // 		type: "SET_STEP",
-    // 		step: state.step + 1
-    // 	});
-    // 	return;
-    // 	}
-    // } else {
-    // 	toast.error("Please fill mandatory fields.", {
-    // 		position: "top-right",
-    // 		autoClose: 5000,
-    // 		hideProgressBar: false,
-    // 		closeOnClick: true,
-    // 		pauseOnHover: true,
-    // 		draggable: true,
-    // 		progress: undefined,
-    // 	});
-    // 	}
-    // } else {
-    // 	dispatch({
-    // 		type: "SET_FORM_DATA",
-    // 		formData: {
-    // 			isInsured
-    // 		}
-    // 	});
-    // 	dispatch({
-    // 		type: "SET_STEP",
-    // 		step: state.step + 1
-    // 	});
-    // 	return;
-
-    // }
+    } else {
+      dispatch({
+        type: "SET_FORM_DATA",
+        formData: {
+          "Insurance":{
+            "HasInsurance": isInsured
+          }
+        }
+      });
+      dispatch({
+        type: "SET_STEP",
+        step: state.step + 1
+      });
+      return;
+    }
   };
 
   const handleBack = () => {
@@ -224,7 +302,7 @@ function Step4() {
                 <div className="mb-5  overlap-group2 col-lg-6  col-md-6 col-12">
                   <label className="first-name-1 roboto-medium-black-24px w-100">Photo of Insurance Card - Front
                   </label>
-                  {
+                  {/* {
                     selectedFrontPhoto ?
                       <div>
                         <img src={selectedFrontPhoto} style={{ display: "block", width: "100%" }} alt="img"></img>
@@ -234,12 +312,14 @@ function Step4() {
                       :
                       <input type="file" className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="add" name="lastname"
                         placeholder="Street Address" onChange={onFileChangeFront} />
-                  }
+                  } */}
+                  <input type="file" className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="add" name="lastname"
+                    placeholder="Street Address" onChange={onFileChangeFront} />
                 </div>
                 <div className="mb-5  overlap-group2 col-lg-6  col-md-6 col-12">
                   <label className="first-name-1 roboto-medium-black-24px w-100">Photo of Insurance Card - Back
                   </label>
-                  {
+                  {/* {
                     selectedBackPhoto ?
                       <div>
                         <img src={selectedBackPhoto} style={{ display: "block", width: "100%" }} alt="img"></img>
@@ -249,7 +329,9 @@ function Step4() {
                       :
                       <input type="file" className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="add" name="lastname"
                         placeholder="Street Address" onChange={onFileChangeBack} />
-                  }
+                  } */}
+                  <input type="file" className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="add" name="lastname"
+                    placeholder="Street Address" onChange={onFileChangeBack} />
                 </div>
               </div>
               <div className="row">
@@ -257,13 +339,19 @@ function Step4() {
                   <label className="first-name-1 roboto-medium-black-24px w-100">Primary Insurance Company
                     <span className="roboto-medium-tia-maria-24px ml-1">*</span>
                   </label>
-                  <TextValidator
+                  <CreatableSelect
+                    defaultValue={selectedInsuranceCompany}
+                    onChange={handleChange}
+                    onInputChange={handleInputChange}
+                    options={insuranceCompanies}
+                  />
+                  {/* <TextValidator
                     onChange={(event) => setselectedInsuranceCompany(event.target.value)}
                     InputProps={{ classes }}
                     value={selectedInsuranceCompany}
                     validators={['required']}
                     errorMessages={['This field is required']}
-                  />
+                  /> */}
                   {/* <input type="text" className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="add" name="lastname"
 							placeholder="Primary Insurance Company" /> */}
                 </div>
@@ -285,7 +373,7 @@ function Step4() {
               <div className="row">
                 <div className="mb-5  overlap-group2 col-lg-6  col-md-6 col-12">
                   <label className="first-name-1 roboto-medium-black-24px w-100">Group Number
-                  <span className="roboto-medium-tia-maria-24px ml-1">*</span>
+                    <span className="roboto-medium-tia-maria-24px ml-1">*</span>
                   </label>
                   <TextValidator
                     onChange={(event) => setgroupNumber(event.target.value)}
@@ -299,7 +387,7 @@ function Step4() {
                 </div>
                 <div className="mb-5  overlap-group2 col-lg-6  col-md-6 col-12">
                   <label className="first-name-1 roboto-medium-black-24px w-100">Plan Name
-                  <span className="roboto-medium-tia-maria-24px ml-1">*</span>
+                    <span className="roboto-medium-tia-maria-24px ml-1">*</span>
                   </label>
                   <TextValidator
                     onChange={(event) => setplanName(event.target.value)}
@@ -335,13 +423,21 @@ function Step4() {
                         <label className="first-name-1 roboto-medium-black-24px w-100">Patient Relationship to Insured
                           <span className="roboto-medium-tia-maria-24px ml-1">*</span>
                         </label>
-                        <TextValidator
+                        <Select
+                          className="basic-single"
+                          classNamePrefix="select"
+                          defaultValue={patientInsuredRelation}
+                          isSearchable={true}
+                          onChange={(newValue) => setpatientInsuredRelation(newValue)}
+                          options={relationShipList}
+                        />
+                        {/* <TextValidator
                           onChange={(event) => setpatientInsuredRelation(event.target.value)}
                           InputProps={{ classes }}
                           value={patientInsuredRelation}
                           validators={['required']}
                           errorMessages={['This field is required']}
-                        />
+                        /> */}
                         {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="add" name="lastname"
 							placeholder="Patient Relationship to Insured" /> */}
                       </div>

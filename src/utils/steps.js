@@ -26,7 +26,7 @@ export const Steps = [
   {
     step_number: 7,
     name: "Summary",
-  }
+  },
   // {
   //   step_number: 8,
   //   name: "Summary",
