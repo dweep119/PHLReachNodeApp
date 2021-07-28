@@ -122,8 +122,8 @@ function Step6() {
                       <br />
                       <label className="text-center first-name-1 roboto-medium-black-24px">
                         {
-                          formData.firstName && formData.lastName ?
-                            `${formData.firstName} ${formData.lastName}`
+                          formData.Contact.FirstName && formData.Contact.LastName ?
+                            `${formData.Contact.FirstName} ${formData.Contact.LastName}`
                             : 'Neha Patel'
                         }
                       </label>
