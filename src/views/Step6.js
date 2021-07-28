@@ -17,7 +17,7 @@ function Step6() {
   const today = moment().toDate();
   const todayDate = moment(today).format('MM/DD/YYYY');
   const signature = useRef(null);
-  const [signatureImage, setsignatureImage] = useState(formData.signature ? formData.signature : null);
+  const [signatureImage, setsignatureImage] = useState(formData.ConsentForms && formData.ConsentForms.Signature ? formData.ConsentForms.Signature : null);
 
   const [open, setOpen] = React.useState(false);
 
@@ -33,7 +33,9 @@ function Step6() {
     dispatch({
       type: "SET_FORM_DATA",
       formData: {
-        signature: signatureImage
+        "ConsentForms":{
+          "Signature": signatureImage
+        }
       }
     });
     dispatch({

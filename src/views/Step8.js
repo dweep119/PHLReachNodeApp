@@ -9,7 +9,41 @@ function Step8() {
 
   const [state, dispatch] = useContext(AppContext);
   const { formData } = state;
-  const signatureImage = formData.signatureImage;
+  console.log('formData: ', formData);
+  const signatureImage = formData.ConsentForms.Signature;
+  const DateOfService = formData.DateOfService;
+  const TimeOfService = formData.TimeOfService;
+  const FirstName = formData.Contact.FirstName;
+  const LastName = formData.Contact.LastName;
+  const DateOfBirth = formData.Contact.DateOfBirth;
+  const StreetAddress1 = formData.Contact.StreetAddress1;
+  const StreetAddress2 = formData.Contact.StreetAddress2;
+  const Zipcode = formData.Contact.Zipcode;
+  const City = formData.Contact.City;
+  const State = formData.Contact.State;
+  const PhoneNumber = formData.Contact.PhoneNumber;
+  const EmailAddress = formData.Contact.EmailAddress;
+  const ContactName = formData.Contact.EmergencyContact.ContactName;
+  const ContactPhone = formData.Contact.EmergencyContact.ContactPhone;
+  const ContactRelation = formData.Contact.EmergencyContact.ContactRelation;
+  const PreferredLanguage = formData.Demographics.PreferredLanguage;
+  const Race = formData.Demographics.Race;
+  const Ethnicity = formData.Demographics.Ethnicity;
+  const Gender = formData.Demographics.Gender;
+  const HasInsurance = formData.Insurance.HasInsurance;
+  const PhotoFront = formData.Insurance.PhotoFront;
+  const PhotoBack = formData.Insurance.PhotoBack;
+  const PrimaryInsurance = formData.Insurance.PrimaryInsurance;
+  const InsuranceId = formData.Insurance.InsuranceId;
+  const GroupNumber = formData.Insurance.GroupNumber;
+  const PlanName = formData.Insurance.PlanName;
+  const SameInsuredPerson = formData.Insurance.SameInsuredPerson;
+  const InsuredPersonRelation = formData.Insurance.InsuredPersonRelation;
+  const InsuredPersonDOB = formData.Insurance.InsuredPersonDOB;
+  const InsuredPersonFirstName = formData.Insurance.InsuredPersonFirstName;
+  const InsuredPersonLastName = formData.Insurance.InsuredPersonLastName;
+  const InsuredPersonMiddleName = formData.Insurance.InsuredPersonMiddleName;
+  const InsuredPersonSuffix = formData.Insurance.InsuredPersonSuffix;
 
   const [selectedTab, setselectedTab] = useState('Appointment')
 
@@ -206,7 +240,7 @@ function Step8() {
                   <div className="row mb-3">
                     <div className="col-12">
                       <label className="roboto-normal-black-18px-22 w-100"> Date/Time</label>
-                      <label className="roboto-normal-dark-silver-18px w-100"> 07/15/2021 10:30 AM</label>
+                      <label className="roboto-normal-dark-silver-18px w-100"> {DateOfService} {TimeOfService.time_12hr}</label>
                     </div>
                   </div>
                   <div className="row mb-3">
@@ -250,25 +284,25 @@ function Step8() {
                   <div className="row mb-3">
                     <div className="col-12">
                       <label className="roboto-normal-black-18px-22 w-100"> Name</label>
-                      <label className="roboto-normal-dark-silver-18px w-100"> Dweep Patel</label>
+                      <label className="roboto-normal-dark-silver-18px w-100"> {FirstName} {LastName}</label>
                     </div>
                   </div>
                   <div className="row mb-3">
                     <div className="col-12">
                       <label className="roboto-normal-black-18px-22 w-100"> Address</label>
-                      <label className="roboto-normal-dark-silver-18px w-100"> C-112 Girdharpark Society Vadodara, Gujarat 390009</label>
+                      <label className="roboto-normal-dark-silver-18px w-100"> {StreetAddress1} {City}, {State} {Zipcode}</label>
                     </div>
                   </div>
                   <div className="row mb-3">
                     <div className="col-12">
                       <label className="roboto-normal-black-18px-22 w-100"> Email</label>
-                      <label className="roboto-normal-dark-silver-18px w-100"> neha.dweep@gmail.com</label>
+                      <label className="roboto-normal-dark-silver-18px w-100"> {EmailAddress}</label>
                     </div>
                   </div>
                   <div className="row mb-3">
                     <div className="col-12">
                       <label className="roboto-normal-black-18px-22 w-100"> Emergency Contact Phone Number</label>
-                      <label className="roboto-normal-dark-silver-18px w-100"> +919925032084</label>
+                      <label className="roboto-normal-dark-silver-18px w-100"> {ContactPhone}</label>
                     </div>
                   </div>
                 </div>
@@ -277,24 +311,25 @@ function Step8() {
                     <div className="col-12">
                       <label className="roboto-normal-black-18px-22 w-100"> Date of Birth</label>
                       <label className="roboto-normal-dark-silver-18px w-100"> 09/11/1995</label>
+                      {/* <label className="roboto-normal-dark-silver-18px w-100"> {DateOfBirth}</label> */}
                     </div>
                   </div>
                   <div className="row mb-3">
                     <div className="col-12">
                       <label className="roboto-normal-black-18px-22 w-100"> Phone Number</label>
-                      <label className="roboto-normal-dark-silver-18px w-100"> +919978532084</label>
+                      <label className="roboto-normal-dark-silver-18px w-100"> {PhoneNumber}</label>
                     </div>
                   </div>
                   <div className="row mb-3">
                     <div className="col-12">
                       <label className="roboto-normal-black-18px-22 w-100"> Emergency Contact Name</label>
-                      <label className="roboto-normal-dark-silver-18px w-100"> Upendra Patel</label>
+                      <label className="roboto-normal-dark-silver-18px w-100"> {ContactName}</label>
                     </div>
                   </div>
                   <div className="row mb-3">
                     <div className="col-12">
                       <label className="roboto-normal-black-18px-22 w-100"> Emergency Contact Relation</label>
-                      <label className="roboto-normal-dark-silver-18px w-100"> Father</label>
+                      <label className="roboto-normal-dark-silver-18px w-100"> {ContactRelation}</label>
                     </div>
                   </div>
                 </div>
@@ -318,13 +353,13 @@ function Step8() {
                   <div className="row mb-3">
                     <div className="col-12">
                       <label className="roboto-normal-black-18px-22 w-100"> Preferred Language</label>
-                      <label className="roboto-normal-dark-silver-18px w-100"> English</label>
+                      <label className="roboto-normal-dark-silver-18px w-100"> {PreferredLanguage}</label>
                     </div>
                   </div>
                   <div className="row mb-3">
                     <div className="col-12">
                       <label className="roboto-normal-black-18px-22 w-100"> Ethnicity</label>
-                      <label className="roboto-normal-dark-silver-18px w-100"> Hispanic or Latinx</label>
+                      <label className="roboto-normal-dark-silver-18px w-100"> {Ethnicity}</label>
                     </div>
                   </div>
                 </div>
@@ -332,13 +367,13 @@ function Step8() {
                   <div className="row mb-3">
                     <div className="col-12">
                       <label className="roboto-normal-black-18px-22 w-100"> Race</label>
-                      <label className="roboto-normal-dark-silver-18px w-100"> American Indian or Alaskan Native</label>
+                      <label className="roboto-normal-dark-silver-18px w-100"> {Race}</label>
                     </div>
                   </div>
                   <div className="row mb-3">
                     <div className="col-12">
                       <label className="roboto-normal-black-18px-22 w-100"> Gender</label>
-                      <label className="roboto-normal-dark-silver-18px w-100"> Male</label>
+                      <label className="roboto-normal-dark-silver-18px w-100"> {Gender}</label>
                     </div>
                   </div>
                 </div>
@@ -362,25 +397,26 @@ function Step8() {
                   <div className="row mb-3">
                     <div className="col-12">
                       <label className="roboto-normal-black-18px-22 w-100"> Insurance Company</label>
-                      <label className="roboto-normal-dark-silver-18px w-100"> Medicare</label>
+                      <label className="roboto-normal-dark-silver-18px w-100"> {PrimaryInsurance.label}</label>
                     </div>
                   </div>
                   <div className="row mb-3">
                     <div className="col-12">
                       <label className="roboto-normal-black-18px-22 w-100"> Group Number</label>
-                      <label className="roboto-normal-dark-silver-18px w-100"> 456</label>
+                      <label className="roboto-normal-dark-silver-18px w-100"> {GroupNumber}</label>
                     </div>
                   </div>
                   <div className="row mb-3">
                     <div className="col-12">
                       <label className="roboto-normal-black-18px-22 w-100"> Insured Person Name</label>
-                      <label className="roboto-normal-dark-silver-18px w-100"> Upendra Patel</label>
+                      <label className="roboto-normal-dark-silver-18px w-100"> {InsuredPersonFirstName} {InsuredPersonLastName}</label>
                     </div>
                   </div>
                   <div className="row mb-3">
                     <div className="col-12">
                       <label className="roboto-normal-black-18px-22 w-100"> Insured Person DOB</label>
                       <label className="roboto-normal-dark-silver-18px w-100"> 08/30/1964</label>
+                      {/* <label className="roboto-normal-dark-silver-18px w-100"> {InsuredPersonDOB}</label> */}
                     </div>
                   </div>
                 </div>
@@ -388,19 +424,19 @@ function Step8() {
                   <div className="row mb-3">
                     <div className="col-12">
                       <label className="roboto-normal-black-18px-22 w-100"> Insurance ID</label>
-                      <label className="roboto-normal-dark-silver-18px w-100"> 5418715</label>
+                      <label className="roboto-normal-dark-silver-18px w-100"> {InsuranceId}</label>
                     </div>
                   </div>
                   <div className="row mb-3">
                     <div className="col-12">
                       <label className="roboto-normal-black-18px-22 w-100"> Plan Name</label>
-                      <label className="roboto-normal-dark-silver-18px w-100"> Family</label>
+                      <label className="roboto-normal-dark-silver-18px w-100"> {PlanName}</label>
                     </div>
                   </div>
                   <div className="row mb-3">
                     <div className="col-12">
                       <label className="roboto-normal-black-18px-22 w-100"> Insured Relationship to Patient</label>
-                      <label className="roboto-normal-dark-silver-18px w-100"> Father</label>
+                      <label className="roboto-normal-dark-silver-18px w-100"> {InsuredPersonRelation.label}</label>
                     </div>
                   </div>
                 </div>

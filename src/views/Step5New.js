@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
@@ -17,6 +17,155 @@ const useStyles = makeStyles({
     }
   }
 });
+
+const RenderQuestions = (props) => {
+
+  const [state, dispatch] = useContext(AppContext);
+  const { formData } = state;
+  const { question } = props;
+  const [value, setvalue] = useState({ "QuestionId": question.id, "Answers": question.type === "Choice" ? [] : [question.default] });
+
+  useEffect(() => {
+    if (formData.MedicalQuestionnaire && formData.MedicalQuestionnaire.length > 0) {
+      let result = formData.MedicalQuestionnaire.filter(item => item.QuestionId === question.id);
+      if (result.length > 0) {
+        setvalue({ "QuestionId": result[0].QuestionId, "Answers": result[0].Answers })
+      }
+    }
+  }, [formData])
+
+  const onOptionChange = (val, que) => {
+    setvalue({ "QuestionId": que.id, "Answers": [val] });
+
+    if (formData.MedicalQuestionnaire && formData.MedicalQuestionnaire.length > 0) {
+      let result = formData.MedicalQuestionnaire.filter(item => item.QuestionId === que.id);
+      if (result.length > 0) {
+        const index = formData.MedicalQuestionnaire.indexOf(result[0]);
+        if (index > -1) {
+          formData.MedicalQuestionnaire.splice(index, 1);
+        }
+      }
+      dispatch({
+        type: "SET_FORM_DATA",
+        formData: { "MedicalQuestionnaire": [...formData.MedicalQuestionnaire, { "QuestionId": que.id, "Answers": [val] }] },
+      });
+    } else {
+      dispatch({
+        type: "SET_FORM_DATA",
+        formData: { "MedicalQuestionnaire": [{ "QuestionId": que.id, "Answers": [val] }] },
+      });
+    }
+
+  };
+
+  const onMultiChioce = (val) => {
+    console.log('val: ', val);
+    setvalue(val);
+
+    if (formData.MedicalQuestionnaire && formData.MedicalQuestionnaire.length > 0) {
+      let result = formData.MedicalQuestionnaire.filter(item => item.QuestionId === val.QuestionId);
+      if (result.length > 0) {
+        const index = formData.MedicalQuestionnaire.indexOf(result[0]);
+        if (index > -1) {
+          formData.MedicalQuestionnaire.splice(index, 1);
+        }
+      }
+      dispatch({
+        type: "SET_FORM_DATA",
+        formData: { "MedicalQuestionnaire": [...formData.MedicalQuestionnaire, val] },
+      });
+    } else {
+      dispatch({
+        type: "SET_FORM_DATA",
+        formData: { "MedicalQuestionnaire": [val] },
+      });
+    }
+
+  };
+
+  const setClassName = (value, arr) => {
+    if (arr.length > 0) {
+      let res = arr.filter(item => item === value);
+      if (res.length > 0) {
+        return 'border-1px-mist-gray ml-2 mt-2 cursor-pointer overlap-group17';
+      } else {
+        return "border-1px-mist-gray ml-2 mt-2 cursor-pointer overlap-group";
+      }
+    } else {
+      return "border-1px-mist-gray ml-2 mt-2 cursor-pointer overlap-group";
+    }
+  }
+
+  const setLabelClassName = (value, arr) => {
+    if (arr.length > 0) {
+      let res = arr.filter(item => item === value);
+      if (res.length > 0) {
+        return 'roboto-normal-white-18px-2';
+      } else {
+        return "roboto-normal-black-18px-2";
+      }
+    } else {
+      return "roboto-normal-black-18px-2";
+    }
+  }
+
+  const classes = useStyles();
+
+  return (
+    <div className="mb-5 overlap-group2 col-12">
+      <label className="first-name-1 roboto-medium-black-24px w-100">{question.title}
+      </label>
+      {
+        question.type === "radio"
+          ?
+          <div className="col-lg-2 col-md-4 col-6 d-flex justify-content-between pl-0 mt-2">
+            <div className={"options cursor-pointer " + (value.Answers[0] === 'Yes' ? 'optionYes' : '')} onClick={(e) => onOptionChange("Yes", question)}>
+              Yes
+            </div>
+            <div className={"options cursor-pointer " + (value.Answers[0] === 'No' ? 'active' : '')} onClick={(e) => onOptionChange("No", question)}>
+              No
+            </div>
+          </div>
+          : question.type === "Choice" ?
+            <div className="col-lg-10 col-md-12 col-12 d-flex mt-3">
+              <div className="row">
+                {
+                  question.choice.map((item, index) => (
+                    <div className={setClassName(item, value.Answers)} key={index} onClick={() => {
+                      if (value.Answers.length === 0) {
+                        onMultiChioce({ "QuestionId": question.id, "Answers": [item] });
+                      } else {
+                        let res = value.Answers.filter(itm => itm === item);
+                        if (res.length > 0) {
+                          const index = value.Answers.indexOf(item);
+                          if (index > -1) {
+                            value.Answers.splice(index, 1);
+                          }
+                          onMultiChioce({ "QuestionId": question.id, "Answers": [...value.Answers] });
+                        } else {
+                          onMultiChioce({ "QuestionId": question.id, "Answers": [...value.Answers, item] });
+                        }
+                      }
+                    }}>
+                      <div className={setLabelClassName(item, value.Answers)}>{item}</div>
+                    </div>
+                  ))
+                }
+              </div>
+            </div>
+            : question.type === "TextInput" ?
+              <div className="col-lg-10 col-md-12 col-12 d-flex mt-3">
+                <TextValidator
+                  onChange={(event) => onOptionChange(event.target.value, question)}
+                  InputProps={{ classes }}
+                  value={value.Answers[0]}
+                />
+              </div>
+              : null
+      }
+    </div>
+  )
+}
 
 function Step5() {
 
@@ -44,7 +193,7 @@ function Step5() {
       title: "Are you currently experiencing COVID-19 symptoms or have you been exposed to COVID-19?",
       type: "radio",
       groupId: 1,
-      default: "Yes",
+      default: "No",
       choice: [],
       isRequired: false,
       errorMessage: ""
@@ -74,7 +223,7 @@ function Step5() {
       title: "Have you experienced any symptoms in the last 14 days?",
       type: "radio",
       groupId: 1,
-      default: "Yes",
+      default: "No",
       choice: [],
       isRequired: false,
       errorMessage: ""
@@ -84,7 +233,7 @@ function Step5() {
       title: "Do you have any pre-existing medical conditions?",
       type: "radio",
       groupId: 1,
-      default: "Yes",
+      default: "No",
       choice: [],
       isRequired: false,
       errorMessage: ""
@@ -258,45 +407,9 @@ function Step5() {
   ]
 
   const [expanded, setExpanded] = React.useState('panel1');
-  const [isCovidSymptoms, setisCovidSymptoms] = useState(formData.isCovidSymptoms ? formData.isCovidSymptoms : false);
-  const [isPublicGatherings, setisPublicGatherings] = useState(formData.isPublicGatherings ? formData.isPublicGatherings : false);
-  const [isHealthcareWorker, setisHealthcareWorker] = useState(formData.isHealthcareWorker ? formData.isHealthcareWorker : false);
-  const [isCovidSymptoms14, setisCovidSymptoms14] = useState(formData.isCovidSymptoms14 ? formData.isCovidSymptoms14 : false);
-  const [existingMedical, setexistingMedical] = useState(formData.existingMedical ? formData.existingMedical : false);
-  const [cigarettes, setcigarettes] = useState(formData.cigarettes ? formData.cigarettes : false);
-  const [vapingProducts, setvapingProducts] = useState(formData.vapingProducts ? formData.vapingProducts : false);
-  const [selectedSymptoms, setselectedSymptoms] = useState(formData.selectedSymptoms ? formData.selectedSymptoms : []);
-  const [howLongSymptomsExperience, sethowLongSymptomsExperience] = useState(formData.howLongSymptomsExperience ? formData.howLongSymptomsExperience : '');
-  const [isCovidSymptomsVaccine, setisCovidSymptomsVaccine] = useState(formData.isCovidSymptomsVaccine ? formData.isCovidSymptomsVaccine : false);
-  const [receivedVaccine, setreceivedVaccine] = useState(formData.receivedVaccine ? formData.receivedVaccine : false);
-  const [receivedVaccineFromOther, setreceivedVaccineFromOther] = useState(formData.receivedVaccineFromOther ? formData.receivedVaccineFromOther : false);
-  const [vaccineReaction, setvaccineReaction] = useState(formData.vaccineReaction ? formData.vaccineReaction : false);
-  const [covidInfection, setcovidInfection] = useState(formData.covidInfection ? formData.covidInfection : false);
-  const [severeSymptom, setsevereSymptom] = useState(formData.severeSymptom ? formData.severeSymptom : false);
-  const [weekImmuneSystem, setweekImmuneSystem] = useState(formData.weekImmuneSystem ? formData.weekImmuneSystem : false);
-  const [isDisabled, setisDisabled] = useState(formData.isDisabled ? formData.isDisabled : false);
-  const [healthInformation, sethealthInformation] = useState(formData.healthInformation ? formData.healthInformation : false);
-  const [hearAboutUs, sethearAboutUs] = useState(formData.hearAboutUs ? formData.hearAboutUs : []);
-  const [otherService, setotherService] = useState(formData.otherService ? formData.otherService : '');
-
-  const [value, setvalue] = useState();
-
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
-
-  const onOptionChange = (val, question) => {
-    console.log('val: ', val, question);
-    const res = questionList.filter(item => item.id === question.id);
-    if (res.length > 0) {
-      res[0].default = val;
-    }
-    setvalue(val);
-    dispatch({
-      type: "SET_FORM_DATA",
-      formData: { covid19: { ...state.formData.covid19, [question.title]: { value: val } } },
-    });
-  }
 
   const goToSummary = () => {
     dispatch({
@@ -307,32 +420,6 @@ function Step5() {
   }
 
   const handleNext = () => {
-    dispatch({
-      type: "SET_FORM_DATA",
-      formData: {
-        expanded,
-        isCovidSymptoms,
-        isPublicGatherings,
-        isHealthcareWorker,
-        isCovidSymptoms14,
-        existingMedical,
-        cigarettes,
-        vapingProducts,
-        selectedSymptoms,
-        howLongSymptomsExperience,
-        isCovidSymptomsVaccine,
-        receivedVaccine,
-        receivedVaccineFromOther,
-        vaccineReaction,
-        covidInfection,
-        severeSymptom,
-        weekImmuneSystem,
-        isDisabled,
-        healthInformation,
-        hearAboutUs,
-        otherService
-      }
-    })
     dispatch({
       type: "SET_STEP",
       step: state.step + 1
@@ -348,33 +435,6 @@ function Step5() {
     return;
   };
 
-  const setClassName = (value, arr) => {
-    if (arr.length > 0) {
-      let res = arr.filter(item => item === value);
-      if (res.length > 0) {
-        return 'border-1px-mist-gray ml-2 mt-2 cursor-pointer overlap-group17';
-      } else {
-        return "border-1px-mist-gray ml-2 mt-2 cursor-pointer overlap-group";
-      }
-    } else {
-      return "border-1px-mist-gray ml-2 mt-2 cursor-pointer overlap-group";
-    }
-  }
-
-  const setLabelClassName = (value, arr) => {
-    if (arr.length > 0) {
-      let res = arr.filter(item => item === value);
-      if (res.length > 0) {
-        return 'roboto-normal-white-18px-2';
-      } else {
-        return "roboto-normal-black-18px-2";
-      }
-    } else {
-      return "roboto-normal-black-18px-2";
-    }
-  }
-
-  const classes = useStyles();
   return (
     <div className="App medicalQuestinnaorie">
       <ValidatorForm
@@ -403,58 +463,7 @@ function Step5() {
                           questionList.map((question, questionIndex) => (
                             question.groupId === group.id ?
                               <div className="row" key={questionIndex}>
-                                <div className="mb-5 overlap-group2 col-12">
-                                  <label className="first-name-1 roboto-medium-black-24px w-100">{question.title}
-                                  </label>
-                                  {
-                                    question.type === "radio"
-                                      ?
-                                      <div className="col-lg-2 col-md-4 col-6 d-flex justify-content-between pl-0 mt-2">
-                                        <div className={"options cursor-pointer " + (question.default === 'Yes' ? 'optionYes' : '')} onClick={(event) => onOptionChange(event.target.innerHTML, question)}>
-                                          Yes
-                                        </div>
-                                        <div className={"options cursor-pointer " + (question.default === 'No' ? 'active' : '')} onClick={(event) => onOptionChange(event.target.innerHTML, question)}>
-                                          No
-                                        </div>
-                                      </div>
-                                      : question.type === "Choice" ?
-                                        <div className="col-lg-10 col-md-12 col-12 d-flex mt-3">
-                                          <div className="row">
-                                            {
-                                              question.choice.map((item, index) => (
-                                                <div className={setClassName(item, selectedSymptoms)} key={index} onClick={() => {
-                                                  if (selectedSymptoms.length === 0) {
-                                                    setselectedSymptoms([item])
-                                                  } else {
-                                                    let res = selectedSymptoms.filter(itm => itm === item);
-                                                    if (res.length > 0) {
-                                                      const index = selectedSymptoms.indexOf(item);
-                                                      if (index > -1) {
-                                                        selectedSymptoms.splice(index, 1);
-                                                      }
-                                                      setselectedSymptoms([...selectedSymptoms]);
-                                                    } else {
-                                                      setselectedSymptoms([...selectedSymptoms, item]);
-                                                    }
-                                                  }
-                                                }}>
-                                                  <div className={setLabelClassName(item, selectedSymptoms)}>{item}</div>
-                                                </div>
-                                              ))
-                                            }
-                                          </div>
-                                        </div>
-                                        : question.type === "TextInput" ?
-                                          <div className="col-lg-10 col-md-12 col-12 d-flex mt-3">
-                                            <TextValidator
-                                              onChange={(event) => sethowLongSymptomsExperience(event.target.value)}
-                                              InputProps={{ classes }}
-                                              value={howLongSymptomsExperience}
-                                            />
-                                          </div>
-                                          : null
-                                  }
-                                </div>
+                                <RenderQuestions question={question} />
                               </div>
                               : null
                           ))
