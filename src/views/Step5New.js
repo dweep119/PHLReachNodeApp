@@ -201,239 +201,9 @@ function Step5() {
   const [state, dispatch] = useContext(AppContext);
   const { formData } = state;
 
-  const groupList = [
-    {
-      id: 1,
-      label: "COVID-19 Testing"
-    },
-    {
-      id: 2,
-      label: "COVID-19 Vaccine"
-    },
-    {
-      id: 3,
-      label: "Additional Info"
-    }
-  ];
+  const { groupList } = state;
 
-  const questionList = [
-    {
-      id: 1,
-      title: "Are you currently experiencing COVID-19 symptoms or have you been exposed to COVID-19?",
-      type: "radio",
-      groupId: 1,
-      default: "No",
-      choice: [],
-      isRequired: false,
-      errorMessage: ""
-    },
-    {
-      id: 2,
-      title: "Have you been in any public gatherings(i.e prayer hall, protests, parties/events/restaurant, etc)?",
-      type: "radio",
-      groupId: 1,
-      default: "No",
-      choice: [],
-      isRequired: false,
-      errorMessage: ""
-    },
-    {
-      id: 3,
-      title: "Are you a health care worker‚ nursing home worker‚ first responder?",
-      type: "radio",
-      groupId: 1,
-      default: "No",
-      choice: [],
-      isRequired: false,
-      errorMessage: ""
-    },
-    {
-      id: 4,
-      title: "Have you experienced any symptoms in the last 14 days?",
-      type: "radio",
-      groupId: 1,
-      default: "No",
-      choice: [],
-      isRequired: false,
-      errorMessage: ""
-    },
-    {
-      id: 5,
-      title: "Do you have any pre-existing medical conditions?",
-      type: "radio",
-      groupId: 1,
-      default: "No",
-      choice: [],
-      isRequired: false,
-      errorMessage: ""
-    },
-    {
-      id: 6,
-      title: "Do you smoke cigarettes or use other tobacco?",
-      type: "radio",
-      groupId: 1,
-      default: "No",
-      choice: [],
-      isRequired: false,
-      errorMessage: ""
-    },
-    {
-      id: 7,
-      title: "Do you use vaping products?",
-      type: "radio",
-      groupId: 1,
-      default: "No",
-      choice: [],
-      isRequired: false,
-      errorMessage: ""
-    },
-    {
-      id: 8,
-      title: "Have you experienced any of these symptoms (select any that apply)",
-      type: "Choice",
-      groupId: 1,
-      default: "",
-      choice: ['Shortness of Breath',
-        'Cough',
-        'Sore Throat',
-        'Diarrhea',
-        'Chest Pain',
-        'Muscle Aches',
-        'Rash',
-        'Recent loss of smell or taste',
-        'Extreme Fatigue',
-        'Fever above 100 degrees',
-        'Vomiting or severe nausea',
-        'None',],
-      isRequired: false,
-      errorMessage: ""
-    },
-    {
-      id: 9,
-      title: "How long have you been experiencing these symptoms (in days)",
-      type: "TextInput",
-      groupId: 1,
-      default: "",
-      choice: [],
-      isRequired: false,
-      errorMessage: ""
-    },
-    {
-      id: 10,
-      title: "Are you currently experiencing COVID-19 symptoms or have you been exposed to COVID-19?",
-      type: "radio",
-      groupId: 2,
-      default: "No",
-      choice: [],
-      isRequired: false,
-      errorMessage: ""
-    },
-    {
-      id: 11,
-      title: "Have you received any vaccinations in the past 2 weeks?",
-      type: "radio",
-      groupId: 2,
-      default: "No",
-      choice: [],
-      isRequired: false,
-      errorMessage: ""
-    },
-    {
-      id: 12,
-      title: "Have you receiveed a COVID-19 vaccine from different manufacturer at any time, or did you participate in a COVID-19 vaccine trial?",
-      type: "radio",
-      groupId: 2,
-      default: "No",
-      choice: [],
-      isRequired: false,
-      errorMessage: ""
-    },
-    {
-      id: 13,
-      title: "Have you ever had a serious reaction or fainted after receiving any vaccination?",
-      type: "radio",
-      groupId: 2,
-      default: "No",
-      choice: [],
-      isRequired: false,
-      errorMessage: ""
-    },
-    {
-      id: 14,
-      title: "Have you been diagnosed with COVID-19 infection in the last 90 days?",
-      type: "radio",
-      groupId: 2,
-      default: "No",
-      choice: [],
-      isRequired: false,
-      errorMessage: ""
-    },
-    {
-      id: 15,
-      title: "Have you ever had an anaphylactic reaction or had other severe symptoms after receiving another vaccination?",
-      type: "radio",
-      groupId: 2,
-      default: "No",
-      choice: [],
-      isRequired: false,
-      errorMessage: ""
-    },
-    {
-      id: 16,
-      title: "Do you have a medical condition or take medication(s) that may weaken your immune system?",
-      type: "radio",
-      groupId: 2,
-      default: "No",
-      choice: [],
-      isRequired: false,
-      errorMessage: ""
-    },
-    {
-      id: 17,
-      title: "Are you disabled?",
-      type: "radio",
-      groupId: 3,
-      default: "No",
-      choice: [],
-      isRequired: false,
-      errorMessage: ""
-    },
-    {
-      id: 18,
-      title: "Any additional personal health information you would like us to be aware of?",
-      type: "radio",
-      groupId: 3,
-      default: "No",
-      choice: [],
-      isRequired: false,
-      errorMessage: ""
-    },
-    {
-      id: 19,
-      title: "How did you here about us?",
-      type: "Choice",
-      groupId: 3,
-      default: "",
-      choice: ['LinkedIn',
-        'Facebook',
-        'Instagram',
-        'Ad',
-        'A friend',
-        'Other',],
-      isRequired: false,
-      errorMessage: ""
-    },
-    {
-      id: 20,
-      title: "In the future, what other services would you like Prism Health lab to provide?",
-      type: "TextInput",
-      groupId: 3,
-      default: "",
-      choice: [],
-      isRequired: false,
-      errorMessage: ""
-    },
-  ]
+  const { questionList } = state;
 
   const [expanded, setExpanded] = React.useState('panel1');
 
@@ -473,7 +243,7 @@ function Step5() {
         onSubmit={handleNext}
       >
         {
-          groupList.map((group, groupIndex) => (
+          groupList && groupList.map((group, groupIndex) => (
             <Accordion expanded={expanded === `panel${group.id}`} onChange={handleChange(`panel${group.id}`)} key={groupIndex}>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
@@ -491,7 +261,7 @@ function Step5() {
                           Questions
                         </div>
                         {
-                          questionList.map((question, questionIndex) => (
+                          questionList && questionList.map((question, questionIndex) => (
                             question.groupId === group.id ?
                               <div className="row" key={questionIndex}>
                                 <RenderQuestions question={question} />
@@ -501,11 +271,15 @@ function Step5() {
                         }
                       </div>
                     </div>
-                    <div className="row w-100 justify-content-end">
-                      <div className="overlap-group13 border-1-4px-mercury roboto-bold-white-20-3px ml-3 cursor-pointer" style={{ lineHeight: '45px' }} onClick={() => {
-                        setExpanded(`panel${group.id + 1}`);
-                      }}>Submit</div>
-                    </div>
+                    {
+                      groupList && groupList.length - 1 !== groupIndex ?
+                        <div className="row w-100 justify-content-end">
+                          <div className="overlap-group13 border-1-4px-mercury roboto-bold-white-20-3px ml-3 cursor-pointer" style={{ lineHeight: '45px' }} onClick={() => {
+                            setExpanded(`panel${group.id + 1}`);
+                          }}>Submit</div>
+                        </div>
+                      : null
+                    }
                   </div>
                 }
               </AccordionDetails>

@@ -24,67 +24,14 @@ const useStyles = makeStyles({
   }
 });
 
-const relationShipList = [
-  { label: "Spouse", value: "Spouse" },
-  { label: "Grandparent", value: "Grandparent" },
-  { label: "Grandchild", value: "Grandchild" },
-  { label: "Nephew or Niece", value: "Nephew or Niece" },
-  { label: "Foster Child", value: "Foster Child" },
-  { label: "Ward", value: "Ward" },
-  { label: "Stepson or Stepdaughter", value: "Stepson or Stepdaughter" },
-  { label: "Child", value: "Child" },
-  { label: "Employee", value: "Employee" },
-  { label: "Unknown", value: "Unknown" },
-  { label: "Handicapped Dependent", value: "Handicapped Dependent" },
-  { label: "Sponsored Dependent", value: "Sponsored Dependent" },
-  { label: "Dependent of a Minor Dependent", value: "Dependent of a Minor Dependent" },
-  { label: "Significant Other", value: "Significant Other" },
-  { label: "Mother", value: "Mother" },
-  { label: "Father", value: "Father" },
-  { label: "Emancipated Minor", value: "Emancipated Minor" },
-  { label: "Organ Donor", value: "Organ Donor" },
-  { label: "Cadaver Donor", value: "Cadaver Donor" },
-  { label: "Injured Plaintiff", value: "Injured Plaintiff" },
-  { label: "Child Where Insured Has No Financial Responsibility", value: "Child Where Insured Has No Financial Responsibility" },
-  { label: "Life Partner", value: "Life Partner" },
-  { label: "Dependent", value: "Dependent" },
-  { label: "Other Relationship", value: "Other Relationship" },
-]
-
-const insuranceCompanies = [
-  { label: "NO INSURANCE - HRSA PROGRAM", value: "NO INSURANCE - HRSA PROGRAM" },
-  { label: "BCBS", value: "BCBS" },
-  { label: "Zelis Payments", value: "Zelis Payments" },
-  { label: "SELF PAY CASH", value: "SELF PAY CASH" },
-  { label: "SELF PAY CREDIT CARD", value: "SELF PAY CREDIT CARD" },
-  { label: "AETNA", value: "AETNA" },
-  { label: "Amerigroup,", value: "Amerigroup," },
-  { label: "Anthem and their affiliates", value: "Anthem and their affiliates" },
-  { label: "ANTHEM MAINE HEALTH", value: "ANTHEM MAINE HEALTH" },
-  { label: "BLUE CHOICE", value: "BLUE CHOICE" },
-  { label: "CIGNA", value: "CIGNA" },
-  { label: "EMPIRE", value: "EMPIRE" },
-  { label: "GOLDEN RULE", value: "GOLDEN RULE" },
-  { label: "HEALTH PLAN", value: "HEALTH PLAN" },
-  { label: "HEALTH PLAN OF SC", value: "HEALTH PLAN OF SC" },
-  { label: "HEALTHY BLUE", value: "HEALTHY BLUE" },
-  { label: "HUMANA", value: "HUMANA" },
-  { label: "MEDICAID", value: "MEDICAID" },
-  { label: "MEDICARE", value: "MEDICARE" },
-  { label: "MOLINA", value: "MOLINA" },
-  { label: "TRAVELERS", value: "TRAVELERS" },
-  { label: "UNICARE", value: "UNICARE" },
-  { label: "UNITED HEALTH CARE", value: "UNITED HEALTH CARE" },
-  { label: "WPS-TRICARE East Region", value: "WPS-TRICARE East Region" },
-  { label: "WPS-TRICARE For Life (TDEFIC)", value: "WPS-TRICARE For Life (TDEFIC)" },
-  { label: "OTHER", value: "OTHER" }
-]
 
 function Step4() {
-
+  
   const [state, dispatch] = useContext(AppContext);
   const { formData } = state;
-  console.log('formData: ', formData);
+  const { relationShipList } = state;
+  
+  const { insuranceCompanies } = state;
 
   const [isInsured, setisInsured] = useState(formData.Insurance && formData.Insurance.HasInsurance ? formData.Insurance.HasInsurance : false);
   const [selectedFrontPhoto, setselectedFrontPhoto] = useState(formData.Insurance && formData.Insurance.PhotoFront ? formData.Insurance.PhotoFront : null);

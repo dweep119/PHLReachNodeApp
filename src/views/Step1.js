@@ -6,6 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Recaptcha from 'react-google-invisible-recaptcha';
 import { ClipLoader } from "react-spinners";
+import { getData } from "../libs/api";
 const CryptoJS = require("crypto-js");
 
 function Step1() {
@@ -14,134 +15,17 @@ function Step1() {
   const { formData } = state;
 
   const refRecaptcha = useRef(null);
-  const dates = [
-    {
-      key: '07/12/2021',
-      value: 'July 12, 2021'
-    },
-    {
-      key: '07/13/2021',
-      value: 'July 13, 2021'
-    },
-    {
-      key: '07/14/2021',
-      value: 'July 14, 2021'
-    },
-    {
-      key: '07/15/2021',
-      value: 'July 15, 2021'
-    },
-  ];
-  let _slots = [];
 
   const [loading, setLoading] = useState(true);
   let [color, setColor] = useState("#940227eb");
-  const [selectedDate, setselectedDate] = useState(formData.DateOfService ? formData.DateOfService : '07/14/2021');
+  const [dates, setdates] = useState(null);
+  const [selectedDate, setselectedDate] = useState(formData.DateOfService ? formData.DateOfService : null);
   const [selectedSlot, setselectedSlot] = useState(formData.TimeOfService ? formData.TimeOfService : null);
   const [availableSlots, setavailableSlots] = useState(null);
   const [showMoreTimes, setshowMoreTimes] = useState(false);
 
-  const slots = [
-    {
-      slot: '9:0'
-    },
-    {
-      slot: '9:15'
-    },
-    {
-      slot: '9:30'
-    },
-    {
-      slot: '9:45'
-    },
-    {
-      slot: '10:0'
-    },
-    {
-      slot: '10:15'
-    },
-    {
-      slot: '10:30'
-    },
-    {
-      slot: '10:45'
-    },
-    {
-      slot: '11:0'
-    },
-    {
-      slot: '11:15'
-    },
-    {
-      slot: '11:30'
-    },
-    {
-      slot: '11:45'
-    },
-    {
-      slot: '12:0'
-    },
-    {
-      slot: '12:15'
-    },
-    {
-      slot: '12:30'
-    },
-    {
-      slot: '12:45'
-    },
-    {
-      slot: '13:0'
-    },
-    {
-      slot: '13:15'
-    },
-    {
-      slot: '13:30'
-    },
-    {
-      slot: '13:45'
-    },
-    {
-      slot: '14:0'
-    },
-    {
-      slot: '14:15'
-    },
-    {
-      slot: '14:30'
-    },
-    {
-      slot: '14:45'
-    },
-    {
-      slot: '15:0'
-    },
-    {
-      slot: '15:15'
-    },
-    {
-      slot: '15:30'
-    },
-    {
-      slot: '15:45'
-    },
-    {
-      slot: '16:0'
-    },
-    {
-      slot: '16:15'
-    },
-    {
-      slot: '16:30'
-    },
-    {
-      slot: '16:45'
-    },
-  ];
-
   useEffect(() => {
-    setselectedDate(formData.DateOfService ? formData.DateOfService : '07/14/2021');
+    setselectedDate(formData.DateOfService ? formData.DateOfService : null);
     setselectedSlot(formData.TimeOfService ? formData.TimeOfService : null);
     setTimeout(() => {
       setLoading(false);
@@ -200,6 +84,19 @@ function Step1() {
   };
 
   const getAvailableSlots = async () => {
+    const data = await getData();
+    const { slots } = data.data;
+    state.emergencyRelationShipList = data.data.emergencyRelationShipList;
+    state.languageList = data.data.languageList;
+    state.raceList = data.data.raceList;
+    state.ethnicityList = data.data.ethnicityList;
+    state.genderList = data.data.genderList;
+    state.relationShipList = data.data.relationShipList;
+    state.insuranceCompanies = data.data.insuranceCompanies;
+    state.groupList = data.data.groupList;
+    state.questionList = data.data.questionList;
+
+    let _slots = [];
 
     slots &&
       slots.map((item) => {
@@ -219,6 +116,7 @@ function Step1() {
 
     _slots = _.groupBy(_slots, "hour");
     setavailableSlots(_slots);
+    setdates(data.data.eventDate);
 
   };
 
@@ -270,7 +168,7 @@ function Step1() {
       <div className="select-a-time-slot">Available Dates</div>
       <div className="mt-2 mb-5 row">
         {
-          dates.map((item, index) => (
+          dates && dates.map((item, index) => (
             <div className="col-lg-3 col-md-3 col-6 mt-2" key={index}>
               <div className={"btn-date" + (selectedDate === item.key ? ' active' : '')} onClick={() => {
                 setselectedSlot(null);
@@ -310,7 +208,7 @@ function Step1() {
       }
       <div className="w-100 mt-3 d-flex justify-content-between">
         {
-          slots.length >= 4 && !showMoreTimes ?
+          availableSlots && availableSlots.length >= 4 && !showMoreTimes ?
             <div className="select-more-times cursor-pointer" onClick={() => setshowMoreTimes(true)}>
               Show more times
             </div>

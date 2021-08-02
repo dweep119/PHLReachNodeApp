@@ -1,16 +1,20 @@
 import React, { useReducer, createContext } from "react";
-const CryptoJS = require("crypto-js");
 
 export const AppContext = createContext();
 
 const initialState = {
-  loading: false,
-  error: null,
   step: 1,
   formData: {
   },
-  covid19Modal: false,
-  activeQuestion: {}
+  emergencyRelationShipList: [],
+  languageList: [],
+  raceList: [],
+  ethnicityList: [],
+  genderList: [],
+  relationShipList: [],
+  insuranceCompanies: [],
+  groupList: [],
+  questionList: []
 };
 
 const reducer = (state, action) => {
