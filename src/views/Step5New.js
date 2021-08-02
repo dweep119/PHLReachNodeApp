@@ -7,6 +7,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 import { AppContext } from "../store/app";
 import { makeStyles } from "@material-ui/core/styles";
+const CryptoJS = require("crypto-js");
 const useStyles = makeStyles({
   underline: {
     "&&&:before": {
@@ -45,14 +46,28 @@ const RenderQuestions = (props) => {
           formData.MedicalQuestionnaire.splice(index, 1);
         }
       }
+      let obj = {
+        "MedicalQuestionnaire": [...formData.MedicalQuestionnaire, { "QuestionId": que.id, "Answers": [val] }]
+      }
+      let ciphertext = CryptoJS.AES.encrypt(JSON.stringify({ ...formData, ...obj }), 'secretKey').toString();
+      localStorage.setItem('formData', ciphertext);
       dispatch({
         type: "SET_FORM_DATA",
-        formData: { "MedicalQuestionnaire": [...formData.MedicalQuestionnaire, { "QuestionId": que.id, "Answers": [val] }] },
+        formData: {
+          ...obj
+        },
       });
     } else {
+      let obj = {
+        "MedicalQuestionnaire": [{ "QuestionId": que.id, "Answers": [val] }]
+      }
+      let ciphertext = CryptoJS.AES.encrypt(JSON.stringify({ ...formData, ...obj }), 'secretKey').toString();
+      localStorage.setItem('formData', ciphertext);
       dispatch({
         type: "SET_FORM_DATA",
-        formData: { "MedicalQuestionnaire": [{ "QuestionId": que.id, "Answers": [val] }] },
+        formData: {
+          ...obj
+        },
       });
     }
 
@@ -70,14 +85,28 @@ const RenderQuestions = (props) => {
           formData.MedicalQuestionnaire.splice(index, 1);
         }
       }
+      let obj = {
+        "MedicalQuestionnaire": [...formData.MedicalQuestionnaire, val]
+      }
+      let ciphertext = CryptoJS.AES.encrypt(JSON.stringify({ ...formData, ...obj }), 'secretKey').toString();
+      localStorage.setItem('formData', ciphertext);
       dispatch({
         type: "SET_FORM_DATA",
-        formData: { "MedicalQuestionnaire": [...formData.MedicalQuestionnaire, val] },
+        formData: {
+          ...obj
+        },
       });
     } else {
+      let obj = {
+        "MedicalQuestionnaire": [val]
+      }
+      let ciphertext = CryptoJS.AES.encrypt(JSON.stringify({ ...formData, ...obj }), 'secretKey').toString();
+      localStorage.setItem('formData', ciphertext);
       dispatch({
         type: "SET_FORM_DATA",
-        formData: { "MedicalQuestionnaire": [val] },
+        formData: {
+          ...obj
+        },
       });
     }
 
@@ -407,7 +436,9 @@ function Step5() {
   ]
 
   const [expanded, setExpanded] = React.useState('panel1');
+
   const handleChange = (panel) => (event, isExpanded) => {
+    console.log('panel: ', panel);
     setExpanded(isExpanded ? panel : false);
   };
 
@@ -454,7 +485,7 @@ function Step5() {
               <AccordionDetails>
                 {
                   <div className="p-3 w-100">
-                    <div className="row mb-5 w-100">
+                    <div className="row w-100">
                       <div className="col-lg-12 col-md-12 col-12">
                         <div className="roboto-normal-dark-tan-24px">
                           Questions
@@ -470,6 +501,11 @@ function Step5() {
                         }
                       </div>
                     </div>
+                    <div className="row w-100 justify-content-end">
+                      <div className="overlap-group13 border-1-4px-mercury roboto-bold-white-20-3px ml-3 cursor-pointer" style={{ lineHeight: '45px' }} onClick={() => {
+                        setExpanded(`panel${group.id + 1}`);
+                      }}>Submit</div>
+                    </div>
                   </div>
                 }
               </AccordionDetails>
@@ -480,7 +516,7 @@ function Step5() {
           <button className="overlap-group101 roboto-bold-white-20-3px" onClick={handleBack}>PREVIOUS</button>
           <button className="overlap-group13 border-1-4px-mercury roboto-bold-white-20-3px ml-3" onClick={handleNext}>NEXT</button>
           {
-            formData && formData.signature ?
+            formData && formData.ConsentForms && formData.ConsentForms.Signature ?
               <button className="overlap-group15 border-1-4px-mercury roboto-bold-white-20-3px ml-3" onClick={goToSummary}>GO TO SUMMARY</button>
               : null
           }

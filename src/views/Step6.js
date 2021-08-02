@@ -9,11 +9,13 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+const CryptoJS = require("crypto-js");
 
 function Step6() {
 
   const [state, dispatch] = useContext(AppContext);
   const { formData } = state;
+  console.log('formData: ', formData);
   const today = moment().toDate();
   const todayDate = moment(today).format('MM/DD/YYYY');
   const signature = useRef(null);
@@ -30,19 +32,37 @@ function Step6() {
   };
 
   const handleNext = () => {
-    dispatch({
-      type: "SET_FORM_DATA",
-      formData: {
-        "ConsentForms":{
+    if (signatureImage) {
+      let obj = {
+        "ConsentForms": {
           "Signature": signatureImage
         }
       }
-    });
-    dispatch({
-      type: "SET_STEP",
-      step: state.step + 1
-    });
-    return;
+      let ciphertext = CryptoJS.AES.encrypt(JSON.stringify({ ...formData, ...obj }), 'secretKey').toString();
+      localStorage.setItem('formData', ciphertext);
+      dispatch({
+        type: "SET_FORM_DATA",
+        formData: {
+          ...obj
+        }
+      });
+      dispatch({
+        type: "SET_STEP",
+        step: state.step + 1
+      });
+      return;
+    } else {
+      toast.error("Please Draw e-Signature.", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+    
   };
 
   const handleBack = () => {

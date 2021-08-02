@@ -10,6 +10,9 @@ import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { makeStyles } from "@material-ui/core/styles";
+import CreatableSelect from 'react-select/creatable';
+const CryptoJS = require("crypto-js");
+
 const useStyles = makeStyles({
   underline: {
     "&&&:before": {
@@ -25,6 +28,16 @@ function Step2() {
 
   const [state, dispatch] = useContext(AppContext);
   const { formData } = state;
+
+  const relationShipList = [
+    { label: "Self", value: "Self" },
+    { label: "Spouse", value: "Spouse" },
+    { label: "Child", value: "Child" },
+    { label: "Legally adopted child", value: "Legally adopted child" },
+    { label: "Stepchild", value: "Stepchild" },
+    { label: "Grandchild", value: "Grandchild" },
+  ];
+
   // The first commit of Material-UI
   const [firstName, setfirstName] = useState(formData.Contact && formData.Contact.FirstName ? formData.Contact.FirstName : '');
   const [lastName, setlastName] = useState(formData.Contact && formData.Contact.LastName ? formData.Contact.LastName : '');
@@ -38,7 +51,7 @@ function Step2() {
   const [email, setemail] = useState(formData.Contact && formData.Contact.EmailAddress ? formData.Contact.EmailAddress : '');
   const [eContactName, seteContactName] = useState(formData.Contact && formData.Contact.EmergencyContact && formData.Contact.EmergencyContact.ContactName ? formData.Contact.EmergencyContact.ContactName : '');
   const [eContactPhone, seteContactPhone] = useState(formData.Contact && formData.Contact.EmergencyContact && formData.Contact.EmergencyContact.ContactPhone ? formData.Contact.EmergencyContact.ContactPhone : '');
-  const [eContactRelation, seteContactRelation] = useState(formData.Contact && formData.Contact.EmergencyContact && formData.Contact.EmergencyContact.ContactRelation ? formData.Contact.EmergencyContact.ContactRelation : '');
+  const [eContactRelation, seteContactRelation] = useState(formData.Contact && formData.Contact.EmergencyContact && formData.Contact.EmergencyContact.ContactRelation ? formData.Contact.EmergencyContact.ContactRelation : relationShipList[0]);
 
   const handleDateChange = (date) => {
     setselectedDOB(date);
@@ -69,32 +82,44 @@ function Step2() {
     // }
   };
 
+  const handleInputChange = (inputValue, actionMeta) => {
+    console.group('Input Changed');
+    console.log(inputValue);
+    console.log(`action: ${actionMeta.action}`);
+    console.groupEnd();
+  };
+
   const handleNext = () => {
     if (firstName && lastName && selectedDOB && streetAddress1 &&
       selectedstate && selectedcity && selectedZipcode && phoneNumber && email &&
       eContactName && eContactPhone && eContactRelation) {
+      let obj = {
+        "Contact": {
+          "FirstName": firstName,
+          "LastName": lastName,
+          "DateOfBirth": selectedDOB,
+          "StreetAddress1": streetAddress1,
+          "StreetAddress2": streetAddress2,
+          "Zipcode": selectedZipcode,
+          "City": selectedcity,
+          "State": selectedstate,
+          "PhoneNumber": phoneNumber,
+          "EmailAddress": email,
+          "EmergencyContact": {
+            "ContactName": eContactName,
+            "ContactPhone": eContactPhone,
+            "ContactRelation": eContactRelation
+          }
+        }
+      }
+      let ciphertext = CryptoJS.AES.encrypt(JSON.stringify({ ...formData, ...obj }), 'secretKey').toString();
+      localStorage.setItem('formData', ciphertext);
       dispatch({
         type: "SET_FORM_DATA",
         formData: {
-          "Contact": {
-            "FirstName": firstName,
-            "LastName": lastName,
-            "DateOfBirth": selectedDOB,
-            "StreetAddress1": streetAddress1,
-            "StreetAddress2": streetAddress2,
-            "Zipcode": selectedZipcode,
-            "City": selectedcity,
-            "State": selectedstate,
-            "PhoneNumber": phoneNumber,
-            "EmailAddress": email,
-            "EmergencyContact": {
-              "ContactName": eContactName,
-              "ContactPhone": eContactPhone,
-              "ContactRelation": eContactRelation
-            }
-          }
+          ...obj
         }
-      })
+      });
       dispatch({
         type: "SET_STEP",
         step: state.step + 1
@@ -204,8 +229,6 @@ function Step2() {
               onChange={(event) => setstreetAddress2(event.target.value)}
               InputProps={{ classes }}
               value={streetAddress2}
-              validators={['required']}
-              errorMessages={['This field is required']}
             />
             {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="add2" name="lastname"
               placeholder="Street Address 2" /> */}
@@ -332,13 +355,19 @@ function Step2() {
             <label className="first-name-1 roboto-medium-black-24px w-100">Emergency Contact Relation
               <span className="roboto-medium-tia-maria-24px ml-1">*</span>
             </label>
-            <TextValidator
+            <CreatableSelect
+              defaultValue={eContactRelation}
+              onChange={(newValue) => seteContactRelation(newValue)}
+              onInputChange={handleInputChange}
+              options={relationShipList}
+            />
+            {/* <TextValidator
               onChange={(event) => seteContactRelation(event.target.value)}
               InputProps={{ classes }}
               value={eContactRelation}
               validators={['required', 'matchRegexp:^[a-zA-Z ]*$']}
               errorMessages={['This field is required', 'The field Emergency Contact Relation should contain alphabets only.']}
-            />
+            /> */}
             {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="ephone2" name="lastname"
               placeholder="Emergency Contact Relation" /> */}
           </div>
@@ -348,7 +377,7 @@ function Step2() {
           <button className="overlap-group101 roboto-bold-white-20-3px" onClick={handleBack}>PREVIOUS</button>
           <button className="overlap-group13 border-1-4px-mercury roboto-bold-white-20-3px ml-3" onClick={handleNext}>NEXT</button>
           {
-            formData && formData.signature ?
+            formData && formData.ConsentForms && formData.ConsentForms.Signature ?
               <button className="overlap-group15 border-1-4px-mercury roboto-bold-white-20-3px ml-3" onClick={goToSummary}>GO TO SUMMARY</button>
               : null
           }

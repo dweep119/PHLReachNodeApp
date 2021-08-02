@@ -1,4 +1,5 @@
 import React, { useReducer, createContext } from "react";
+const CryptoJS = require("crypto-js");
 
 export const AppContext = createContext();
 
@@ -9,10 +10,17 @@ const initialState = {
   formData: {
   },
   covid19Modal: false,
-  activeQuestion:{}
+  activeQuestion: {}
 };
 
-const reducer =  (state, action) => {
+if (localStorage.getItem('formData')) {
+  var bytes = CryptoJS.AES.decrypt(localStorage.getItem('formData'), 'secretKey');
+  var decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+  console.log('decryptedData: ', decryptedData);
+  
+}
+
+const reducer = (state, action) => {
   switch (action.type) {
     case "SET_STEP":
       return {
@@ -23,12 +31,12 @@ const reducer =  (state, action) => {
       // updateSession(action.formData);
       return {
         ...state,
-        formData: {...state.formData, ...action.formData},
+        formData: { ...state.formData, ...action.formData },
       };
     case "GET_SESSION":
       return {
         ...state,
-        formData: {...state.formData, ...action.formData},
+        formData: { ...state.formData, ...action.formData },
       };
     case "START":
       return {
@@ -56,7 +64,7 @@ const reducer =  (state, action) => {
   }
 };
 
-export const AppContextProvider =  (props) => {
+export const AppContextProvider = (props) => {
 
   const [state, dispatch] = useReducer(reducer, initialState);
 

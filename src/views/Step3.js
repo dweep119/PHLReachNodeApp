@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { AppContext } from "../store/app";
+const CryptoJS = require("crypto-js");
 
 function Step3() {
 
@@ -140,15 +141,20 @@ function Step3() {
   }
 
   const handleNext = () => {
+    let obj = {
+      "Demographics": {
+        "PreferredLanguage": selectedLanguage,
+        "Race": selectedRace,
+        "Ethnicity": selectedEthnicity,
+        "Gender": selectedGender
+      }
+    }
+    let ciphertext = CryptoJS.AES.encrypt(JSON.stringify({ ...formData, ...obj }), 'secretKey').toString();
+    localStorage.setItem('formData', ciphertext);
     dispatch({
       type: "SET_FORM_DATA",
       formData: {
-        "Demographics":{
-          "PreferredLanguage": selectedLanguage,
-          "Race": selectedRace,
-          "Ethnicity": selectedEthnicity,
-          "Gender": selectedGender
-        }
+        ...obj
       }
     });
     dispatch({
@@ -260,7 +266,7 @@ function Step3() {
         <button className="overlap-group101 roboto-bold-white-20-3px" onClick={handleBack}>PREVIOUS</button>
         <button className="overlap-group13 border-1-4px-mercury roboto-bold-white-20-3px ml-3" onClick={handleNext}>NEXT</button>
         {
-          formData && formData.signature ?
+          formData && formData.ConsentForms && formData.ConsentForms.Signature ?
             <button className="overlap-group15 border-1-4px-mercury roboto-bold-white-20-3px ml-3" onClick={goToSummary}>GO TO SUMMARY</button>
             : null
         }

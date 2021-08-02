@@ -4,8 +4,18 @@ import logoPath from "../assets/img/logo-home@2x.png"
 import qrCodePath from "../assets/img/qrCode.svg";
 import travelPack from "../assets/img/COVID-19 Travel Pack.jpg";
 import vaccination from "../assets/img/COVID-19 Vaccination.jpg";
+import ICalendarLink from "react-icalendar-link";
+const ics = require('ics');
 
 function Step8() {
+
+  const event = {
+    title: "My Title",
+    description: "My Description",
+    startTime: "2018-10-07T10:30:00+10:00",
+    endTime: "2018-10-07T12:00:00+10:00",
+    location: "10 Carlotta St, Artarmon NSW 2064, Australia"
+  }
 
   const [state, dispatch] = useContext(AppContext);
   const { formData } = state;
@@ -25,27 +35,54 @@ function Step8() {
   const EmailAddress = formData.Contact.EmailAddress;
   const ContactName = formData.Contact.EmergencyContact.ContactName;
   const ContactPhone = formData.Contact.EmergencyContact.ContactPhone;
-  const ContactRelation = formData.Contact.EmergencyContact.ContactRelation;
+  const ContactRelation = formData.Contact.EmergencyContact.ContactRelation.label;
   const PreferredLanguage = formData.Demographics.PreferredLanguage;
   const Race = formData.Demographics.Race;
   const Ethnicity = formData.Demographics.Ethnicity;
   const Gender = formData.Demographics.Gender;
   const HasInsurance = formData.Insurance.HasInsurance;
-  const PhotoFront = formData.Insurance.PhotoFront;
-  const PhotoBack = formData.Insurance.PhotoBack;
-  const PrimaryInsurance = formData.Insurance.PrimaryInsurance;
-  const InsuranceId = formData.Insurance.InsuranceId;
-  const GroupNumber = formData.Insurance.GroupNumber;
-  const PlanName = formData.Insurance.PlanName;
+  const PhotoFront = !HasInsurance ? 'NA' : formData.Insurance.PhotoFront;
+  const PhotoBack = !HasInsurance ? 'NA' : formData.Insurance.PhotoBack;
+  const PrimaryInsurance = !HasInsurance ? 'NA' : formData.Insurance.PrimaryInsurance.label;
+  const InsuranceId = !HasInsurance ? 'NA' : formData.Insurance.InsuranceId;
+  const GroupNumber = !HasInsurance ? 'NA' : formData.Insurance.GroupNumber;
+  const PlanName = !HasInsurance ? 'NA' : formData.Insurance.PlanName;
   const SameInsuredPerson = formData.Insurance.SameInsuredPerson;
-  const InsuredPersonRelation = formData.Insurance.InsuredPersonRelation;
-  const InsuredPersonDOB = formData.Insurance.InsuredPersonDOB;
-  const InsuredPersonFirstName = formData.Insurance.InsuredPersonFirstName;
-  const InsuredPersonLastName = formData.Insurance.InsuredPersonLastName;
-  const InsuredPersonMiddleName = formData.Insurance.InsuredPersonMiddleName;
-  const InsuredPersonSuffix = formData.Insurance.InsuredPersonSuffix;
+  const InsuredPersonRelation = HasInsurance ? SameInsuredPerson ? 'NA' : formData.Insurance.InsuredPersonRelation.label : 'NA';
+  const InsuredPersonDOB = HasInsurance ? SameInsuredPerson ? 'NA' : formData.Insurance.InsuredPersonDOB : 'NA';
+  const InsuredPersonFirstName = HasInsurance ? SameInsuredPerson ? 'NA' : formData.Insurance.InsuredPersonFirstName : 'NA';
+  const InsuredPersonLastName = HasInsurance ? SameInsuredPerson ? 'NA' : formData.Insurance.InsuredPersonLastName : 'NA';
+  const InsuredPersonMiddleName = HasInsurance ? SameInsuredPerson ? 'NA' : formData.Insurance.InsuredPersonMiddleName : 'NA';
+  const InsuredPersonSuffix = HasInsurance ? SameInsuredPerson ? 'NA' : formData.Insurance.InsuredPersonSuffix : 'NA';
 
-  const [selectedTab, setselectedTab] = useState('Appointment')
+  const [selectedTab, setselectedTab] = useState('Appointment');
+
+  const serviceList = [
+    {
+      serviceImage: travelPack,
+      serviceName: "COVID-19 Travel Pack",
+      serviceDate: DateOfService,
+      serviceTime: TimeOfService.time_12hr,
+      serviceAddress: "6301 N. Western Ave Chicago, IL 60659"
+    },
+    {
+      serviceImage: vaccination,
+      serviceName: "COVID - 19 Pfizer Vaccination",
+      serviceDate: DateOfService,
+      serviceTime: TimeOfService.time_12hr,
+      serviceAddress: "6301 N. Western Ave Chicago, IL 60659"
+    }
+  ];
+
+  const addToCalendarClick = () => {
+    ics.createEvent(event, (error, value) => {
+      if (error) {
+        console.log(error)
+        return
+      }
+      console.log('value: ', value);
+    })
+  }
 
   const handleNext = () => {
     dispatch({
@@ -98,56 +135,64 @@ function Step8() {
         </div>
       </div>
       <div className="row mt-3">
-        <div className="col-lg-6 col-md-12 col-12">
-          <div className="card summaryCard">
-            <div className="card-header summaryCardHeader">
-              <div className="roboto-bold-white-20px">
-                My Services
-              </div>
-            </div>
-            <div className="card-body">
-              <div className="col-12">
-                <div className="col-lg-5 col-md-5 col-12">
-                  <div className="row">
-                    <div className="d-flex">
-                      <img src={travelPack} alt="img" style={{ height: 70 }} />
-                      <label className="ml-2 roboto-normal-black-18px-22">COVID-19 Travel Pack</label>
+        {
+          serviceList.map((item, index) => (
+            <div className="col-lg-6 col-md-12 col-12" key={index}>
+              <div className="card summaryCard">
+                <div className="card-header summaryCardHeader">
+                  <div className="roboto-bold-white-20px">
+                    My Services
+                  </div>
+                </div>
+                <div className="card-body">
+                  <div className="col-12">
+                    <div className="col-lg-5 col-md-5 col-12">
+                      <div className="row">
+                        <div className="d-flex">
+                          <img src={item.serviceImage} alt="img" style={{ height: 70 }} />
+                          <label className="ml-2 roboto-normal-black-18px-22">{item.serviceName}</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-3 col-12">
+                    <div className="row">
+                      <div className="col-lg-6 col-md-6 col-12">
+                        <i className="fa fa-calendar-o fa-lg" aria-hidden="true"></i>
+                        <label className="ml-2 roboto-normal-black-18px-22">{item.serviceDate}</label>
+                      </div>
+                      <div className="col-lg-6 col-md-6 col-12">
+                        <i className="fa fa-clock-o fa-lg" aria-hidden="true"></i>
+                        <label className="ml-2 roboto-normal-black-18px-22"> {item.serviceTime}</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-3 col-12">
+                    <div className="row">
+                      <div className="col-12">
+                        <i className="fa fa-map-marker fa-lg" aria-hidden="true"></i>
+                        <label className="ml-2 roboto-normal-black-18px-22">{item.serviceAddress}</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-3 col-12">
+                    <div className="row">
+                      <div className="col-12">
+                        <button className="summaryBodyBtn roboto-bold-white-20-3px" onClick={handleBack}>GET DIRECTIONS</button>
+                        {/* <button className="summaryBodyBtn roboto-bold-white-20-3px ml-3" onClick={addToCalendarClick}>ADD TO CALENDAR</button> */}
+                        <ICalendarLink className="btn icsCalendar summaryBodyBtn roboto-bold-white-20-3px ml-3" event={event}>
+                          ADD TO CALENDAR
+                        </ICalendarLink>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="mt-3 col-12">
-                <div className="row">
-                  <div className="col-lg-6 col-md-6 col-12">
-                    <i className="fa fa-calendar-o fa-lg" aria-hidden="true"></i>
-                    <label className="ml-2 roboto-normal-black-18px-22">July 20, 2021</label>
-                  </div>
-                  <div className="col-lg-6 col-md-6 col-12">
-                    <i className="fa fa-clock-o fa-lg" aria-hidden="true"></i>
-                    <label className="ml-2 roboto-normal-black-18px-22">10:15 AM</label>
-                  </div>
-                </div>
-              </div>
-              <div className="mt-3 col-12">
-                <div className="row">
-                  <div className="col-12">
-                    <i className="fa fa-map-marker fa-lg" aria-hidden="true"></i>
-                    <label className="ml-2 roboto-normal-black-18px-22">6301 N. Western Ave Chicago, IL 60659</label>
-                  </div>
-                </div>
-              </div>
-              <div className="mt-3 col-12">
-                <div className="row">
-                  <div className="col-12">
-                    <button className="summaryBodyBtn roboto-bold-white-20-3px" onClick={handleBack}>GET DIRECTIONS</button>
-                    <button className="summaryBodyBtn roboto-bold-white-20-3px ml-3" onClick={handleBack}>ADD TO CALENDER</button>
-                  </div>
-                </div>
-              </div>
             </div>
-          </div>
-        </div>
-        <div className="col-lg-6 col-md-12 col-12">
+
+          ))
+        }
+        {/* <div className="col-lg-6 col-md-12 col-12">
           <div className="card summaryCard">
             <div className="card-header summaryCardHeader">
               <div className="roboto-bold-white-20px">
@@ -169,11 +214,11 @@ function Step8() {
                 <div className="row">
                   <div className="col-lg-6 col-md-6 col-12">
                     <i className="fa fa-calendar-o fa-lg" aria-hidden="true"></i>
-                    <label className="ml-2 roboto-normal-black-18px-22">July 20, 2021</label>
+                    <label className="ml-2 roboto-normal-black-18px-22">{DateOfService}</label>
                   </div>
                   <div className="col-lg-6 col-md-6 col-12">
                     <i className="fa fa-clock-o fa-lg" aria-hidden="true"></i>
-                    <label className="ml-2 roboto-normal-black-18px-22">10:15 AM</label>
+                    <label className="ml-2 roboto-normal-black-18px-22">{TimeOfService.time_12hr}</label>
                   </div>
                 </div>
               </div>
@@ -189,13 +234,13 @@ function Step8() {
                 <div className="row">
                   <div className="col-12">
                     <button className="summaryBodyBtn roboto-bold-white-20-3px" onClick={handleBack}>GET DIRECTIONS</button>
-                    <button className="summaryBodyBtn roboto-bold-white-20-3px ml-3" onClick={handleBack}>ADD TO CALENDER</button>
+                    <button className="summaryBodyBtn roboto-bold-white-20-3px ml-3" onClick={handleBack}>ADD TO CALENDAR</button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
       <div className="mt-5" id="myGroup">
         <div className="summaryCard p-3 d-flex">
@@ -397,7 +442,7 @@ function Step8() {
                   <div className="row mb-3">
                     <div className="col-12">
                       <label className="roboto-normal-black-18px-22 w-100"> Insurance Company</label>
-                      <label className="roboto-normal-dark-silver-18px w-100"> {PrimaryInsurance.label}</label>
+                      <label className="roboto-normal-dark-silver-18px w-100"> {PrimaryInsurance}</label>
                     </div>
                   </div>
                   <div className="row mb-3">
@@ -436,7 +481,7 @@ function Step8() {
                   <div className="row mb-3">
                     <div className="col-12">
                       <label className="roboto-normal-black-18px-22 w-100"> Insured Relationship to Patient</label>
-                      <label className="roboto-normal-dark-silver-18px w-100"> {InsuredPersonRelation.label}</label>
+                      <label className="roboto-normal-dark-silver-18px w-100"> {InsuredPersonRelation}</label>
                     </div>
                   </div>
                 </div>

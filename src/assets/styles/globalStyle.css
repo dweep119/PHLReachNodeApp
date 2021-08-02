@@ -1,5 +1,10 @@
 @import url("https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css");
 @import url("https://fonts.googleapis.com/css?family=Roboto:400,700,500");
+.icsCalendar {
+  margin-top: -5px;
+  text-decoration: none;
+  line-height: 38px;
+}
 .phoneEmail div {
   width: 100%;
 }
@@ -227,7 +232,7 @@ p.MuiTypography-root.heading {
   font-family: var(--font-family-roboto);
   font-size: var(--font-size-xxxl);
 }
-.selecte-more-times {
+.select-more-times {
   color: #0a85e0;
   font-family: var(--font-family-roboto);
   font-size: var(--font-size-xs);

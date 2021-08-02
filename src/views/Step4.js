@@ -11,7 +11,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { makeStyles } from "@material-ui/core/styles";
 import CreatableSelect from 'react-select/creatable';
-import Select from 'react-select';
+const CryptoJS = require("crypto-js");
 
 const useStyles = makeStyles({
   underline: {
@@ -101,7 +101,7 @@ function Step4() {
   const [insuredMiddleName, setinsuredMiddleName] = useState(formData.Insurance && formData.Insurance.InsuredPersonMiddleName ? formData.Insurance.InsuredPersonMiddleName : '');
   const [insuredSuffix, setinsuredSuffix] = useState(formData.Insurance && formData.Insurance.InsuredPersonSuffix ? formData.Insurance.InsuredPersonSuffix : '');
   console.log('isInsuredPersonSame: ', isInsuredPersonSame);
-  
+
   const handleDateChange = (date) => {
     setinsuredDOB(date);
   };
@@ -178,25 +178,30 @@ function Step4() {
       if (selectedInsuranceCompany && insuranceId && groupNumber && planName) {
         if (!isInsuredPersonSame) {
           if (patientInsuredRelation && insuredDOB && insuredFirstName && insuredLastName) {
+            let obj = {
+              "Insurance": {
+                "HasInsurance": isInsured,
+                "PhotoFront": selectedFrontPhoto,
+                "PhotoBack": selectedBackPhoto,
+                "PrimaryInsurance": selectedInsuranceCompany,
+                "InsuranceId": insuranceId,
+                "GroupNumber": groupNumber,
+                "PlanName": planName,
+                "SameInsuredPerson": isInsuredPersonSame,
+                "InsuredPersonRelation": patientInsuredRelation,
+                "InsuredPersonDOB": insuredDOB,
+                "InsuredPersonFirstName": insuredFirstName,
+                "InsuredPersonLastName": insuredLastName,
+                "InsuredPersonMiddleName": insuredMiddleName,
+                "InsuredPersonSuffix": insuredSuffix,
+              }
+            }
+            let ciphertext = CryptoJS.AES.encrypt(JSON.stringify({ ...formData, ...obj }), 'secretKey').toString();
+            localStorage.setItem('formData', ciphertext);
             dispatch({
               type: "SET_FORM_DATA",
               formData: {
-                "Insurance":{
-                  "HasInsurance": isInsured,
-                  "PhotoFront": selectedFrontPhoto,
-                  "PhotoBack": selectedBackPhoto,
-                  "PrimaryInsurance": selectedInsuranceCompany,
-                  "InsuranceId": insuranceId,
-                  "GroupNumber": groupNumber,
-                  "PlanName": planName,
-                  "SameInsuredPerson": isInsuredPersonSame,
-                  "InsuredPersonRelation": patientInsuredRelation,
-                  "InsuredPersonDOB": insuredDOB,
-                  "InsuredPersonFirstName": insuredFirstName,
-                  "InsuredPersonLastName": insuredLastName,
-                  "InsuredPersonMiddleName": insuredMiddleName,
-                  "InsuredPersonSuffix": insuredSuffix,
-                }
+                ...obj
               }
             });
             dispatch({
@@ -216,19 +221,24 @@ function Step4() {
             });
           }
         } else {
+          let obj = {
+            "Insurance": {
+              "HasInsurance": isInsured,
+              "PhotoFront": selectedFrontPhoto,
+              "PhotoBack": selectedBackPhoto,
+              "PrimaryInsurance": selectedInsuranceCompany,
+              "InsuranceId": insuranceId,
+              "GroupNumber": groupNumber,
+              "PlanName": planName,
+              "SameInsuredPerson": isInsuredPersonSame
+            }
+          }
+          let ciphertext = CryptoJS.AES.encrypt(JSON.stringify({ ...formData, ...obj }), 'secretKey').toString();
+          localStorage.setItem('formData', ciphertext);
           dispatch({
             type: "SET_FORM_DATA",
             formData: {
-              "Insurance":{
-                "HasInsurance": isInsured,
-                "PhotoFront": selectedFrontPhoto,
-                "PhotoBack": selectedBackPhoto,
-                "PrimaryInsurance": selectedInsuranceCompany,
-                "InsuranceId": insuranceId,
-                "GroupNumber": groupNumber,
-                "PlanName": planName,
-                "SameInsuredPerson": isInsuredPersonSame
-              }
+              ...obj
             }
           });
           dispatch({
@@ -249,12 +259,17 @@ function Step4() {
         });
       }
     } else {
+      let obj = {
+        "Insurance": {
+          "HasInsurance": isInsured
+        }
+      }
+      let ciphertext = CryptoJS.AES.encrypt(JSON.stringify({ ...formData, ...obj }), 'secretKey').toString();
+      localStorage.setItem('formData', ciphertext);
       dispatch({
         type: "SET_FORM_DATA",
         formData: {
-          "Insurance":{
-            "HasInsurance": isInsured
-          }
+          ...obj
         }
       });
       dispatch({
@@ -423,14 +438,20 @@ function Step4() {
                         <label className="first-name-1 roboto-medium-black-24px w-100">Patient Relationship to Insured
                           <span className="roboto-medium-tia-maria-24px ml-1">*</span>
                         </label>
-                        <Select
+                        <CreatableSelect
+                          defaultValue={patientInsuredRelation}
+                          onChange={(newValue) => setpatientInsuredRelation(newValue)}
+                          onInputChange={handleInputChange}
+                          options={relationShipList}
+                        />
+                        {/* <Select
                           className="basic-single"
                           classNamePrefix="select"
                           defaultValue={patientInsuredRelation}
                           isSearchable={true}
                           onChange={(newValue) => setpatientInsuredRelation(newValue)}
                           options={relationShipList}
-                        />
+                        /> */}
                         {/* <TextValidator
                           onChange={(event) => setpatientInsuredRelation(event.target.value)}
                           InputProps={{ classes }}
@@ -451,13 +472,31 @@ function Step4() {
                             id="date-picker-dialog"
                             format="MM/dd/yyyy"
                             value={insuredDOB}
+                            // disableFuture={true}
+                            variant="inline"
+                            maxDate={Date()}
+                            minDate={"01/01/1921"}
+                            onChange={handleDateChange}
+                            InputProps={{ classes }}
+                            autoOk={true}
+                            KeyboardButtonProps={{
+                              'aria-label': 'change date',
+                            }}
+                          />
+                        </MuiPickersUtilsProvider>
+                        {/* <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                          <KeyboardDatePicker
+                            margin="normal"
+                            id="date-picker-dialog"
+                            format="MM/dd/yyyy"
+                            value={insuredDOB}
                             onChange={handleDateChange}
                             InputProps={{ classes }}
                             KeyboardButtonProps={{
                               'aria-label': 'change date',
                             }}
                           />
-                        </MuiPickersUtilsProvider>
+                        </MuiPickersUtilsProvider> */}
                         {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="add2" name="lastname"
 							placeholder="Date of Birth" /> */}
                       </div>
@@ -529,7 +568,7 @@ function Step4() {
           <button className="overlap-group101 roboto-bold-white-20-3px" onClick={handleBack}>PREVIOUS</button>
           <button className="overlap-group13 border-1-4px-mercury roboto-bold-white-20-3px ml-3" onClick={handleNext}>NEXT</button>
           {
-            formData && formData.signature ?
+            formData && formData.ConsentForms && formData.ConsentForms.Signature ?
               <button className="overlap-group15 border-1-4px-mercury roboto-bold-white-20-3px ml-3" onClick={goToSummary}>GO TO SUMMARY</button>
               : null
           }

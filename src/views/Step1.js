@@ -5,6 +5,8 @@ import _ from "lodash";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Recaptcha from 'react-google-invisible-recaptcha';
+import { ClipLoader } from "react-spinners";
+const CryptoJS = require("crypto-js");
 
 function Step1() {
 
@@ -31,9 +33,13 @@ function Step1() {
     },
   ];
   let _slots = [];
+
+  const [loading, setLoading] = useState(true);
+  let [color, setColor] = useState("#940227eb");
   const [selectedDate, setselectedDate] = useState(formData.DateOfService ? formData.DateOfService : '07/14/2021');
   const [selectedSlot, setselectedSlot] = useState(formData.TimeOfService ? formData.TimeOfService : null);
   const [availableSlots, setavailableSlots] = useState(null);
+  const [showMoreTimes, setshowMoreTimes] = useState(false);
 
   const slots = [
     {
@@ -84,9 +90,42 @@ function Step1() {
     {
       slot: '12:45'
     },
-  ];
-
-  const slots1 = [
+    {
+      slot: '13:0'
+    },
+    {
+      slot: '13:15'
+    },
+    {
+      slot: '13:30'
+    },
+    {
+      slot: '13:45'
+    },
+    {
+      slot: '14:0'
+    },
+    {
+      slot: '14:15'
+    },
+    {
+      slot: '14:30'
+    },
+    {
+      slot: '14:45'
+    },
+    {
+      slot: '15:0'
+    },
+    {
+      slot: '15:15'
+    },
+    {
+      slot: '15:30'
+    },
+    {
+      slot: '15:45'
+    },
     {
       slot: '16:0'
     },
@@ -99,49 +138,21 @@ function Step1() {
     {
       slot: '16:45'
     },
-    {
-      slot: '17:0'
-    },
-    {
-      slot: '17:15'
-    },
-    {
-      slot: '17:30'
-    },
-    {
-      slot: '17:45'
-    },
-    {
-      slot: '18:0'
-    },
-    {
-      slot: '18:15'
-    },
-    {
-      slot: '18:30'
-    },
-    {
-      slot: '18:45'
-    },
-    {
-      slot: '19:0'
-    },
-    {
-      slot: '19:15'
-    },
-    {
-      slot: '19:30'
-    },
-    {
-      slot: '19:45'
-    },
   ];
+
+  useEffect(() => {
+    setselectedDate(formData.DateOfService ? formData.DateOfService : '07/14/2021');
+    setselectedSlot(formData.TimeOfService ? formData.TimeOfService : null);
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }, [formData]);
 
   useEffect(() => {
     setTimeout(() => {
       getAvailableSlots();
     }, 0);
-  });
+  }, [selectedDate]);
 
   const onResolved = () => {
     dispatch({
@@ -162,11 +173,16 @@ function Step1() {
   const handleNext = () => {
     if (selectedSlot) {
       refRecaptcha.current.execute();
+      let obj = {
+        "DateOfService": selectedDate,
+        "TimeOfService": selectedSlot,
+      }
+      let ciphertext = CryptoJS.AES.encrypt(JSON.stringify(obj), 'secretKey').toString();
+      localStorage.setItem('formData', ciphertext);
       dispatch({
         type: "SET_FORM_DATA",
         formData: {
-          "DateOfService": selectedDate,
-          "TimeOfService": selectedSlot,
+          ...obj
         }
       });
     } else {
@@ -184,15 +200,9 @@ function Step1() {
   };
 
   const getAvailableSlots = async () => {
-    let arr = [];
-    if (selectedDate === '07/12/2021' || selectedDate === '07/14/2021') {
-      arr = slots;
-    } else {
-      arr = slots1
-    }
 
-    arr &&
-      arr.map((item) => {
+    slots &&
+      slots.map((item) => {
         const { slot, isBooked } = item;
         let time_12hr = moment(slot, ["HH:mm"]).format("h:mm A");
         let req_time = moment(slot, ["HH:mm"]).format("HH:mm:00");
@@ -211,6 +221,8 @@ function Step1() {
     setavailableSlots(_slots);
 
   };
+
+  if (loading) return <div style={{ textAlign: "center" }}><ClipLoader color={color} loading={loading} size={100} /></div>;
 
   return (
     <div className="App">
@@ -275,7 +287,7 @@ function Step1() {
       {
         availableSlots &&
         Object.keys(availableSlots).map((slot, index) => (
-          <div className="row mr-0 slot" key={index}>
+          <div className={"row mr-0 slot " + (index >= 4 && !showMoreTimes ? 'd-none' : '')} key={index}>
             <div className="col-lg-2 col-md-2 col-3 slotTime">
               <div className="overlap-group14">
                 <div className="address-3 roboto-normal-black-18px-2">{slot}</div>
@@ -297,13 +309,22 @@ function Step1() {
         ))
       }
       <div className="w-100 mt-3 d-flex justify-content-between">
-        <div className="selecte-more-times">Selecte more times</div>
+        {
+          slots.length >= 4 && !showMoreTimes ?
+            <div className="select-more-times cursor-pointer" onClick={() => setshowMoreTimes(true)}>
+              Show more times
+            </div>
+            :
+            <div className="select-more-times cursor-pointer" onClick={() => setshowMoreTimes(false)}>
+              Hide more times
+            </div>
+        }
         <div className="text-7 roboto-medium-black-18px-2">Only 1 time slot per service</div>
       </div>
       <div className="mt-5 mb-5 pb-5 float-right">
         <button className="overlap-group13 border-1-4px-mercury roboto-bold-white-20-3px" onClick={handleNext}>NEXT</button>
         {
-          formData && formData.signature ?
+          formData && formData.ConsentForms && formData.ConsentForms.Signature ?
             <button className="overlap-group15 border-1-4px-mercury roboto-bold-white-20-3px ml-3" onClick={goToSummary}>GO TO SUMMARY</button>
             : null
         }
