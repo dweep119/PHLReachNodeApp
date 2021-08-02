@@ -49,7 +49,7 @@ const RenderQuestions = (props) => {
       let obj = {
         "MedicalQuestionnaire": [...formData.MedicalQuestionnaire, { "QuestionId": que.id, "Answers": [val] }]
       }
-      let ciphertext = CryptoJS.AES.encrypt(JSON.stringify({ ...formData, ...obj }), 'secretKey').toString();
+      let ciphertext = CryptoJS.AES.encrypt(JSON.stringify({ ...formData, ...obj }), process.env.REACT_APP_SECRET_KEY).toString();
       localStorage.setItem('formData', ciphertext);
       dispatch({
         type: "SET_FORM_DATA",
@@ -61,7 +61,7 @@ const RenderQuestions = (props) => {
       let obj = {
         "MedicalQuestionnaire": [{ "QuestionId": que.id, "Answers": [val] }]
       }
-      let ciphertext = CryptoJS.AES.encrypt(JSON.stringify({ ...formData, ...obj }), 'secretKey').toString();
+      let ciphertext = CryptoJS.AES.encrypt(JSON.stringify({ ...formData, ...obj }), process.env.REACT_APP_SECRET_KEY).toString();
       localStorage.setItem('formData', ciphertext);
       dispatch({
         type: "SET_FORM_DATA",
@@ -88,7 +88,7 @@ const RenderQuestions = (props) => {
       let obj = {
         "MedicalQuestionnaire": [...formData.MedicalQuestionnaire, val]
       }
-      let ciphertext = CryptoJS.AES.encrypt(JSON.stringify({ ...formData, ...obj }), 'secretKey').toString();
+      let ciphertext = CryptoJS.AES.encrypt(JSON.stringify({ ...formData, ...obj }), process.env.REACT_APP_SECRET_KEY).toString();
       localStorage.setItem('formData', ciphertext);
       dispatch({
         type: "SET_FORM_DATA",
@@ -100,7 +100,7 @@ const RenderQuestions = (props) => {
       let obj = {
         "MedicalQuestionnaire": [val]
       }
-      let ciphertext = CryptoJS.AES.encrypt(JSON.stringify({ ...formData, ...obj }), 'secretKey').toString();
+      let ciphertext = CryptoJS.AES.encrypt(JSON.stringify({ ...formData, ...obj }), process.env.REACT_APP_SECRET_KEY).toString();
       localStorage.setItem('formData', ciphertext);
       dispatch({
         type: "SET_FORM_DATA",

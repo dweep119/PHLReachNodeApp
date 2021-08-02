@@ -177,7 +177,7 @@ function Step1() {
         "DateOfService": selectedDate,
         "TimeOfService": selectedSlot,
       }
-      let ciphertext = CryptoJS.AES.encrypt(JSON.stringify(obj), 'secretKey').toString();
+      let ciphertext = CryptoJS.AES.encrypt(JSON.stringify(obj), process.env.REACT_APP_SECRET_KEY).toString();
       localStorage.setItem('formData', ciphertext);
       dispatch({
         type: "SET_FORM_DATA",

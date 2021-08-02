@@ -40,7 +40,7 @@ export default (ComposedComponent, title, options) => {
 
     const handleAgree = () => {
       if (localStorage.getItem('formData')) {
-        var bytes = CryptoJS.AES.decrypt(localStorage.getItem('formData'), 'secretKey');
+        var bytes = CryptoJS.AES.decrypt(localStorage.getItem('formData'), process.env.REACT_APP_SECRET_KEY);
         var decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
         state.formData = decryptedData;
       }

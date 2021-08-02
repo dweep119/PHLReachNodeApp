@@ -13,13 +13,6 @@ const initialState = {
   activeQuestion: {}
 };
 
-if (localStorage.getItem('formData')) {
-  var bytes = CryptoJS.AES.decrypt(localStorage.getItem('formData'), 'secretKey');
-  var decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-  console.log('decryptedData: ', decryptedData);
-  
-}
-
 const reducer = (state, action) => {
   switch (action.type) {
     case "SET_STEP":

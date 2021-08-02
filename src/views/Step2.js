@@ -112,7 +112,7 @@ function Step2() {
           }
         }
       }
-      let ciphertext = CryptoJS.AES.encrypt(JSON.stringify({ ...formData, ...obj }), 'secretKey').toString();
+      let ciphertext = CryptoJS.AES.encrypt(JSON.stringify({ ...formData, ...obj }), process.env.REACT_APP_SECRET_KEY).toString();
       localStorage.setItem('formData', ciphertext);
       dispatch({
         type: "SET_FORM_DATA",
