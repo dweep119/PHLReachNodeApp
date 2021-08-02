@@ -17,6 +17,22 @@ function Step3() {
   const [selectedGender, setselectedGender] = useState(formData.Demographics && formData.Demographics.Gender ? formData.Demographics.Gender : genderList[0].value);
 
   const goToSummary = () => {
+    let obj = {
+      "Demographics": {
+        "PreferredLanguage": selectedLanguage,
+        "Race": selectedRace,
+        "Ethnicity": selectedEthnicity,
+        "Gender": selectedGender
+      }
+    }
+    let ciphertext = CryptoJS.AES.encrypt(JSON.stringify({ ...formData, ...obj }), process.env.REACT_APP_SECRET_KEY).toString();
+    localStorage.setItem('formData', ciphertext);
+    dispatch({
+      type: "SET_FORM_DATA",
+      formData: {
+        ...obj
+      }
+    });
     dispatch({
       type: "SET_STEP",
       step: 7

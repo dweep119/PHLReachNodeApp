@@ -51,11 +51,52 @@ function Step2() {
   };
 
   const goToSummary = () => {
-    dispatch({
-      type: "SET_STEP",
-      step: 7
-    });
-    return;
+    if (firstName && lastName && selectedDOB && streetAddress1 &&
+      selectedstate && selectedcity && selectedZipcode && phoneNumber && email &&
+      eContactName && eContactPhone && eContactRelation) {
+      let obj = {
+        "Contact": {
+          "FirstName": firstName,
+          "LastName": lastName,
+          "DateOfBirth": selectedDOB,
+          "StreetAddress1": streetAddress1,
+          "StreetAddress2": streetAddress2,
+          "Zipcode": selectedZipcode,
+          "City": selectedcity,
+          "State": selectedstate,
+          "PhoneNumber": phoneNumber,
+          "EmailAddress": email,
+          "EmergencyContact": {
+            "ContactName": eContactName,
+            "ContactPhone": eContactPhone,
+            "ContactRelation": eContactRelation
+          }
+        }
+      }
+      let ciphertext = CryptoJS.AES.encrypt(JSON.stringify({ ...formData, ...obj }), process.env.REACT_APP_SECRET_KEY).toString();
+      localStorage.setItem('formData', ciphertext);
+      dispatch({
+        type: "SET_FORM_DATA",
+        formData: {
+          ...obj
+        }
+      });
+      dispatch({
+        type: "SET_STEP",
+        step: 7
+      });
+      return;
+    } else {
+      toast.error("Please fill mandatory fields.", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
   }
 
   const onZipCodeChange = async (e) => {

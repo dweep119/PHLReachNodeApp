@@ -51,7 +51,7 @@ export default (ComposedComponent, title, options) => {
       window.onload = function () {
         onPageLoad();
         return "";
-      }.bind(this);
+      }
     })
     //     const onPrevClick = () => {
     //       if (state.step > 1) {

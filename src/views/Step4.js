@@ -26,11 +26,11 @@ const useStyles = makeStyles({
 
 
 function Step4() {
-  
+
   const [state, dispatch] = useContext(AppContext);
   const { formData } = state;
   const { relationShipList } = state;
-  
+
   const { insuranceCompanies } = state;
 
   const [isInsured, setisInsured] = useState(formData.Insurance && formData.Insurance.HasInsurance ? formData.Insurance.HasInsurance : false);
@@ -113,11 +113,110 @@ function Step4() {
   };
 
   const goToSummary = () => {
-    dispatch({
-      type: "SET_STEP",
-      step: 7
-    });
-    return;
+    if (isInsured) {
+      if (selectedInsuranceCompany && insuranceId && groupNumber && planName) {
+        if (!isInsuredPersonSame) {
+          if (patientInsuredRelation && insuredDOB && insuredFirstName && insuredLastName) {
+            let obj = {
+              "Insurance": {
+                "HasInsurance": isInsured,
+                "PhotoFront": selectedFrontPhoto,
+                "PhotoBack": selectedBackPhoto,
+                "PrimaryInsurance": selectedInsuranceCompany,
+                "InsuranceId": insuranceId,
+                "GroupNumber": groupNumber,
+                "PlanName": planName,
+                "SameInsuredPerson": isInsuredPersonSame,
+                "InsuredPersonRelation": patientInsuredRelation,
+                "InsuredPersonDOB": insuredDOB,
+                "InsuredPersonFirstName": insuredFirstName,
+                "InsuredPersonLastName": insuredLastName,
+                "InsuredPersonMiddleName": insuredMiddleName,
+                "InsuredPersonSuffix": insuredSuffix,
+              }
+            }
+            let ciphertext = CryptoJS.AES.encrypt(JSON.stringify({ ...formData, ...obj }), process.env.REACT_APP_SECRET_KEY).toString();
+            localStorage.setItem('formData', ciphertext);
+            dispatch({
+              type: "SET_FORM_DATA",
+              formData: {
+                ...obj
+              }
+            });
+            dispatch({
+              type: "SET_STEP",
+              step: 7
+            });
+            return;
+          } else {
+            toast.error("Please fill mandatory fields.", {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            });
+          }
+        } else {
+          let obj = {
+            "Insurance": {
+              "HasInsurance": isInsured,
+              "PhotoFront": selectedFrontPhoto,
+              "PhotoBack": selectedBackPhoto,
+              "PrimaryInsurance": selectedInsuranceCompany,
+              "InsuranceId": insuranceId,
+              "GroupNumber": groupNumber,
+              "PlanName": planName,
+              "SameInsuredPerson": isInsuredPersonSame
+            }
+          }
+          let ciphertext = CryptoJS.AES.encrypt(JSON.stringify({ ...formData, ...obj }), process.env.REACT_APP_SECRET_KEY).toString();
+          localStorage.setItem('formData', ciphertext);
+          dispatch({
+            type: "SET_FORM_DATA",
+            formData: {
+              ...obj
+            }
+          });
+          dispatch({
+            type: "SET_STEP",
+            step: 7
+          });
+          return;
+        }
+      } else {
+        toast.error("Please fill mandatory fields.", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+    } else {
+      let obj = {
+        "Insurance": {
+          "HasInsurance": isInsured
+        }
+      }
+      let ciphertext = CryptoJS.AES.encrypt(JSON.stringify({ ...formData, ...obj }), process.env.REACT_APP_SECRET_KEY).toString();
+      localStorage.setItem('formData', ciphertext);
+      dispatch({
+        type: "SET_FORM_DATA",
+        formData: {
+          ...obj
+        }
+      });
+      dispatch({
+        type: "SET_STEP",
+        step: 7
+      });
+      return;
+    }
   }
 
   const handleNext = () => {

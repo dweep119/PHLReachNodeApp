@@ -27,6 +27,7 @@ function Step1() {
   useEffect(() => {
     setselectedDate(formData.DateOfService ? formData.DateOfService : null);
     setselectedSlot(formData.TimeOfService ? formData.TimeOfService : null);
+    setColor("#940227eb");
     setTimeout(() => {
       setLoading(false);
     }, 1000);
@@ -36,7 +37,7 @@ function Step1() {
     setTimeout(() => {
       getAvailableSlots();
     }, 0);
-  }, [selectedDate]);
+  });
 
   const onResolved = () => {
     dispatch({
@@ -47,6 +48,18 @@ function Step1() {
   };
 
   const goToSummary = () => {
+    let obj = {
+      "DateOfService": selectedDate,
+      "TimeOfService": selectedSlot,
+    }
+    let ciphertext = CryptoJS.AES.encrypt(JSON.stringify(obj), process.env.REACT_APP_SECRET_KEY).toString();
+    localStorage.setItem('formData', ciphertext);
+    dispatch({
+      type: "SET_FORM_DATA",
+      formData: {
+        ...obj
+      }
+    });
     dispatch({
       type: "SET_STEP",
       step: 7

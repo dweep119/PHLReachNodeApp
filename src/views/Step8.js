@@ -5,7 +5,7 @@ import qrCodePath from "../assets/img/qrCode.svg";
 import travelPack from "../assets/img/COVID-19 Travel Pack.jpg";
 import vaccination from "../assets/img/COVID-19 Vaccination.jpg";
 import ICalendarLink from "react-icalendar-link";
-const ics = require('ics');
+import moment from "moment";
 
 function Step8() {
 
@@ -19,6 +19,8 @@ function Step8() {
 
   const [state, dispatch] = useContext(AppContext);
   const { formData } = state;
+  const { groupList } = state;
+  const { questionList } = state;
   console.log('formData: ', formData);
   const signatureImage = formData.ConsentForms.Signature;
   const DateOfService = formData.DateOfService;
@@ -27,7 +29,7 @@ function Step8() {
   const LastName = formData.Contact.LastName;
   const DateOfBirth = formData.Contact.DateOfBirth;
   const StreetAddress1 = formData.Contact.StreetAddress1;
-  const StreetAddress2 = formData.Contact.StreetAddress2;
+  // const StreetAddress2 = formData.Contact.StreetAddress2;
   const Zipcode = formData.Contact.Zipcode;
   const City = formData.Contact.City;
   const State = formData.Contact.State;
@@ -41,8 +43,8 @@ function Step8() {
   const Ethnicity = formData.Demographics.Ethnicity;
   const Gender = formData.Demographics.Gender;
   const HasInsurance = formData.Insurance.HasInsurance;
-  const PhotoFront = !HasInsurance ? 'NA' : formData.Insurance.PhotoFront;
-  const PhotoBack = !HasInsurance ? 'NA' : formData.Insurance.PhotoBack;
+  // const PhotoFront = !HasInsurance ? 'NA' : formData.Insurance.PhotoFront;
+  // const PhotoBack = !HasInsurance ? 'NA' : formData.Insurance.PhotoBack;
   const PrimaryInsurance = !HasInsurance ? 'NA' : formData.Insurance.PrimaryInsurance.label;
   const InsuranceId = !HasInsurance ? 'NA' : formData.Insurance.InsuranceId;
   const GroupNumber = !HasInsurance ? 'NA' : formData.Insurance.GroupNumber;
@@ -52,11 +54,11 @@ function Step8() {
   const InsuredPersonDOB = HasInsurance ? SameInsuredPerson ? 'NA' : formData.Insurance.InsuredPersonDOB : 'NA';
   const InsuredPersonFirstName = HasInsurance ? SameInsuredPerson ? 'NA' : formData.Insurance.InsuredPersonFirstName : 'NA';
   const InsuredPersonLastName = HasInsurance ? SameInsuredPerson ? 'NA' : formData.Insurance.InsuredPersonLastName : 'NA';
-  const InsuredPersonMiddleName = HasInsurance ? SameInsuredPerson ? 'NA' : formData.Insurance.InsuredPersonMiddleName : 'NA';
-  const InsuredPersonSuffix = HasInsurance ? SameInsuredPerson ? 'NA' : formData.Insurance.InsuredPersonSuffix : 'NA';
+  // const InsuredPersonMiddleName = HasInsurance ? SameInsuredPerson ? 'NA' : formData.Insurance.InsuredPersonMiddleName : 'NA';
+  // const InsuredPersonSuffix = HasInsurance ? SameInsuredPerson ? 'NA' : formData.Insurance.InsuredPersonSuffix : 'NA';
 
   const [selectedTab, setselectedTab] = useState('Appointment');
-
+  const rawContent = '';
   const serviceList = [
     {
       serviceImage: travelPack,
@@ -73,16 +75,6 @@ function Step8() {
       serviceAddress: "6301 N. Western Ave Chicago, IL 60659"
     }
   ];
-
-  const addToCalendarClick = () => {
-    ics.createEvent(event, (error, value) => {
-      if (error) {
-        console.log(error)
-        return
-      }
-      console.log('value: ', value);
-    })
-  }
 
   const handleNext = () => {
     dispatch({
@@ -180,7 +172,7 @@ function Step8() {
                       <div className="col-12">
                         <button className="summaryBodyBtn roboto-bold-white-20-3px" onClick={handleBack}>GET DIRECTIONS</button>
                         {/* <button className="summaryBodyBtn roboto-bold-white-20-3px ml-3" onClick={addToCalendarClick}>ADD TO CALENDAR</button> */}
-                        <ICalendarLink className="btn icsCalendar summaryBodyBtn roboto-bold-white-20-3px ml-3" event={event}>
+                        <ICalendarLink className="btn icsCalendar summaryBodyBtn roboto-bold-white-20-3px ml-3" event={event} rawContent={rawContent}>
                           ADD TO CALENDAR
                         </ICalendarLink>
                       </div>
@@ -192,55 +184,6 @@ function Step8() {
 
           ))
         }
-        {/* <div className="col-lg-6 col-md-12 col-12">
-          <div className="card summaryCard">
-            <div className="card-header summaryCardHeader">
-              <div className="roboto-bold-white-20px">
-                My Services
-              </div>
-            </div>
-            <div className="card-body">
-              <div className="col-12">
-                <div className="col-lg-7 col-md-7 col-12">
-                  <div className="row">
-                    <div className="d-flex">
-                      <img src={vaccination} alt="img" style={{ height: 70 }} />
-                      <label className="ml-2 roboto-normal-black-18px-22">COVID-19 Pfizer Vaccination</label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="mt-3 col-12">
-                <div className="row">
-                  <div className="col-lg-6 col-md-6 col-12">
-                    <i className="fa fa-calendar-o fa-lg" aria-hidden="true"></i>
-                    <label className="ml-2 roboto-normal-black-18px-22">{DateOfService}</label>
-                  </div>
-                  <div className="col-lg-6 col-md-6 col-12">
-                    <i className="fa fa-clock-o fa-lg" aria-hidden="true"></i>
-                    <label className="ml-2 roboto-normal-black-18px-22">{TimeOfService.time_12hr}</label>
-                  </div>
-                </div>
-              </div>
-              <div className="mt-3 col-12">
-                <div className="row">
-                  <div className="col-12">
-                    <i className="fa fa-map-marker fa-lg" aria-hidden="true"></i>
-                    <label className="ml-2 roboto-normal-black-18px-22">6301 N. Western Ave Chicago, IL 60659</label>
-                  </div>
-                </div>
-              </div>
-              <div className="mt-3 col-12">
-                <div className="row">
-                  <div className="col-12">
-                    <button className="summaryBodyBtn roboto-bold-white-20-3px" onClick={handleBack}>GET DIRECTIONS</button>
-                    <button className="summaryBodyBtn roboto-bold-white-20-3px ml-3" onClick={handleBack}>ADD TO CALENDAR</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> */}
       </div>
       <div className="mt-5" id="myGroup">
         <div className="summaryCard p-3 d-flex">
@@ -355,8 +298,8 @@ function Step8() {
                   <div className="row mb-3">
                     <div className="col-12">
                       <label className="roboto-normal-black-18px-22 w-100"> Date of Birth</label>
-                      <label className="roboto-normal-dark-silver-18px w-100"> 09/11/1995</label>
-                      {/* <label className="roboto-normal-dark-silver-18px w-100"> {DateOfBirth}</label> */}
+                      {/* <label className="roboto-normal-dark-silver-18px w-100"> 09/11/1995</label> */}
+                      <label className="roboto-normal-dark-silver-18px w-100"> {moment(DateOfBirth).format("MM/DD/YYYY")}</label>
                     </div>
                   </div>
                   <div className="row mb-3">
@@ -454,14 +397,14 @@ function Step8() {
                   <div className="row mb-3">
                     <div className="col-12">
                       <label className="roboto-normal-black-18px-22 w-100"> Insured Person Name</label>
-                      <label className="roboto-normal-dark-silver-18px w-100"> {InsuredPersonFirstName} {InsuredPersonLastName}</label>
+                      <label className="roboto-normal-dark-silver-18px w-100"> {InsuredPersonFirstName} {InsuredPersonFirstName === 'NA' ? '' : InsuredPersonLastName}</label>
                     </div>
                   </div>
                   <div className="row mb-3">
                     <div className="col-12">
                       <label className="roboto-normal-black-18px-22 w-100"> Insured Person DOB</label>
-                      <label className="roboto-normal-dark-silver-18px w-100"> 08/30/1964</label>
-                      {/* <label className="roboto-normal-dark-silver-18px w-100"> {InsuredPersonDOB}</label> */}
+                      {/* <label className="roboto-normal-dark-silver-18px w-100"> 08/30/1964</label> */}
+                      <label className="roboto-normal-dark-silver-18px w-100"> {InsuredPersonDOB !== 'NA' ? moment(InsuredPersonDOB).format("MM/DD/YYYY") : InsuredPersonDOB}</label>
                     </div>
                   </div>
                 </div>
@@ -501,149 +444,40 @@ function Step8() {
               </div>
               <div className="border-1px-mercury mb-3"></div>
               <div className="row">
-                <div className="roboto-normal-dark-tan-22px col-12 mb-3">
-                  COVID-19 Testing
-                </div>
-                <div className="col-12">
-                  <div className="col-lg-12 col-md-12 col-12">
-                    <div className="row mb-3">
+                {
+                  groupList && groupList.map((group, groupIndex) => (
+                    <div key={groupIndex}>
+                      <div className="roboto-normal-dark-tan-22px col-12 mb-3">
+                        {group.label}
+                      </div>
                       <div className="col-12">
-                        <label className="roboto-normal-black-18px-22 w-100"> Are you currently experiencing COVID-19 symptoms or have you been exposed to COVID-19?</label>
-                        <label className="roboto-normal-dark-silver-18px w-100"> No</label>
+                        <div className="col-lg-12 col-md-12 col-12">
+                          {
+                            questionList && questionList.map((question, questionIndex) => (
+                              question.groupId === group.id ?
+                                <div className="row mb-3" key={questionIndex}>
+                                  <div className="col-12">
+                                    <label className="roboto-normal-black-18px-22 w-100"> {question.title}</label>
+                                    <label className="roboto-normal-dark-silver-18px w-100"> {
+                                    formData.MedicalQuestionnaire && formData.MedicalQuestionnaire.length > 0 ?
+                                    formData.MedicalQuestionnaire.map((item) => {
+                                      if (item.QuestionId === question.id) {
+                                        return item.Answers
+                                      } else {
+                                        return question.default
+                                      }
+                                    }) : question.default
+                                    }</label>
+                                  </div>
+                                </div>
+                                : null
+                            ))
+                          }
+                        </div>
                       </div>
                     </div>
-                    <div className="row mb-3">
-                      <div className="col-12">
-                        <label className="roboto-normal-black-18px-22 w-100"> Have you been in any public gatherings(i.e prayer hall, protests, parties/events/restaurant, etc)?</label>
-                        <label className="roboto-normal-dark-silver-18px w-100"> No</label>
-                      </div>
-                    </div>
-                    <div className="row mb-3">
-                      <div className="col-12">
-                        <label className="roboto-normal-black-18px-22 w-100"> Are you a health care worker‚ nursing home worker‚ first responder?</label>
-                        <label className="roboto-normal-dark-silver-18px w-100"> No</label>
-                      </div>
-                    </div>
-                    <div className="row mb-3">
-                      <div className="col-12">
-                        <label className="roboto-normal-black-18px-22 w-100"> Have you experienced any symptoms in the last 14 days?</label>
-                        <label className="roboto-normal-dark-silver-18px w-100"> No</label>
-                      </div>
-                    </div>
-                    <div className="row mb-3">
-                      <div className="col-12">
-                        <label className="roboto-normal-black-18px-22 w-100"> Do you have any pre-existing medical conditions?</label>
-                        <label className="roboto-normal-dark-silver-18px w-100"> No</label>
-                      </div>
-                    </div>
-                    <div className="row mb-3">
-                      <div className="col-12">
-                        <label className="roboto-normal-black-18px-22 w-100"> Do you smoke cigarettes or use other tobacco?</label>
-                        <label className="roboto-normal-dark-silver-18px w-100"> No</label>
-                      </div>
-                    </div>
-                    <div className="row mb-3">
-                      <div className="col-12">
-                        <label className="roboto-normal-black-18px-22 w-100"> Do you use vaping products?</label>
-                        <label className="roboto-normal-dark-silver-18px w-100"> No</label>
-                      </div>
-                    </div>
-                    <div className="row mb-3">
-                      <div className="col-12">
-                        <label className="roboto-normal-black-18px-22 w-100"> Have you experienced any of these symptoms</label>
-                        <label className="roboto-normal-dark-silver-18px w-100"> Cough, Rash, Fever above 100 degrees</label>
-                      </div>
-                    </div>
-                    <div className="row mb-3">
-                      <div className="col-12">
-                        <label className="roboto-normal-black-18px-22 w-100"> How long have you been experiencing these symptoms (in days)</label>
-                        <label className="roboto-normal-dark-silver-18px w-100"> 5</label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="roboto-normal-dark-tan-22px col-12 mb-3">
-                  COVID-19 Vaccine
-                </div>
-                <div className="col-12">
-                  <div className="col-lg-12 col-md-12 col-12">
-                    <div className="row mb-3">
-                      <div className="col-12">
-                        <label className="roboto-normal-black-18px-22 w-100"> Are you currently experiencing COVID-19 symptoms or have you been exposed to COVID-19?</label>
-                        <label className="roboto-normal-dark-silver-18px w-100"> No</label>
-                      </div>
-                    </div>
-                    <div className="row mb-3">
-                      <div className="col-12">
-                        <label className="roboto-normal-black-18px-22 w-100"> Have you received any vaccinations in the past 2 weeks?</label>
-                        <label className="roboto-normal-dark-silver-18px w-100"> No</label>
-                      </div>
-                    </div>
-                    <div className="row mb-3">
-                      <div className="col-12">
-                        <label className="roboto-normal-black-18px-22 w-100"> Have you receiveed a COVID-19 vaccine from different manufacturer at any time, or did you participate in a COVID-19 vaccine trial?</label>
-                        <label className="roboto-normal-dark-silver-18px w-100"> No</label>
-                      </div>
-                    </div>
-                    <div className="row mb-3">
-                      <div className="col-12">
-                        <label className="roboto-normal-black-18px-22 w-100"> Have you ever had a serious reaction or fainted after receiving any vaccination?</label>
-                        <label className="roboto-normal-dark-silver-18px w-100"> No</label>
-                      </div>
-                    </div>
-                    <div className="row mb-3">
-                      <div className="col-12">
-                        <label className="roboto-normal-black-18px-22 w-100"> Have you been diagnosed with COVID-19 infection in the last 90 days?</label>
-                        <label className="roboto-normal-dark-silver-18px w-100"> No</label>
-                      </div>
-                    </div>
-                    <div className="row mb-3">
-                      <div className="col-12">
-                        <label className="roboto-normal-black-18px-22 w-100"> Have you ever had an anaphylactic reaction or had other severe symptoms after receiving another vaccination?</label>
-                        <label className="roboto-normal-dark-silver-18px w-100"> No</label>
-                      </div>
-                    </div>
-                    <div className="row mb-3">
-                      <div className="col-12">
-                        <label className="roboto-normal-black-18px-22 w-100"> Do you have a medical condition or take medication(s) that may weaken your immune system?</label>
-                        <label className="roboto-normal-dark-silver-18px w-100"> No</label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="roboto-normal-dark-tan-22px col-12 mb-3">
-                  Additional Info
-                </div>
-                <div className="col-12">
-                  <div className="col-lg-12 col-md-12 col-12">
-                    <div className="row mb-3">
-                      <div className="col-12">
-                        <label className="roboto-normal-black-18px-22 w-100"> Are you disabled?</label>
-                        <label className="roboto-normal-dark-silver-18px w-100"> No</label>
-                      </div>
-                    </div>
-                    <div className="row mb-3">
-                      <div className="col-12">
-                        <label className="roboto-normal-black-18px-22 w-100"> Any additional personal health information you would like us to be aware of?</label>
-                        <label className="roboto-normal-dark-silver-18px w-100"> No</label>
-                      </div>
-                    </div>
-                    <div className="row mb-3">
-                      <div className="col-12">
-                        <label className="roboto-normal-black-18px-22 w-100"> How did you here about us?</label>
-                        <label className="roboto-normal-dark-silver-18px w-100"> Facebook</label>
-                      </div>
-                    </div>
-                    <div className="row mb-3">
-                      <div className="col-12">
-                        <label className="roboto-normal-black-18px-22 w-100"> In the future, what other services would you like Prism Health lab to provide?</label>
-                        <label className="roboto-normal-dark-silver-18px w-100"> Immigration</label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                  ))
+                }
               </div>
             </div>
             <div className="consent collapse" id="collapseExample6" data-parent="#myGroup">

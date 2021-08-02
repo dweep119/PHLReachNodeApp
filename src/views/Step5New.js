@@ -33,7 +33,7 @@ const RenderQuestions = (props) => {
         setvalue({ "QuestionId": result[0].QuestionId, "Answers": result[0].Answers })
       }
     }
-  }, [formData])
+  }, [formData, question])
 
   const onOptionChange = (val, que) => {
     setvalue({ "QuestionId": que.id, "Answers": [val] });
