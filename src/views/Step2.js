@@ -29,7 +29,7 @@ function Step2() {
   const [state, dispatch] = useContext(AppContext);
   const { formData } = state;
 
-  const relationShipList = state.emergencyRelationShipList;
+  const relationShipList = state.relationshipList;
 
   // The first commit of Material-UI
   const [firstName, setfirstName] = useState(formData.Contact && formData.Contact.FirstName ? formData.Contact.FirstName : '');

@@ -29,19 +29,19 @@ function Step4() {
 
   const [state, dispatch] = useContext(AppContext);
   const { formData } = state;
-  const { relationShipList } = state;
+  const { relationshipList } = state;
 
-  const { insuranceCompanies } = state;
+  const { insuranceCompanyList } = state;
 
   const [isInsured, setisInsured] = useState(formData.Insurance && formData.Insurance.HasInsurance ? formData.Insurance.HasInsurance : false);
   const [selectedFrontPhoto, setselectedFrontPhoto] = useState(formData.Insurance && formData.Insurance.PhotoFront ? formData.Insurance.PhotoFront : null);
   const [selectedBackPhoto, setselectedBackPhoto] = useState(formData.Insurance && formData.Insurance.PhotoBack ? formData.Insurance.PhotoBack : null);
-  const [selectedInsuranceCompany, setselectedInsuranceCompany] = useState(formData.Insurance && formData.Insurance.PrimaryInsurance ? formData.Insurance.PrimaryInsurance : insuranceCompanies[0]);
+  const [selectedInsuranceCompany, setselectedInsuranceCompany] = useState(formData.Insurance && formData.Insurance.PrimaryInsurance ? formData.Insurance.PrimaryInsurance : insuranceCompanyList[0]);
   const [insuranceId, setinsuranceId] = useState(formData.Insurance && formData.Insurance.InsuranceId ? formData.Insurance.InsuranceId : '');
   const [groupNumber, setgroupNumber] = useState(formData.Insurance && formData.Insurance.GroupNumber ? formData.Insurance.GroupNumber : '');
   const [planName, setplanName] = useState(formData.Insurance && formData.Insurance.PlanName ? formData.Insurance.PlanName : '');
   const [isInsuredPersonSame, setisInsuredPersonSame] = useState(formData.Insurance && formData.Insurance.SameInsuredPerson === false ? formData.Insurance.SameInsuredPerson : true);
-  const [patientInsuredRelation, setpatientInsuredRelation] = useState(formData.Insurance && formData.Insurance.InsuredPersonRelation ? formData.Insurance.InsuredPersonRelation : relationShipList[0]);
+  const [patientInsuredRelation, setpatientInsuredRelation] = useState(formData.Insurance && formData.Insurance.InsuredPersonRelation ? formData.Insurance.InsuredPersonRelation : relationshipList[0]);
   const [insuredDOB, setinsuredDOB] = useState(formData.Insurance && formData.Insurance.InsuredPersonDOB ? formData.Insurance.InsuredPersonDOB : new Date('2014-08-18T21:11:54'));
   const [insuredFirstName, setinsuredFirstName] = useState(formData.Insurance && formData.Insurance.InsuredPersonFirstName ? formData.Insurance.InsuredPersonFirstName : '');
   const [insuredLastName, setinsuredLastName] = useState(formData.Insurance && formData.Insurance.InsuredPersonLastName ? formData.Insurance.InsuredPersonLastName : '');
@@ -404,7 +404,7 @@ function Step4() {
                     defaultValue={selectedInsuranceCompany}
                     onChange={handleChange}
                     onInputChange={handleInputChange}
-                    options={insuranceCompanies}
+                    options={insuranceCompanyList}
                   />
                   {/* <TextValidator
                     onChange={(event) => setselectedInsuranceCompany(event.target.value)}
@@ -488,7 +488,7 @@ function Step4() {
                           defaultValue={patientInsuredRelation}
                           onChange={(newValue) => setpatientInsuredRelation(newValue)}
                           onInputChange={handleInputChange}
-                          options={relationShipList}
+                          options={relationshipList}
                         />
                         {/* <Select
                           className="basic-single"
@@ -496,7 +496,7 @@ function Step4() {
                           defaultValue={patientInsuredRelation}
                           isSearchable={true}
                           onChange={(newValue) => setpatientInsuredRelation(newValue)}
-                          options={relationShipList}
+                          options={relationshipList}
                         /> */}
                         {/* <TextValidator
                           onChange={(event) => setpatientInsuredRelation(event.target.value)}

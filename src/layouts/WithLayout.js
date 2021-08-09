@@ -12,18 +12,24 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import { ClipLoader } from "react-spinners";
+import moment from "moment";
+import { getData } from "../libs/api";
 
 // import MobileHeader from "./MobileHeader";
 import _ from "lodash";
 import { Steps as steps_ } from "../utils/steps";
 const CryptoJS = require("crypto-js");
 
+// eslint-disable-next-line
 export default (ComposedComponent, title, options) => {
   const WithLayout = (props) => {
 
     const [state] = useContext(AppContext);
     const activeStep = _.find(steps_, { step_number: state.step });
     const [open, setOpen] = React.useState(false);
+    const [loading, setLoading] = React.useState(true);
+    const [color, setColor] = React.useState("#940227eb");
 
     const onPageLoad = () => {
       if (localStorage.getItem('formData')) {
@@ -48,6 +54,36 @@ export default (ComposedComponent, title, options) => {
     }
 
     useEffect(() => {
+      setColor("#940227eb");
+      async function fetchData() {
+        const response = await getData();
+        console.log('response: ', response);
+        if (response.status) {
+          let eventDates = [];
+          // eslint-disable-next-line
+          response.data.eventList.map(item => {
+            let object = {
+              "key": item.eventDate,
+              "value": moment(item.eventDate).format("MMMM D, YYYY")
+            };
+            eventDates.push(object);
+          });
+          state.eventDates = eventDates;
+          state.eventList = response.data.eventList;
+          state.locationList = response.data.locationList;
+          state.relationshipList = response.data.relationshipList;
+          state.demographics = response.data.demographics[0];
+          state.insuranceCompanyList = response.data.insuranceCompanyList;
+          state.groupList = response.data.groupList;
+          state.questionList = response.data.questionList;
+        }
+        setLoading(false);
+      }
+      fetchData();
+      // eslint-disable-next-line
+    }, [])
+
+    useEffect(() => {
       window.onload = function () {
         onPageLoad();
         return "";
@@ -60,7 +96,7 @@ export default (ComposedComponent, title, options) => {
     //     };
 
     // const contextRef = React.createRef();
-
+    if (loading) return <div style={{ textAlign: "center" }}><ClipLoader color={color} loading={loading} size={100} /></div>;
     return (
       <div className="container">
 
@@ -122,6 +158,7 @@ export default (ComposedComponent, title, options) => {
           onClose={handleClose}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
+          disableEscapeKeyDown={true}
         >
           <DialogTitle id="alert-dialog-title">{"Prism Health Lab Notification"}</DialogTitle>
           <DialogContent>

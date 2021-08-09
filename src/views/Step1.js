@@ -6,7 +6,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Recaptcha from 'react-google-invisible-recaptcha';
 import { ClipLoader } from "react-spinners";
-import { getData } from "../libs/api";
 const CryptoJS = require("crypto-js");
 
 function Step1() {
@@ -16,28 +15,26 @@ function Step1() {
 
   const refRecaptcha = useRef(null);
 
-  const [loading, setLoading] = useState(true);
+  // eslint-disable-next-line
+  const [loading, setLoading] = useState(false);
+  // eslint-disable-next-line
   let [color, setColor] = useState("#940227eb");
-  const [dates, setdates] = useState(null);
-  const [selectedDate, setselectedDate] = useState(formData.DateOfService ? formData.DateOfService : null);
+  // eslint-disable-next-line
+  const [dates, setdates] = useState(state.eventDates);
+  const [selectedDate, setselectedDate] = useState(formData.DateOfService ? formData.DateOfService : state.eventDates[0].key);
   const [selectedSlot, setselectedSlot] = useState(formData.TimeOfService ? formData.TimeOfService : null);
   const [availableSlots, setavailableSlots] = useState(null);
-  const [showMoreTimes, setshowMoreTimes] = useState(false);
+  const [showMoreTimes, setshowMoreTimes] = useState(true);
 
   useEffect(() => {
-    setselectedDate(formData.DateOfService ? formData.DateOfService : null);
+    getAvailableSlots(selectedDate);
+    // eslint-disable-next-line
+  }, []);
+
+  useEffect(() => {
+    setselectedDate(formData.DateOfService ? formData.DateOfService : state.eventDates[0].key);
     setselectedSlot(formData.TimeOfService ? formData.TimeOfService : null);
-    setColor("#940227eb");
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-  }, [formData]);
-
-  useEffect(() => {
-    setTimeout(() => {
-      getAvailableSlots();
-    }, 0);
-  });
+  }, [state, formData])
 
   const onResolved = () => {
     dispatch({
@@ -96,22 +93,30 @@ function Step1() {
     }
   };
 
-  const getAvailableSlots = async () => {
-    const data = await getData();
-    const { slots } = data.data;
-    state.emergencyRelationShipList = data.data.emergencyRelationShipList;
-    state.languageList = data.data.languageList;
-    state.raceList = data.data.raceList;
-    state.ethnicityList = data.data.ethnicityList;
-    state.genderList = data.data.genderList;
-    state.relationShipList = data.data.relationShipList;
-    state.insuranceCompanies = data.data.insuranceCompanies;
-    state.groupList = data.data.groupList;
-    state.questionList = data.data.questionList;
+  const getAvailableSlots = async (date) => {
+    // const data = await sendData();
+    // state.emergencyRelationShipList = data.data.emergencyRelationShipList;
+    // state.languageList = data.data.languageList;
+    // state.raceList = data.data.raceList;
+    // state.ethnicityList = data.data.ethnicityList;
+    // state.genderList = data.data.genderList;
+    // state.relationShipList = data.data.relationShipList;
+    // state.insuranceCompanies = data.data.insuranceCompanies;
+    // state.groupList = data.data.groupList;
+    // state.questionList = data.data.questionList;
+
+    let slots = [];
+    // eslint-disable-next-line
+    state.eventList.map(item => {
+      if (item.eventDate === date) {
+        slots = item.slots;
+      }
+    });
 
     let _slots = [];
 
     slots &&
+      // eslint-disable-next-line
       slots.map((item) => {
         const { slot, isBooked } = item;
         let time_12hr = moment(slot, ["HH:mm"]).format("h:mm A");
@@ -124,13 +129,10 @@ function Step1() {
           hour: hour,
           req_time: req_time
         });
-        // console.log("=====", groupby(_slots, "hour"));
       });
 
     _slots = _.groupBy(_slots, "hour");
     setavailableSlots(_slots);
-    setdates(data.data.eventDate);
-
   };
 
   if (loading) return <div style={{ textAlign: "center" }}><ClipLoader color={color} loading={loading} size={100} /></div>;
@@ -184,6 +186,7 @@ function Step1() {
           dates && dates.map((item, index) => (
             <div className="col-lg-3 col-md-3 col-6 mt-2" key={index}>
               <div className={"btn-date" + (selectedDate === item.key ? ' active' : '')} onClick={() => {
+                getAvailableSlots(item.key);
                 setselectedSlot(null);
                 setselectedDate(item.key);
               }}>
@@ -198,7 +201,7 @@ function Step1() {
       {
         availableSlots &&
         Object.keys(availableSlots).map((slot, index) => (
-          <div className={"row mr-0 slot " + (index >= 4 && !showMoreTimes ? 'd-none' : '')} key={index}>
+          <div className={"row mr-0 slot " + (index >= 4 && showMoreTimes ? 'd-none' : '')} key={index}>
             <div className="col-lg-2 col-md-2 col-3 slotTime">
               <div className="overlap-group14">
                 <div className="address-3 roboto-normal-black-18px-2">{slot}</div>
@@ -221,14 +224,15 @@ function Step1() {
       }
       <div className="w-100 mt-3 d-flex justify-content-between">
         {
-          availableSlots && availableSlots.length >= 4 && !showMoreTimes ?
-            <div className="select-more-times cursor-pointer" onClick={() => setshowMoreTimes(true)}>
+          availableSlots && Object.keys(availableSlots).length >= 4 && showMoreTimes ?
+            <div className="select-more-times cursor-pointer" onClick={() => setshowMoreTimes(false)}>
               Show more times
             </div>
-            :
-            <div className="select-more-times cursor-pointer" onClick={() => setshowMoreTimes(false)}>
-              Hide more times
-            </div>
+            : availableSlots && Object.keys(availableSlots).length >= 4 && !showMoreTimes ?
+              <div className="select-more-times cursor-pointer" onClick={() => setshowMoreTimes(true)}>
+                Hide more times
+              </div>
+              : <div className="select-more-times cursor-pointer"></div>
         }
         <div className="text-7 roboto-medium-black-18px-2">Only 1 time slot per service</div>
       </div>

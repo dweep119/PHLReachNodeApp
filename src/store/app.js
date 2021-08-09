@@ -6,13 +6,12 @@ const initialState = {
   step: 1,
   formData: {
   },
-  emergencyRelationShipList: [],
-  languageList: [],
-  raceList: [],
-  ethnicityList: [],
-  genderList: [],
-  relationShipList: [],
-  insuranceCompanies: [],
+  eventList: [],
+  eventDates: [],
+  locationList: [],
+  demographics: [],
+  relationshipList: [],
+  insuranceCompanyList: [],
   groupList: [],
   questionList: []
 };
