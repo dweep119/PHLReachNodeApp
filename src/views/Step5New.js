@@ -155,7 +155,7 @@ const RenderQuestions = (props) => {
               No
             </div>
           </div>
-          : question.type === "Choice" ?
+          : question.type === "choice" ?
             <div className="col-lg-10 col-md-12 col-12 d-flex mt-3">
               <div className="row">
                 {
@@ -182,8 +182,8 @@ const RenderQuestions = (props) => {
                 }
               </div>
             </div>
-            : question.type === "TextInput" ?
-              <div className="col-lg-10 col-md-12 col-12 d-flex mt-3">
+            : question.type === "textInput" ?
+              <div className="col-lg-10 col-md-12 col-12 d-flex mt-3 pr-0 pl-0">
                 <TextValidator
                   onChange={(event) => onOptionChange(event.target.value, question)}
                   InputProps={{ classes }}

@@ -12,6 +12,7 @@ function Step1() {
 
   const [state, dispatch] = useContext(AppContext);
   const { formData } = state;
+  console.log('state.demographics: ', state.demographics);
 
   const refRecaptcha = useRef(null);
 

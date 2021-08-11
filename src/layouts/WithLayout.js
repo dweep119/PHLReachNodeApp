@@ -48,6 +48,7 @@ export default (ComposedComponent, title, options) => {
       if (localStorage.getItem('formData')) {
         var bytes = CryptoJS.AES.decrypt(localStorage.getItem('formData'), process.env.REACT_APP_SECRET_KEY);
         var decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+        console.log('decryptedData: ', decryptedData);
         state.formData = decryptedData;
       }
       setOpen(false);
@@ -64,9 +65,12 @@ export default (ComposedComponent, title, options) => {
           response.data.eventList.map(item => {
             let object = {
               "key": item.eventDate,
-              "value": moment(item.eventDate).format("MMMM D, YYYY")
+              "value": moment(new Date(item.eventDate)).format("MMMM D, YYYY")
             };
             eventDates.push(object);
+          });
+          eventDates.sort(function(a,b){
+            return new Date(a.key) - new Date(b.key);
           });
           state.eventDates = eventDates;
           state.eventList = response.data.eventList;

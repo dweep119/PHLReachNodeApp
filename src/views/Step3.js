@@ -7,7 +7,6 @@ function Step3() {
   const [state, dispatch] = useContext(AppContext);
   const { formData } = state;
   const languageList = state.demographics.preferredLanguage;
-  console.log('languageList: ', state);
   const raceList = state.demographics.race;
   const ethnicityList = state.demographics.ethnicity;
   const genderList = state.demographics.gender;

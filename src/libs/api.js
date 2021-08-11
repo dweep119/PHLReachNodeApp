@@ -12,7 +12,7 @@ export async function sendData() {
 }
 
 export async function getData() {
-	const data = await fetch(`${url}/getData`, {
+	const data = await fetch(`${url}/getSQLData`, {
 		method: "GET",
 		headers: {
 			"Content-Type": "application/json",
