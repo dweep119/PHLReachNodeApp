@@ -47,7 +47,6 @@ function Step4() {
   const [insuredLastName, setinsuredLastName] = useState(formData.Insurance && formData.Insurance.InsuredPersonLastName ? formData.Insurance.InsuredPersonLastName : '');
   const [insuredMiddleName, setinsuredMiddleName] = useState(formData.Insurance && formData.Insurance.InsuredPersonMiddleName ? formData.Insurance.InsuredPersonMiddleName : '');
   const [insuredSuffix, setinsuredSuffix] = useState(formData.Insurance && formData.Insurance.InsuredPersonSuffix ? formData.Insurance.InsuredPersonSuffix : '');
-  console.log('isInsuredPersonSame: ', isInsuredPersonSame);
 
   const handleDateChange = (date) => {
     setinsuredDOB(date);
@@ -101,14 +100,11 @@ function Step4() {
   });
 
   const handleChange = (newValue, actionMeta) => {
-    console.log(`action: ${actionMeta.action}`);
     setselectedInsuranceCompany(newValue)
   };
 
   const handleInputChange = (inputValue, actionMeta) => {
     console.group('Input Changed');
-    console.log(inputValue);
-    console.log(`action: ${actionMeta.action}`);
     console.groupEnd();
   };
 

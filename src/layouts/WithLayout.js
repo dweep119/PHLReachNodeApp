@@ -58,7 +58,6 @@ export default (ComposedComponent, title, options) => {
       setColor("#940227eb");
       async function fetchData() {
         const response = await getData();
-        console.log('response: ', response);
         if (response.status) {
           let eventDates = [];
           // eslint-disable-next-line
@@ -71,6 +70,12 @@ export default (ComposedComponent, title, options) => {
           });
           eventDates.sort(function(a,b){
             return new Date(a.key) - new Date(b.key);
+          });
+          response.data.groupList.sort(function(a,b){
+            return new Date(a.index) - new Date(b.index);
+          });
+          response.data.questionList.sort(function(a,b){
+            return new Date(a.index) - new Date(b.index);
           });
           state.eventDates = eventDates;
           state.eventList = response.data.eventList;

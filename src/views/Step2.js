@@ -118,8 +118,6 @@ function Step2() {
 
   const handleInputChange = (inputValue, actionMeta) => {
     console.group('Input Changed');
-    console.log(inputValue);
-    console.log(`action: ${actionMeta.action}`);
     console.groupEnd();
   };
 

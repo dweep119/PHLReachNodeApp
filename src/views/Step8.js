@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { AppContext } from "../store/app";
 import logoPath from "../assets/img/logo-home@2x.png"
 import qrCodePath from "../assets/img/qrCode.svg";
@@ -6,6 +6,10 @@ import travelPack from "../assets/img/COVID-19 Travel Pack.jpg";
 import vaccination from "../assets/img/COVID-19 Vaccination.jpg";
 import ICalendarLink from "react-icalendar-link";
 import moment from "moment";
+import { ClipLoader } from "react-spinners";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { bookAppointment } from "../libs/api";
 
 function Step8() {
 
@@ -17,6 +21,9 @@ function Step8() {
     location: "10 Carlotta St, Artarmon NSW 2064, Australia"
   }
 
+  const [loading, setLoading] = useState(false);
+  // eslint-disable-next-line
+  let [color, setColor] = useState("#940227eb");
   const [state, dispatch] = useContext(AppContext);
   const { formData } = state;
   const { groupList } = state;
@@ -29,7 +36,7 @@ function Step8() {
   const LastName = formData.Contact.LastName;
   const DateOfBirth = formData.Contact.DateOfBirth;
   const StreetAddress1 = formData.Contact.StreetAddress1;
-  // const StreetAddress2 = formData.Contact.StreetAddress2;
+  const StreetAddress2 = formData.Contact.StreetAddress2;
   const Zipcode = formData.Contact.Zipcode;
   const City = formData.Contact.City;
   const State = formData.Contact.State;
@@ -43,8 +50,8 @@ function Step8() {
   const Ethnicity = formData.Demographics.Ethnicity;
   const Gender = formData.Demographics.Gender;
   const HasInsurance = formData.Insurance.HasInsurance;
-  // const PhotoFront = !HasInsurance ? 'NA' : formData.Insurance.PhotoFront;
-  // const PhotoBack = !HasInsurance ? 'NA' : formData.Insurance.PhotoBack;
+  const PhotoFront = !HasInsurance ? 'NA' : formData.Insurance.PhotoFront;
+  const PhotoBack = !HasInsurance ? 'NA' : formData.Insurance.PhotoBack;
   const PrimaryInsurance = !HasInsurance ? 'NA' : formData.Insurance.PrimaryInsurance.label;
   const InsuranceId = !HasInsurance ? 'NA' : formData.Insurance.InsuranceId;
   const GroupNumber = !HasInsurance ? 'NA' : formData.Insurance.GroupNumber;
@@ -54,8 +61,8 @@ function Step8() {
   const InsuredPersonDOB = HasInsurance ? SameInsuredPerson ? 'NA' : formData.Insurance.InsuredPersonDOB : 'NA';
   const InsuredPersonFirstName = HasInsurance ? SameInsuredPerson ? 'NA' : formData.Insurance.InsuredPersonFirstName : 'NA';
   const InsuredPersonLastName = HasInsurance ? SameInsuredPerson ? 'NA' : formData.Insurance.InsuredPersonLastName : 'NA';
-  // const InsuredPersonMiddleName = HasInsurance ? SameInsuredPerson ? 'NA' : formData.Insurance.InsuredPersonMiddleName : 'NA';
-  // const InsuredPersonSuffix = HasInsurance ? SameInsuredPerson ? 'NA' : formData.Insurance.InsuredPersonSuffix : 'NA';
+  const InsuredPersonMiddleName = HasInsurance ? SameInsuredPerson ? 'NA' : formData.Insurance.InsuredPersonMiddleName : 'NA';
+  const InsuredPersonSuffix = HasInsurance ? SameInsuredPerson ? 'NA' : formData.Insurance.InsuredPersonSuffix : 'NA';
 
   const [selectedTab, setselectedTab] = useState('Appointment');
   const rawContent = '';
@@ -76,12 +83,123 @@ function Step8() {
     }
   ];
 
-  const handleNext = () => {
-    dispatch({
-      type: "SET_STEP",
-      step: state.step + 1
+  useEffect(() => {
+    // eslint-disable-next-line
+    questionList.map(question => {
+      if (formData.MedicalQuestionnaire && formData.MedicalQuestionnaire.length > 0) {
+        let res = formData.MedicalQuestionnaire.filter(item => item.QuestionId === question.id);
+        if (res.length > 0) {
+          if (res[0].Answers.length > 1) {
+            let arr = res[0].Answers.filter(function (entry) { return entry.trim() !== ''; });
+            res[0].Answers = arr;
+            question.default = arr.join();
+          } else {
+            question.default = res[0].Answers;
+          }
+        }
+      }
+    })
+  }, [questionList, formData]);
+
+  const handleSubmit = () => {
+    setLoading(true);
+    let _patientInsurance = {
+      "primaryCompany": PrimaryInsurance,
+      "insuranceId": InsuranceId,
+      "groupNumber": GroupNumber,
+      "planName": PlanName,
+      "isRelationInsured": SameInsuredPerson,
+      "firstName": InsuredPersonFirstName,
+      "lastName": InsuredPersonLastName,
+      "middleName": InsuredPersonMiddleName,
+      "suffix": InsuredPersonSuffix,
+      "dob": InsuredPersonDOB,
+      "patientInsuredRelation": InsuredPersonRelation,
+      "insuranceImageFront": PhotoFront || null,
+      "insuranceImageBack": PhotoBack || null,
+    };
+
+    const obj = {
+      "appointment": {
+        "appointmentDate": moment(new Date(DateOfService)).format("YYYY-MM-DD") || "2021-01-18T16:45:26.260Z",
+        "locationId": "9c9a7ed0-5cb3-4a00-baa2-a0409553c274",
+        "slot": TimeOfService.req_time || "08:30:00",
+        // typeOfVisit: selectedVisitType,
+        // isTravelling: isTravelling || false
+      },
+      "patientInsurance": _patientInsurance,
+      "patientQuestions": formData.MedicalQuestionnaire && formData.MedicalQuestionnaire.length > 0 ? formData.MedicalQuestionnaire : [],
+      // "consentForms": _consentForms,
+      "patientDemographic": {
+        "firstName": FirstName,
+        "lastName": LastName,
+        "email": EmailAddress,
+        "phone": PhoneNumber,
+        "address": StreetAddress1 + StreetAddress2,
+        "city": City,
+        "state": State,
+        "zipCode": Zipcode,
+        "dob": moment(DateOfBirth).format("YYYY-MM-DD"),
+        // "signatureFile": signature,
+        "emergencyConatctName": ContactName,
+        "emergencyConatctNumber": ContactPhone,
+        "emergencyConatctRelation": ContactRelation,
+        "preferredLanguage": PreferredLanguage,
+        "race": Race,
+        "gender": Gender,
+        "ethnicity": Ethnicity
+      }
+    };
+    console.log('formData: ', obj);
+    return new Promise((resolve, reject) => {
+      bookAppointment(obj)
+        .then(async (res) => {
+          setLoading(false);
+
+          if (res.status) {
+            // setTimeout(() => {
+            toast.success("Your appointment is booked successfully. Please check your mail to get more details.", {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            });
+            // }, 100);
+            // setTimeout(() => {
+            //   window.location.reload();
+            // }, 3000);
+            // setshowThankYouModal(true);
+          } else {
+            toast.error(res.message, {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            });
+          }
+          resolve(true);
+        })
+        .catch((err) => {
+          setLoading(false);
+
+          toast.error("Something went wrong. Please try again later", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+          reject(err);
+        });
     });
-    return;
   };
 
   const handleBack = () => {
@@ -99,6 +217,8 @@ function Step8() {
     });
     return;
   }
+
+  if (loading) return <div style={{ textAlign: "center" }}><ClipLoader color={color} loading={loading} size={100} /></div>;
 
   return (
     <div className="App">
@@ -458,16 +578,7 @@ function Step8() {
                                 <div className="row mb-3" key={questionIndex}>
                                   <div className="col-12">
                                     <label className="roboto-normal-black-18px-22 w-100"> {question.title}</label>
-                                    <label className="roboto-normal-dark-silver-18px w-100"> {
-                                    formData.MedicalQuestionnaire && formData.MedicalQuestionnaire.length > 0 ?
-                                    formData.MedicalQuestionnaire.map((item) => {
-                                      if (item.QuestionId === question.id) {
-                                        return item.Answers
-                                      } else {
-                                        return question.default
-                                      }
-                                    }) : question.default
-                                    }</label>
+                                    <label className="roboto-normal-dark-silver-18px w-100"> {question.default} </label>
                                   </div>
                                 </div>
                                 : null
@@ -511,8 +622,9 @@ function Step8() {
 
       <div className="w-100 d-flex justify-content-end mt-5 mb-5 pb-5">
         <button className="overlap-group101 roboto-bold-white-20-3px" onClick={handleBack}>PREVIOUS</button>
-        <button className="overlap-group13 border-1-4px-mercury roboto-bold-white-20-3px ml-3" onClick={handleNext}>SUBMIT</button>
+        <button className="overlap-group13 border-1-4px-mercury roboto-bold-white-20-3px ml-3" onClick={handleSubmit}>SUBMIT</button>
       </div>
+      <ToastContainer />
     </div>
   );
 }

@@ -15,7 +15,6 @@ function Step6() {
 
   const [state, dispatch] = useContext(AppContext);
   const { formData } = state;
-  console.log('formData: ', formData);
   const today = moment().toDate();
   const todayDate = moment(today).format('MM/DD/YYYY');
   const signature = useRef(null);

@@ -74,7 +74,6 @@ const RenderQuestions = (props) => {
   };
 
   const onMultiChioce = (val) => {
-    console.log('val: ', val);
     setvalue(val);
 
     if (formData.MedicalQuestionnaire && formData.MedicalQuestionnaire.length > 0) {
@@ -208,7 +207,6 @@ function Step5() {
   const [expanded, setExpanded] = React.useState('panel1');
 
   const handleChange = (panel) => (event, isExpanded) => {
-    console.log('panel: ', panel);
     setExpanded(isExpanded ? panel : false);
   };
 
@@ -244,7 +242,7 @@ function Step5() {
       >
         {
           groupList && groupList.map((group, groupIndex) => (
-            <Accordion expanded={expanded === `panel${group.id}`} onChange={handleChange(`panel${group.id}`)} key={groupIndex}>
+            <Accordion expanded={expanded === `panel${group.index}`} onChange={handleChange(`panel${group.index}`)} key={groupIndex}>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel1bh-content"
@@ -275,7 +273,7 @@ function Step5() {
                       groupList && groupList.length - 1 !== groupIndex ?
                         <div className="row w-100 justify-content-end">
                           <div className="overlap-group13 border-1-4px-mercury roboto-bold-white-20-3px ml-3 cursor-pointer" style={{ lineHeight: '45px' }} onClick={() => {
-                            setExpanded(`panel${group.id + 1}`);
+                            setExpanded(`panel${group.index + 1}`);
                           }}>Submit</div>
                         </div>
                       : null
