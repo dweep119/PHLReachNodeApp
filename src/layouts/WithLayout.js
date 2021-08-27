@@ -85,6 +85,7 @@ export default (ComposedComponent, title, options) => {
           state.insuranceCompanyList = response.data.insuranceCompanyList;
           state.groupList = response.data.groupList;
           state.questionList = response.data.questionList;
+          state.consentformList = response.data.consentformList;
         }
         setLoading(false);
       }
@@ -105,7 +106,7 @@ export default (ComposedComponent, title, options) => {
     //     };
 
     // const contextRef = React.createRef();
-    if (loading) return <div style={{ textAlign: "center" }}><ClipLoader color={color} loading={loading} size={100} /></div>;
+    if (loading) return <div style={{ position: "fixed", top: "50%", left: "50%" }}><ClipLoader color={color} loading={loading} size={100} /></div>;
     return (
       <div className="container">
 

@@ -94,16 +94,6 @@ function Step1() {
   };
 
   const getAvailableSlots = async (date) => {
-    // const data = await sendData();
-    // state.emergencyRelationShipList = data.data.emergencyRelationShipList;
-    // state.languageList = data.data.languageList;
-    // state.raceList = data.data.raceList;
-    // state.ethnicityList = data.data.ethnicityList;
-    // state.genderList = data.data.genderList;
-    // state.relationShipList = data.data.relationShipList;
-    // state.insuranceCompanies = data.data.insuranceCompanies;
-    // state.groupList = data.data.groupList;
-    // state.questionList = data.data.questionList;
 
     let slots = [];
     // eslint-disable-next-line
@@ -211,7 +201,21 @@ function Step1() {
               <div className="vertical-divider row">
                 {availableSlots[slot].map((item, i) => (
                   <div className="col-lg-3 col-md-3 col-4 pr-0 timeSlot" key={i}>
-                    <div className={(selectedSlot && selectedSlot.time_12hr === item.time_12hr ? 'overlap-group6' : 'overlap-group14')} onClick={() => setselectedSlot(item)}>
+                    <div className={(selectedSlot && selectedSlot.time_12hr === item.time_12hr ? 'overlap-group6' : item.isBooked ? 'overlap-group14 disabled' : 'overlap-group14')}
+                      onClick={() => {
+                        if (item.isBooked) {
+                          return toast.error("This slot is booked. Please select different slot.", {
+                            position: "top-right",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                          });
+                        }
+                        setselectedSlot(item)
+                      }}>
                       <div className={"x900-am" + (selectedSlot && selectedSlot.time_12hr === item.time_12hr ? ' roboto-normal-white-18px-2' : ' roboto-normal-black-18px-2')}>{item.time_12hr}</div>
                     </div>
                   </div>

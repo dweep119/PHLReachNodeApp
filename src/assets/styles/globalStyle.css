@@ -299,6 +299,17 @@ p.MuiTypography-root.heading {
 /* Step-1 Style End*/
 
 /* Step-2 Style Start*/
+.overlap-group14.disabled {
+  background-color: #f7f5f5;
+}
+.overlap-group14.disabled .x900-am.roboto-normal-black-18px-2 {
+  color: #c2c0c0;
+  cursor: not-allowed;
+}
+.MuiAlert-icon svg.MuiSvgIcon-root {
+  width: 1em !important;
+  height: 1em !important;
+}
 .MuiIconButton-label .MuiSvgIcon-root {
   font-size: 1rem !important;
 }
@@ -357,6 +368,17 @@ p.MuiTypography-root.heading {
   width: 128px !important;
   padding: 6.8px 38px;
 }
+.PhoneInputInput {
+  flex: 1 1;
+  min-width: 0;
+  height: 36px;
+  border-radius: 4px;
+  border: 1px solid var(--mist-gray) !important;
+  outline: none !important;
+}
+#qr-code-full-region > div:first-child {
+  display: none;
+}
 /* Step-2 Style End*/
 
 /* Step-3 Style Start*/
@@ -379,6 +401,18 @@ p.MuiTypography-root.heading {
   border-radius: 4px;
 }
 /* Step-3 Style End*/
+
+/* Step-4 Style Start */
+button.webcam-btn {
+  background-color: white;
+  /* border: 1px solid #5fa9d5; */
+  border: 1px solid #77838f;
+  color: black !important;
+  border-radius: 4px;
+  height: 35px;
+  padding: 0px 10.75px;
+}
+/* Step-4 Style End */
 
 /* Step-6 Style Start */
 .consentForm {

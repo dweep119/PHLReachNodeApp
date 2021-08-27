@@ -15,18 +15,22 @@ function Step6() {
 
   const [state, dispatch] = useContext(AppContext);
   const { formData } = state;
+  console.log('formData: ', formData);
+  const { consentformList } = state;
   const today = moment().toDate();
   const todayDate = moment(today).format('MM/DD/YYYY');
   const signature = useRef(null);
   const [signatureImage, setsignatureImage] = useState(formData.ConsentForms && formData.ConsentForms.Signature ? formData.ConsentForms.Signature : null);
-
+  const [consentPath, setconsentPath] = useState(null);
   const [open, setOpen] = React.useState(false);
 
-  const handleClickOpen = () => {
+  const handleClickOpen = (path) => {
+    setconsentPath(path);
     setOpen(true);
   };
 
   const handleClose = () => {
+    setconsentPath(null);
     setOpen(false);
   };
 
@@ -61,7 +65,7 @@ function Step6() {
         progress: undefined,
       });
     }
-    
+
   };
 
   const handleBack = () => {
@@ -75,38 +79,18 @@ function Step6() {
   return (
     <div className="App">
       <div className="row justify-content-between">
-        <div className="col-lg-2 col-md-3 col-12">
-          <div className="consentForm">
-            <p className="text-center first-name-1 roboto-medium-black-24px w-100 mt-3 mb-3">HIPAA</p>
-            <div className="text-center roboto-normal-black-18px-2">
-              <button className="border-1px-mist-gray consentFormBtn active" onClick={handleClickOpen}>Click to View</button>
+        {
+          consentformList && consentformList.map((consent, consentIndex) => (
+            <div className="col-lg-2 col-md-3 col-12" key={consentIndex}>
+              <div className="consentForm">
+                <p className="text-center first-name-1 roboto-medium-black-24px w-100 mt-3 mb-3">{consent.consentFormLabel}</p>
+                <div className="text-center roboto-normal-black-18px-2">
+                  <button className="border-1px-mist-gray consentFormBtn active" onClick={() => handleClickOpen(consent.consentFormPath)}>Click to View</button>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        <div className="col-lg-2 col-md-3 col-12">
-          <div className="consentForm">
-            <p className="text-center first-name-1 roboto-medium-black-24px w-100 mt-3 mb-3">Pfizer</p>
-            <div className="text-center roboto-normal-black-18px-2">
-              <button className="border-1px-mist-gray consentFormBtn active" onClick={handleClickOpen}>Click to View</button>
-            </div>
-          </div>
-        </div>
-        <div className="col-lg-2 col-md-3 col-12">
-          <div className="consentForm">
-            <p className="text-center first-name-1 roboto-medium-black-24px w-100 mt-3 mb-3">Telehealth</p>
-            <div className="text-center roboto-normal-black-18px-2">
-              <button className="border-1px-mist-gray consentFormBtn active" onClick={handleClickOpen}>Click to View</button>
-            </div>
-          </div>
-        </div>
-        <div className="col-lg-2 col-md-3 col-12">
-          <div className="consentForm">
-            <p className="text-center first-name-1 roboto-medium-black-24px w-100 mt-3 mb-3">Consent</p>
-            <div className="text-center roboto-normal-black-18px-2">
-              <button className="border-1px-mist-gray consentFormBtn active" onClick={handleClickOpen}>Click to View</button>
-            </div>
-          </div>
-        </div>
+          ))
+        }
       </div>
       <div className="row mt-5">
         <div className="col-12">
@@ -206,7 +190,7 @@ function Step6() {
       >
         <DialogTitle id="responsive-dialog-title">{"Consent Form"}</DialogTitle>
         <DialogContent>
-          <embed src="https://prism.org/wp-content/uploads/2021/05/Prism-Health-Lab-Consent-Form.pdf"
+          <embed src={consentPath}
             frameBorder="0" width="100%" height="450px" />
         </DialogContent>
         <DialogActions>

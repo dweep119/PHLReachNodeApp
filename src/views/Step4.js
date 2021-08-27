@@ -11,6 +11,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { makeStyles } from "@material-ui/core/styles";
 import CreatableSelect from 'react-select/creatable';
+import Webcam from "react-webcam";
 const CryptoJS = require("crypto-js");
 
 const useStyles = makeStyles({
@@ -29,13 +30,14 @@ function Step4() {
 
   const [state, dispatch] = useContext(AppContext);
   const { formData } = state;
+  console.log('formData: ', formData);
   const { relationshipList } = state;
 
   const { insuranceCompanyList } = state;
 
   const [isInsured, setisInsured] = useState(formData.Insurance && formData.Insurance.HasInsurance ? formData.Insurance.HasInsurance : false);
-  const [selectedFrontPhoto, setselectedFrontPhoto] = useState(formData.Insurance && formData.Insurance.PhotoFront ? formData.Insurance.PhotoFront : null);
-  const [selectedBackPhoto, setselectedBackPhoto] = useState(formData.Insurance && formData.Insurance.PhotoBack ? formData.Insurance.PhotoBack : null);
+  const [selectedFrontPhoto, setselectedFrontPhoto] = useState(formData.Insurance && formData.Insurance.PhotoFront && !formData.Insurance.IsFrontCapture ? formData.Insurance.PhotoFront : null);
+  const [selectedBackPhoto, setselectedBackPhoto] = useState(formData.Insurance && formData.Insurance.PhotoBack && !formData.Insurance.IsBackCapture ? formData.Insurance.PhotoBack : null);
   const [selectedInsuranceCompany, setselectedInsuranceCompany] = useState(formData.Insurance && formData.Insurance.PrimaryInsurance ? formData.Insurance.PrimaryInsurance : insuranceCompanyList[0]);
   const [insuranceId, setinsuranceId] = useState(formData.Insurance && formData.Insurance.InsuranceId ? formData.Insurance.InsuranceId : '');
   const [groupNumber, setgroupNumber] = useState(formData.Insurance && formData.Insurance.GroupNumber ? formData.Insurance.GroupNumber : '');
@@ -47,6 +49,28 @@ function Step4() {
   const [insuredLastName, setinsuredLastName] = useState(formData.Insurance && formData.Insurance.InsuredPersonLastName ? formData.Insurance.InsuredPersonLastName : '');
   const [insuredMiddleName, setinsuredMiddleName] = useState(formData.Insurance && formData.Insurance.InsuredPersonMiddleName ? formData.Insurance.InsuredPersonMiddleName : '');
   const [insuredSuffix, setinsuredSuffix] = useState(formData.Insurance && formData.Insurance.InsuredPersonSuffix ? formData.Insurance.InsuredPersonSuffix : '');
+
+  const webcamRefFront = React.useRef(null);
+  const webcamRefBack = React.useRef(null);
+  const [frontImage, setfrontImage] = useState(formData.Insurance && formData.Insurance.PhotoFront && formData.Insurance.IsFrontCapture ? formData.Insurance.PhotoFront : '');
+  const [backImage, setbackImage] = useState(formData.Insurance && formData.Insurance.PhotoBack && formData.Insurance.IsBackCapture ? formData.Insurance.PhotoBack : '');
+  const [isFrontCapture, setisFrontCapture] = useState(formData.Insurance && formData.Insurance.IsFrontCapture ? true : false);
+  const [isBackCapture, setisBackCapture] = useState(formData.Insurance && formData.Insurance.IsBackCapture ? true : false);
+  const videoConstraints = {
+    width: 325,
+    height: 204,
+    facingMode: "user"
+  };
+
+  const frontCapture = () => {
+    const imageSrc = webcamRefFront.current.getScreenshot();
+    setfrontImage(imageSrc)
+  };
+
+  const backCapture = () => {
+    const imageSrc = webcamRefBack.current.getScreenshot();
+    setbackImage(imageSrc)
+  };
 
   const handleDateChange = (date) => {
     setinsuredDOB(date);
@@ -116,8 +140,10 @@ function Step4() {
             let obj = {
               "Insurance": {
                 "HasInsurance": isInsured,
-                "PhotoFront": selectedFrontPhoto,
-                "PhotoBack": selectedBackPhoto,
+                "PhotoFront": isFrontCapture ? frontImage : selectedFrontPhoto,
+                "PhotoBack": isBackCapture ? backImage : selectedBackPhoto,
+                "IsFrontCapture": isFrontCapture,
+                "IsBackCapture": isBackCapture,
                 "PrimaryInsurance": selectedInsuranceCompany,
                 "InsuranceId": insuranceId,
                 "GroupNumber": groupNumber,
@@ -159,8 +185,10 @@ function Step4() {
           let obj = {
             "Insurance": {
               "HasInsurance": isInsured,
-              "PhotoFront": selectedFrontPhoto,
-              "PhotoBack": selectedBackPhoto,
+              "PhotoFront": isFrontCapture ? frontImage : selectedFrontPhoto,
+              "PhotoBack": isBackCapture ? backImage : selectedBackPhoto,
+              "IsFrontCapture": isFrontCapture,
+              "IsBackCapture": isBackCapture,
               "PrimaryInsurance": selectedInsuranceCompany,
               "InsuranceId": insuranceId,
               "GroupNumber": groupNumber,
@@ -223,8 +251,10 @@ function Step4() {
             let obj = {
               "Insurance": {
                 "HasInsurance": isInsured,
-                "PhotoFront": selectedFrontPhoto,
-                "PhotoBack": selectedBackPhoto,
+                "PhotoFront": isFrontCapture ? frontImage : selectedFrontPhoto,
+                "PhotoBack": isBackCapture ? backImage : selectedBackPhoto,
+                "IsFrontCapture": isFrontCapture,
+                "IsBackCapture": isBackCapture,
                 "PrimaryInsurance": selectedInsuranceCompany,
                 "InsuranceId": insuranceId,
                 "GroupNumber": groupNumber,
@@ -266,8 +296,10 @@ function Step4() {
           let obj = {
             "Insurance": {
               "HasInsurance": isInsured,
-              "PhotoFront": selectedFrontPhoto,
-              "PhotoBack": selectedBackPhoto,
+              "PhotoFront": isFrontCapture ? frontImage : selectedFrontPhoto,
+              "PhotoBack": isBackCapture ? backImage : selectedBackPhoto,
+              "IsFrontCapture": isFrontCapture,
+              "IsBackCapture": isBackCapture,
               "PrimaryInsurance": selectedInsuranceCompany,
               "InsuranceId": insuranceId,
               "GroupNumber": groupNumber,
@@ -358,6 +390,7 @@ function Step4() {
               <div className="row">
                 <div className="mb-5  overlap-group2 col-lg-6  col-md-6 col-12">
                   <label className="first-name-1 roboto-medium-black-24px w-100">Photo of Insurance Card - Front
+                    <i className="fa fa-camera ml-2 cursor-pointer" aria-hidden="true" onClick={() => setisFrontCapture(true)}></i>
                   </label>
                   {/* {
                     selectedFrontPhoto ?
@@ -370,12 +403,146 @@ function Step4() {
                       <input type="file" className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="add" name="lastname"
                         placeholder="Street Address" onChange={onFileChangeFront} />
                   } */}
-                  <input type="file" className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="add" name="lastname"
-                    placeholder="Street Address" onChange={onFileChangeFront} />
+                  {isFrontCapture ?
+                    frontImage === '' ?
+                      <div className="webcam-container">
+                        <div className="webcam-img">
+                          <Webcam
+                            audio={false}
+                            height={204}
+                            ref={webcamRefFront}
+                            screenshotFormat="image/jpeg"
+                            width={325}
+                            videoConstraints={videoConstraints}
+                          />
+                        </div>
+
+                        <div>
+                          <button onClick={(e) => {
+                            e.preventDefault();
+                            frontCapture();
+                          }}
+                            className="webcam-btn">Capture</button>
+                          <button onClick={(e) => {
+                            e.preventDefault();
+                            setfrontImage('')
+                            setisFrontCapture(false);
+                          }}
+                            className="webcam-btn ml-2">Cancel</button>
+                        </div>
+                      </div>
+                      :
+                      <div>
+                        <div>
+                          <img src={frontImage} alt="img" style={{ display: "block", width: "325px", height: "204px" }} />
+                        </div>
+                        <div>
+
+                          <button onClick={(e) => {
+                            e.preventDefault();
+                            setfrontImage('')
+                          }}
+                            className="webcam-btn">
+                            Retake Image</button>
+                          <button onClick={(e) => {
+                            e.preventDefault();
+                            setfrontImage('')
+                            setisFrontCapture(false);
+                          }}
+                            className="webcam-btn ml-2">Cancel</button>
+                        </div>
+                      </div>
+                    :
+                    selectedFrontPhoto ?
+                      <div>
+                        <div>
+                          <img src={selectedFrontPhoto} style={{ display: "block", width: "325px", height: "204px" }} alt="img"></img>
+                        </div>
+                        <div className="mt-1">
+                          <button onClick={(e) => {
+                            e.preventDefault();
+                            setselectedFrontPhoto(null);
+                          }}
+                            className="webcam-btn">Cancel</button>
+                        </div>
+                      </div>
+                      :
+                      <input type="file" className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="add" name="lastname"
+                        placeholder="Street Address" onChange={onFileChangeFront} />
+
+                  }
                 </div>
                 <div className="mb-5  overlap-group2 col-lg-6  col-md-6 col-12">
                   <label className="first-name-1 roboto-medium-black-24px w-100">Photo of Insurance Card - Back
+                    <i className="fa fa-camera ml-2 cursor-pointer" aria-hidden="true" onClick={() => setisBackCapture(true)}></i>
                   </label>
+
+                  {isBackCapture ?
+                    backImage === '' ?
+                      <div className="webcam-container">
+                        <div className="webcam-img">
+                          <Webcam
+                            audio={false}
+                            height={204}
+                            ref={webcamRefBack}
+                            screenshotFormat="image/jpeg"
+                            width={325}
+                            videoConstraints={videoConstraints}
+                          />
+                        </div>
+
+                        <div>
+                          <button onClick={(e) => {
+                            e.preventDefault();
+                            backCapture();
+                          }}
+                            className="webcam-btn">Capture</button>
+                          <button onClick={(e) => {
+                            e.preventDefault();
+                            setbackImage('')
+                            setisBackCapture(false);
+                          }}
+                            className="webcam-btn ml-2">Cancel</button>
+                        </div>
+                      </div>
+                      :
+                      <div>
+                        <div className="mb-2">
+                          <img src={backImage} alt="img" style={{ display: "block", width: "325px", height: "204px" }} />
+                        </div>
+                        <div>
+
+                          <button onClick={(e) => {
+                            e.preventDefault();
+                            setbackImage('')
+                          }}
+                            className="webcam-btn">
+                            Retake Image</button>
+                          <button onClick={(e) => {
+                            e.preventDefault();
+                            setbackImage('');
+                            setisBackCapture(false);
+                          }}
+                            className="webcam-btn  ml-2">Cancel</button>
+                        </div>
+                      </div>
+                    : selectedBackPhoto ?
+                      <div>
+                        <div>
+                          <img src={selectedBackPhoto} style={{ display: "block", width: "325px", height: "204px" }} alt="img"></img>
+                        </div>
+                        <div className="mt-2">
+                          <button onClick={(e) => {
+                            e.preventDefault();
+                            setselectedBackPhoto(null);
+                          }}
+                            className="webcam-btn">Cancel</button>
+                        </div>
+                      </div>
+                      :
+                      <input type="file" className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="add" name="lastname"
+                        placeholder="Street Address" onChange={onFileChangeBack} />
+                  }
                   {/* {
                     selectedBackPhoto ?
                       <div>
@@ -387,8 +554,6 @@ function Step4() {
                       <input type="file" className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="add" name="lastname"
                         placeholder="Street Address" onChange={onFileChangeBack} />
                   } */}
-                  <input type="file" className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="add" name="lastname"
-                    placeholder="Street Address" onChange={onFileChangeBack} />
                 </div>
               </div>
               <div className="row">

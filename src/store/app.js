@@ -13,7 +13,8 @@ const initialState = {
   relationshipList: [],
   insuranceCompanyList: [],
   groupList: [],
-  questionList: []
+  questionList: [],
+  consentformList: []
 };
 
 const reducer = (state, action) => {

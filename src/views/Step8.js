@@ -50,8 +50,8 @@ function Step8() {
   const Ethnicity = formData.Demographics.Ethnicity;
   const Gender = formData.Demographics.Gender;
   const HasInsurance = formData.Insurance.HasInsurance;
-  const PhotoFront = !HasInsurance ? 'NA' : formData.Insurance.PhotoFront;
-  const PhotoBack = !HasInsurance ? 'NA' : formData.Insurance.PhotoBack;
+  const PhotoFront = formData.Insurance.PhotoFront;
+  const PhotoBack = formData.Insurance.PhotoBack;
   const PrimaryInsurance = !HasInsurance ? 'NA' : formData.Insurance.PrimaryInsurance.label;
   const InsuranceId = !HasInsurance ? 'NA' : formData.Insurance.InsuranceId;
   const GroupNumber = !HasInsurance ? 'NA' : formData.Insurance.GroupNumber;
@@ -167,6 +167,16 @@ function Step8() {
               draggable: true,
               progress: undefined,
             });
+            localStorage.removeItem('formData');
+            dispatch({
+              type: "SET_FORM_DATA",
+              formData: {}
+            });
+            dispatch({
+              type: "SET_STEP",
+              step: 1
+            });
+            return;
             // }, 100);
             // setTimeout(() => {
             //   window.location.reload();
@@ -527,6 +537,17 @@ function Step8() {
                       <label className="roboto-normal-dark-silver-18px w-100"> {InsuredPersonDOB !== 'NA' ? moment(InsuredPersonDOB).format("MM/DD/YYYY") : InsuredPersonDOB}</label>
                     </div>
                   </div>
+                  {
+                    PhotoBack ?
+                      <div className="row mb-3">
+                        <div className="col-12">
+                          <label className="roboto-normal-black-18px-22 w-100">Photo of Insurance Card - Back</label>
+                          <img src={PhotoBack} alt="img"
+                            style={{ display: "block", width: "325px", height: "204px" }} />
+                        </div>
+                      </div>
+                      : null
+                  }
                 </div>
                 <div className="col-lg-6 col-md-6 col-12">
                   <div className="row mb-3">
@@ -547,6 +568,17 @@ function Step8() {
                       <label className="roboto-normal-dark-silver-18px w-100"> {InsuredPersonRelation}</label>
                     </div>
                   </div>
+                  {
+                    PhotoFront ?
+                      <div className="row mb-3">
+                        <div className="col-12">
+                          <label className="roboto-normal-black-18px-22 w-100">Photo of Insurance Card - Front</label>
+                          <img src={PhotoFront} alt="img"
+                            style={{ display: "block", width: "325px", height: "204px" }} />
+                        </div>
+                      </div>
+                      : null
+                  }
                 </div>
               </div>
             </div>

@@ -11,6 +11,17 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { makeStyles } from "@material-ui/core/styles";
 import CreatableSelect from 'react-select/creatable';
+import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import { sendOtp, verifyMobileOtp, verifyEmailOtp } from "../libs/api";
+import { Alert } from '@material-ui/lab';
+import { Html5QrcodeScannerPlugin } from '../components/html5QrcodeScannerPlugin';
+
 const CryptoJS = require("crypto-js");
 
 const useStyles = makeStyles({
@@ -46,6 +57,15 @@ function Step2() {
   const [eContactPhone, seteContactPhone] = useState(formData.Contact && formData.Contact.EmergencyContact && formData.Contact.EmergencyContact.ContactPhone ? formData.Contact.EmergencyContact.ContactPhone : '');
   const [eContactRelation, seteContactRelation] = useState(formData.Contact && formData.Contact.EmergencyContact && formData.Contact.EmergencyContact.ContactRelation ? formData.Contact.EmergencyContact.ContactRelation : relationShipList[0]);
 
+  const [isVerfied, setisVerfied] = useState(formData.Contact && formData.Contact.is_verified ? formData.Contact.is_verified : false);
+  const [isVerfiedMobile, setisVerfiedMobile] = useState(formData.Contact && formData.Contact.is_verifiedMobile ? formData.Contact.is_verifiedMobile : false);
+  const [emailOtp, setemailOtp] = useState(null);
+  const [contactOtp, setcontactOtp] = useState(null);
+  const [otpError, setotpError] = useState(null);
+  const [resendOtp, setresendOtp] = useState(false);
+  const [showVerifyModal, setshowVerifyModal] = useState(false);
+  const [showVerifyMobileModal, setshowVerifyMobileModal] = useState(false);
+
   const handleDateChange = (date) => {
     setselectedDOB(date);
   };
@@ -70,7 +90,9 @@ function Step2() {
             "ContactName": eContactName,
             "ContactPhone": eContactPhone,
             "ContactRelation": eContactRelation
-          }
+          },
+          "is_verifiedMobile": true,
+          "is_verified": true,
         }
       }
       let ciphertext = CryptoJS.AES.encrypt(JSON.stringify({ ...formData, ...obj }), process.env.REACT_APP_SECRET_KEY).toString();
@@ -141,7 +163,9 @@ function Step2() {
             "ContactName": eContactName,
             "ContactPhone": eContactPhone,
             "ContactRelation": eContactRelation
-          }
+          },
+          "is_verifiedMobile": true,
+          "is_verified": true,
         }
       }
       let ciphertext = CryptoJS.AES.encrypt(JSON.stringify({ ...formData, ...obj }), process.env.REACT_APP_SECRET_KEY).toString();
@@ -177,6 +201,197 @@ function Step2() {
     });
     return;
   };
+
+  const handleVerifyMobileClick = async () => {
+
+    if (!isValidPhoneNumber(phoneNumber)) {
+      toast.error("Enter valid Phone number", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
+    }
+
+    // setButtonLoading(true);
+    setresendOtp(false);
+    const variables = {
+      mobile: phoneNumber
+    };
+
+    const response = await sendOtp(variables);
+    if (response.success) {
+      //   setButtonLoading(false);
+
+      setshowVerifyMobileModal(true);
+      setTimeout(() => {
+        setresendOtp(true);
+      }, 15000);
+    } else {
+      // setButtonLoading(false);
+
+      toast.error(response.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+    // setButtonLoading(false);
+    // setotpError(null);
+    // setisVerfiedMobile(true);
+    // setisEdit(false);
+    // setshowVerifyMobileModal(false);
+
+  };
+
+  const onVerifyMobileOTP = async () => {
+    const variables = {
+      mobile: {
+        mobile: phoneNumber,
+        otp: contactOtp,
+      }
+    };
+
+    const response = await verifyMobileOtp(variables);
+    if (!response.success) {
+      setotpError("Invalid OTP. Please retry.");
+      toast.error("Invalid OTP. Please retry.", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } else {
+      setotpError(null);
+      setisVerfiedMobile(true);
+      // setisEdit(false);
+      setshowVerifyMobileModal(false);
+    }
+  };
+
+  const handleVerifyClick = async () => {
+    // eslint-disable-next-line
+    let mailformat = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (mailformat.test(email)) {
+      setemail(email)
+    } else {
+      toast.error("Enter valid Email address.", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
+    }
+
+    // setButtonLoading(true);
+    setresendOtp(false);
+    const variables = {
+      email: email,
+    };
+    const response = await sendOtp(variables);
+    if (response.success) {
+      //   setButtonLoading(false);
+
+      setshowVerifyModal(true);
+      setTimeout(() => {
+        setresendOtp(true);
+      }, 15000);
+    } else {
+      // setButtonLoading(false);
+
+      toast.error(response.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+    // setButtonLoading(false);
+    // setotpError(null);
+    // setisVerfied(true);
+    // setisEdit(false);
+    // setshowVerifyModal(false);
+  };
+
+  const onVerifyOTP = async () => {
+    const variables = {
+      email: {
+        email: email,
+        otp: emailOtp,
+      },
+    };
+
+    const response = await verifyEmailOtp(variables);
+    if (!response.success) {
+      setotpError("Invalid OTP. Please retry.");
+      toast.error("Invalid OTP. Please retry.", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } else {
+      setotpError(null);
+      setisVerfied(true);
+      // setisEdit(false);
+      setshowVerifyModal(false);
+    }
+  };
+
+  const onScanSuccess = (decodedText, decodedResult) => {
+    // handle the scanned code as you like, for example:
+    alert(decodedText);
+    console.log(`Code matched = ${decodedText}`, decodedResult);
+  }
+
+  const onScanFailure = (error) => {
+    // handle scan failure, usually better to ignore and keep scanning.
+    // for example:
+    console.log(`Code scan error = ${error}`);
+  }
+
+  const formatsToSupport = [
+    window.Html5QrcodeSupportedFormats.QR_CODE = 0,
+    window.Html5QrcodeSupportedFormats.AZTEC,
+    window.Html5QrcodeSupportedFormats.CODABAR,
+    window.Html5QrcodeSupportedFormats.CODE_39,
+    window.Html5QrcodeSupportedFormats.CODE_93,
+    window.Html5QrcodeSupportedFormats.CODE_128,
+    window.Html5QrcodeSupportedFormats.DATA_MATRIX,
+    window.Html5QrcodeSupportedFormats.MAXICODE,
+    window.Html5QrcodeSupportedFormats.ITF,
+    window.Html5QrcodeSupportedFormats.EAN_13,
+    window.Html5QrcodeSupportedFormats.EAN_8,
+    window.Html5QrcodeSupportedFormats.PDF_417,
+    window.Html5QrcodeSupportedFormats.RSS_14,
+    window.Html5QrcodeSupportedFormats.RSS_EXPANDED,
+    window.Html5QrcodeSupportedFormats.UPC_A,
+    window.Html5QrcodeSupportedFormats.UPC_E,
+    window.Html5QrcodeSupportedFormats.UPC_EAN_EXTENSION,
+  ];
+
+
   const classes = useStyles();
   return (
     <div className="App">
@@ -184,6 +399,13 @@ function Step2() {
         onError={errors => console.log(errors)}
         onSubmit={handleNext}
       >
+        <Html5QrcodeScannerPlugin
+          fps={10}
+          qrbox={250}
+          disableFlip={false}
+          formatsToSupport={formatsToSupport}
+          qrCodeSuccessCallback={onScanSuccess}
+          qrCodeErrorCallback={onScanFailure} />
         <div className="row">
           <div className="mb-5 overlap-group2 col-lg-4  col-md-4 col-12">
             <label className="first-name-1 roboto-medium-black-24px w-100">First Name
@@ -315,19 +537,35 @@ function Step2() {
             <label className="first-name-1 roboto-medium-black-24px w-100">Phone Number
               <span className="roboto-medium-tia-maria-24px ml-1">*</span>
             </label>
-            <div className="w-100 d-flex mt-2 phoneEmail">
-              <TextValidator
-                onChange={(event) => setphoneNumber(event.target.value)}
-                InputProps={{ classes }}
+            <div className="w-100 d-flex mt-2">
+              <PhoneInput
+                defaultCountry="US"
+                label="Enter phone number"
+                // placeholder="Enter phone number"
                 value={phoneNumber}
-                validators={['required', 'matchRegexp:^[0-9]{10}$']}
-                errorMessages={['This field is required', 'Please enter valid Phone Number']}
+                style={{
+                  width: "100%",
+                }}
+                countries={['US', 'IN']}
+                //   onChange={(phone) => this.onPhoneChange(phone)}
+                onChange={setphoneNumber}
+                disabled={isVerfiedMobile}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleVerifyMobileClick();
+                  }
+                }}
               />
-              {/* <input className="overlap-group first-name-1 w-100 border-1px-mist-gray" id="phone" name="lastname"
-                placeholder="Phone Number" /> */}
-              <div className="verify-button">
-                <div className="verify roboto-bold-white-18px">Verify</div>
-              </div>
+              {
+                isVerfiedMobile ?
+                  <i class="fa fa-check-circle-o check ml-3" style={{ fontSize: 25, color: "green", margin: "auto" }}></i>
+                  :
+                  <div className="verify-button cursor-pointer" onClick={() => {
+                    handleVerifyMobileClick();
+                  }}>
+                    <div className="verify roboto-bold-white-18px">Verify</div>
+                  </div>
+              }
             </div>
           </div>
           <div className="mb-5 overlap-group2 col-lg-6 col-md-6 col-12">
@@ -339,14 +577,22 @@ function Step2() {
                 onChange={(event) => setemail(event.target.value)}
                 InputProps={{ classes }}
                 value={email}
+                disabled={isVerfied}
                 validators={['required', 'isEmail']}
                 errorMessages={['This field is required', 'Email is not valid']}
               />
               {/* <input className="overlap-group first-name-1 w-100 border-1px-mist-gray" id="email" name="lastname"
                 placeholder="Email Address" /> */}
-              <div className="verify-button">
-                <div className="verify roboto-bold-white-18px">Verify</div>
-              </div>
+              {
+                isVerfied ?
+                  <i class="fa fa-check-circle-o check ml-3" style={{ fontSize: 25, color: "green", margin: "auto" }}></i>
+                  :
+                  <div className="verify-button cursor-pointer" onClick={() => {
+                    handleVerifyClick();
+                  }}>
+                    <div className="verify roboto-bold-white-18px">Verify</div>
+                  </div>
+              }
             </div>
           </div>
         </div>
@@ -373,13 +619,23 @@ function Step2() {
             <label className="first-name-1 roboto-medium-black-24px w-100">Emergency Contact Phone
               <span className="roboto-medium-tia-maria-24px ml-1">*</span>
             </label>
-            <TextValidator
+            <PhoneInput
+              defaultCountry="US"
+              label="Enter phone number"
+              value={eContactPhone}
+              style={{
+                width: "100%",
+              }}
+              countries={['US', 'IN']}
+              onChange={seteContactPhone}
+            />
+            {/* <TextValidator
               onChange={(event) => seteContactPhone(event.target.value)}
               InputProps={{ classes }}
               value={eContactPhone}
               validators={['required', 'matchRegexp:^[0-9]{10}$']}
               errorMessages={['This field is required', 'Please enter valid Emergency Contact Phone']}
-            />
+            /> */}
             {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="ephone" name="lastname"
               placeholder="Emergency Contact Phone" /> */}
           </div>
@@ -414,6 +670,89 @@ function Step2() {
               : null
           }
         </div>
+        <Dialog
+          open={showVerifyMobileModal}
+          onClose={() => setshowVerifyMobileModal(false)}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+          disableEscapeKeyDown={true}
+        >
+          <DialogTitle id="alert-dialog-title">{"Prism Health Lab Notification"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              {/* Verify phone number */}
+              <div className="mb-3 overlap-group2 col-lg-12 col-md-12 col-12 pl-0 pr-0">
+                <label className="first-name-1 roboto-medium-black-18px-22 w-100">{`OTP On Phone Number: ${phoneNumber}`}
+                  <span className="roboto-medium-tia-maria-24px ml-1">*</span>
+                </label>
+                <TextValidator
+                  onChange={(event) => setcontactOtp(event.target.value)}
+                  InputProps={{ classes }}
+                  value={contactOtp}
+                />
+                {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="ephone" name="lastname"
+              placeholder="Emergency Contact Phone" /> */}
+              </div>
+              {otpError && (
+                <Alert severity="error">
+                  <strong>Invalid OTP</strong> — Please Retry
+                </Alert>
+              )}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            {
+              resendOtp && (
+                <Button onClick={handleVerifyMobileClick} color="primary">
+                  Resend OTP
+                </Button>
+              )}
+            <Button disabled={!contactOtp} positive onClick={() => onVerifyMobileOTP()} color="primary">
+              Verify
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          open={showVerifyModal}
+          onClose={() => setshowVerifyModal(false)}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+          disableEscapeKeyDown={true}
+        >
+          <DialogTitle id="alert-dialog-title">{"Prism Health Lab Notification"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              <div className="mb-3 overlap-group2 col-lg-12 col-md-12 col-12 pl-0 pr-0">
+                <label className="first-name-1 roboto-medium-black-18px-22 w-100">{`OTP On Email: ${email}`}
+                  <span className="roboto-medium-tia-maria-24px ml-1">*</span>
+                </label>
+                <TextValidator
+                  onChange={(event) => setemailOtp(event.target.value)}
+                  InputProps={{ classes }}
+                  value={emailOtp}
+                />
+                {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="ephone" name="lastname"
+              placeholder="Emergency Contact Phone" /> */}
+              </div>
+              {otpError && (
+                <Alert severity="error">
+                  <strong>Invalid OTP</strong> — Please Retry
+                </Alert>
+              )}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            {
+              resendOtp && (
+                <Button onClick={handleVerifyClick} color="primary">
+                  Resend OTP
+                </Button>
+              )}
+            <Button disabled={!emailOtp} positive onClick={() => onVerifyOTP()} color="primary">
+              Verify
+            </Button>
+          </DialogActions>
+        </Dialog>
       </ValidatorForm>
       <ToastContainer />
     </div>

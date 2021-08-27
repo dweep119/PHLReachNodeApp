@@ -140,56 +140,123 @@ const RenderQuestions = (props) => {
   const classes = useStyles();
 
   return (
-    <div className="mb-5 overlap-group2 col-12">
-      <label className="first-name-1 roboto-medium-black-24px w-100">{question.title}
-      </label>
+    <div className="col-12">
       {
-        question.type === "radio"
-          ?
-          <div className="col-lg-2 col-md-4 col-6 d-flex justify-content-between pl-0 mt-2">
-            <div className={"options cursor-pointer " + (value.Answers[0] === 'Yes' ? 'optionYes' : '')} onClick={(e) => onOptionChange("Yes", question)}>
-              Yes
-            </div>
-            <div className={"options cursor-pointer " + (value.Answers[0] === 'No' ? 'active' : '')} onClick={(e) => onOptionChange("No", question)}>
-              No
-            </div>
-          </div>
-          : question.type === "choice" ?
-            <div className="col-lg-10 col-md-12 col-12 d-flex mt-3">
-              <div className="row">
-                {
-                  question.choice.map((item, index) => (
-                    <div className={setClassName(item, value.Answers)} key={index} onClick={() => {
-                      if (value.Answers.length === 0) {
-                        onMultiChioce({ "QuestionId": question.id, "Answers": [item] });
-                      } else {
-                        let res = value.Answers.filter(itm => itm === item);
-                        if (res.length > 0) {
-                          const index = value.Answers.indexOf(item);
-                          if (index > -1) {
-                            value.Answers.splice(index, 1);
-                          }
-                          onMultiChioce({ "QuestionId": question.id, "Answers": [...value.Answers] });
-                        } else {
-                          onMultiChioce({ "QuestionId": question.id, "Answers": [...value.Answers, item] });
-                        }
+        question.parentQuestionId ?
+          formData.MedicalQuestionnaire && formData.MedicalQuestionnaire.length > 0
+          && formData.MedicalQuestionnaire.map((item, index) => {
+            if (question.parentQuestionId === item.QuestionId && question.parentAnswer === item.Answers[0]) {
+              return (
+                <div className="mb-5 overlap-group2 col-12" key={index}>
+                  <label className="first-name-1 roboto-medium-black-24px w-100">{question.title}
+                  </label>
+                  {
+                    question.type === "radio"
+                      ?
+                      <div className="col-lg-2 col-md-4 col-6 d-flex justify-content-between pl-0 mt-2">
+                        <div className={"options cursor-pointer " + (value.Answers[0] === 'Yes' ? 'optionYes' : '')} onClick={(e) => onOptionChange("Yes", question)}>
+                          Yes
+                        </div>
+                        <div className={"options cursor-pointer " + (value.Answers[0] === 'No' ? 'active' : '')} onClick={(e) => onOptionChange("No", question)}>
+                          No
+                        </div>
+                      </div>
+                      : question.type === "choice" ?
+                        <div className="col-lg-10 col-md-12 col-12 d-flex mt-3">
+                          <div className="row">
+                            {
+                              question.choice.map((item, index) => (
+                                <div className={setClassName(item, value.Answers)} key={index} onClick={() => {
+                                  if (value.Answers.length === 0) {
+                                    onMultiChioce({ "QuestionId": question.id, "Answers": [item] });
+                                  } else {
+                                    let res = value.Answers.filter(itm => itm === item);
+                                    if (res.length > 0) {
+                                      const index = value.Answers.indexOf(item);
+                                      if (index > -1) {
+                                        value.Answers.splice(index, 1);
+                                      }
+                                      onMultiChioce({ "QuestionId": question.id, "Answers": [...value.Answers] });
+                                    } else {
+                                      onMultiChioce({ "QuestionId": question.id, "Answers": [...value.Answers, item] });
+                                    }
+                                  }
+                                }}>
+                                  <div className={setLabelClassName(item, value.Answers)}>{item}</div>
+                                </div>
+                              ))
+                            }
+                          </div>
+                        </div>
+                        : question.type === "textInput" ?
+                          <div className="col-lg-10 col-md-12 col-12 d-flex mt-3 pr-0 pl-0">
+                            <TextValidator
+                              onChange={(event) => onOptionChange(event.target.value, question)}
+                              InputProps={{ classes }}
+                              value={value.Answers[0]}
+                            />
+                          </div>
+                          : null
+                  }
+                </div>
+              )
+            } else {
+              return null;
+            }
+          })
+          :
+          <div className="mb-5 overlap-group2 col-12">
+            <label className="first-name-1 roboto-medium-black-24px w-100">{question.title}
+            </label>
+            {
+              question.type === "radio"
+                ?
+                <div className="col-lg-2 col-md-4 col-6 d-flex justify-content-between pl-0 mt-2">
+                  <div className={"options cursor-pointer " + (value.Answers[0] === 'Yes' ? 'optionYes' : '')} onClick={(e) => onOptionChange("Yes", question)}>
+                    Yes
+                  </div>
+                  <div className={"options cursor-pointer " + (value.Answers[0] === 'No' ? 'active' : '')} onClick={(e) => onOptionChange("No", question)}>
+                    No
+                  </div>
+                </div>
+                : question.type === "choice" ?
+                  <div className="col-lg-10 col-md-12 col-12 d-flex mt-3">
+                    <div className="row">
+                      {
+                        question.choice.map((item, index) => (
+                          <div className={setClassName(item, value.Answers)} key={index} onClick={() => {
+                            if (value.Answers.length === 0) {
+                              onMultiChioce({ "QuestionId": question.id, "Answers": [item] });
+                            } else {
+                              let res = value.Answers.filter(itm => itm === item);
+                              if (res.length > 0) {
+                                const index = value.Answers.indexOf(item);
+                                if (index > -1) {
+                                  value.Answers.splice(index, 1);
+                                }
+                                onMultiChioce({ "QuestionId": question.id, "Answers": [...value.Answers] });
+                              } else {
+                                onMultiChioce({ "QuestionId": question.id, "Answers": [...value.Answers, item] });
+                              }
+                            }
+                          }}>
+                            <div className={setLabelClassName(item, value.Answers)}>{item}</div>
+                          </div>
+                        ))
                       }
-                    }}>
-                      <div className={setLabelClassName(item, value.Answers)}>{item}</div>
                     </div>
-                  ))
-                }
-              </div>
-            </div>
-            : question.type === "textInput" ?
-              <div className="col-lg-10 col-md-12 col-12 d-flex mt-3 pr-0 pl-0">
-                <TextValidator
-                  onChange={(event) => onOptionChange(event.target.value, question)}
-                  InputProps={{ classes }}
-                  value={value.Answers[0]}
-                />
-              </div>
-              : null
+                  </div>
+                  : question.type === "textInput" ?
+                    <div className="col-lg-10 col-md-12 col-12 d-flex mt-3 pr-0 pl-0">
+                      <TextValidator
+                        onChange={(event) => onOptionChange(event.target.value, question)}
+                        InputProps={{ classes }}
+                        value={value.Answers[0]}
+                      />
+                    </div>
+                    : null
+            }
+          </div>
       }
     </div>
   )
@@ -204,7 +271,7 @@ function Step5() {
 
   const { questionList } = state;
 
-  const [expanded, setExpanded] = React.useState('panel1');
+  const [expanded, setExpanded] = React.useState('panel3');
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
@@ -276,7 +343,7 @@ function Step5() {
                             setExpanded(`panel${group.index + 1}`);
                           }}>Submit</div>
                         </div>
-                      : null
+                        : null
                     }
                   </div>
                 }
