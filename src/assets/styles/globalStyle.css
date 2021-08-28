@@ -74,6 +74,10 @@
   background: #970a24;
   color: white;
 }
+.selectedCard {
+  background-color: #970a24;
+  color: white;
+}
 
 /* Footer Style Start */
 .footer {

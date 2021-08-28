@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Steps from "../components/Stepper/Steps";
 import {
   StepsFlex
@@ -15,6 +15,15 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { ClipLoader } from "react-spinners";
 import moment from "moment";
 import { getData } from "../libs/api";
+import vaccinePath from "../assets/img/vaccine_image.jpg";
+import pcrPath from "../assets/img/pcr_test.jpg";
+import rapidPath from "../assets/img/rapid_test.jpg";
+import firstDosePath from "../assets/img/first-dose.png";
+import secondDosePath from "../assets/img/second-dose.png";
+import boosterDosePath from "../assets/img/booster-dose.jpg";
+import pfizerPath from "../assets/img/pfizer_logo.jpg";
+import modernaPath from "../assets/img/moderna_logo.jpg";
+import jnjPath from "../assets/img/johnson&johnson_logo.png";
 
 // import MobileHeader from "./MobileHeader";
 import _ from "lodash";
@@ -25,15 +34,22 @@ const CryptoJS = require("crypto-js");
 export default (ComposedComponent, title, options) => {
   const WithLayout = (props) => {
 
-    const [state] = useContext(AppContext);
+    const [state, dispatch] = useContext(AppContext);
     const activeStep = _.find(steps_, { step_number: state.step });
     const [open, setOpen] = React.useState(false);
+    const [openServiceModal, setOpenServiceModal] = React.useState(false);
     const [loading, setLoading] = React.useState(true);
     const [color, setColor] = React.useState("#940227eb");
+
+    const [selectedService, setselectedService] = useState(null);
+    const [selectedDose, setselectedDose] = useState(null);
+    const [selectedManufacturer, setselectedManufacturer] = useState(null);
 
     const onPageLoad = () => {
       if (localStorage.getItem('formData')) {
         setOpen(true);
+      } else {
+        setOpenServiceModal(true);
       }
     }
 
@@ -42,6 +58,7 @@ export default (ComposedComponent, title, options) => {
         localStorage.removeItem('formData');
       }
       setOpen(false);
+      setOpenServiceModal(true);
     }
 
     const handleAgree = () => {
@@ -52,6 +69,23 @@ export default (ComposedComponent, title, options) => {
         state.formData = decryptedData;
       }
       setOpen(false);
+    }
+
+    const onContinueClick = () => {
+      let obj = {
+        selectedService,
+        selectedDose,
+        selectedManufacturer
+      }
+      let ciphertext = CryptoJS.AES.encrypt(JSON.stringify({ ...state.formData, ...obj }), process.env.REACT_APP_SECRET_KEY).toString();
+      localStorage.setItem('formData', ciphertext);
+      dispatch({
+        type: "SET_FORM_DATA",
+        formData: {
+          ...obj
+        }
+      });
+      setOpenServiceModal(false);
     }
 
     useEffect(() => {
@@ -68,13 +102,13 @@ export default (ComposedComponent, title, options) => {
             };
             eventDates.push(object);
           });
-          eventDates.sort(function(a,b){
+          eventDates.sort(function (a, b) {
             return new Date(a.key) - new Date(b.key);
           });
-          response.data.groupList.sort(function(a,b){
+          response.data.groupList.sort(function (a, b) {
             return new Date(a.index) - new Date(b.index);
           });
-          response.data.questionList.sort(function(a,b){
+          response.data.questionList.sort(function (a, b) {
             return new Date(a.index) - new Date(b.index);
           });
           state.eventDates = eventDates;
@@ -146,22 +180,6 @@ export default (ComposedComponent, title, options) => {
         </div>
         {/* </MainDesktopFlex> */}
 
-        {/* <MainMobileFlex className="mobile">
-          <MobileHeader activeStep={activeStep} onPrevClick={onPrevClick} />
-
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              // justifyContent: "center",
-              flexDirection: "column",
-              flex: 1,
-              paddingTop: "88px",
-            }}
-          >
-            <ComposedComponent {...props} />
-          </div>
-        </MainMobileFlex> */}
         <Footer />
         <Dialog
           open={open}
@@ -181,6 +199,155 @@ export default (ComposedComponent, title, options) => {
               Book New Appointment
             </Button>
             <Button onClick={handleAgree} color="primary">
+              Continue
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          open={openServiceModal}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+          disableEscapeKeyDown={true}
+          maxWidth='md'
+          fullWidth={true}
+        >
+          <DialogTitle id="alert-dialog-title">{"Prism Health Lab Notification"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              <div className={(selectedService ? 'container1 ' : '') + "row mb-3"}>
+                <div className="col-sm-4">
+                  <div className="card cursor-pointer">
+                    <div className={(selectedService === 'Vaccine' ? 'selectedCard ' : '') + "card-body"} onClick={() => setselectedService('Vaccine')}>
+                      <div className="float-left" style={{ lineHeight: "70px" }}>
+                        <div style={{ fontSize: "20px" }}>Vaccine</div>
+                      </div>
+                      <div className="float-right">
+                        <img src={vaccinePath} alt="img" style={{ display: "block", width: "70px", height: "70px", borderRadius: "40px" }}></img>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-sm-4">
+                  <div className="card cursor-pointer">
+                    <div className={(selectedService === 'PCR Test' ? 'selectedCard ' : '') + "card-body"} onClick={() => {
+                      setselectedDose(null);
+                      setselectedManufacturer(null);
+                      setselectedService('PCR Test');
+                    }}>
+                      <div className="float-left" style={{ lineHeight: "70px" }}>
+                        <div style={{ fontSize: "20px" }}>PCR Test</div>
+                      </div>
+                      <div className="float-right">
+                        <img src={pcrPath} alt="img" style={{ display: "block", width: "70px", height: "70px", borderRadius: "40px" }}></img>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-sm-4">
+                  <div className="card cursor-pointer">
+                    <div className={(selectedService === 'Rapid Test' ? 'selectedCard ' : '') + "card-body"} onClick={() => {
+                      setselectedDose(null);
+                      setselectedManufacturer(null);
+                      setselectedService('Rapid Test');
+                    }}>
+                      <div className="float-left" style={{ lineHeight: "70px" }}>
+                        <div style={{ fontSize: "20px" }}>Rapid Test</div>
+                      </div>
+                      <div className="float-right">
+                        <img src={rapidPath} alt="img" style={{ display: "block", width: "70px", height: "70px", borderRadius: "40px" }}></img>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {
+                selectedService === 'Vaccine' ?
+                  <div className={(selectedDose ? 'container2 ' : '') + "row mb-3"}>
+                    <div className="col-sm-4">
+                      <div className="card cursor-pointer">
+                        <div className={(selectedDose === 'First Dose' ? 'selectedCard ' : '') + "card-body"} onClick={() => setselectedDose('First Dose')}>
+                          <div className="float-left" style={{ lineHeight: "70px" }}>
+                            <div style={{ fontSize: "20px" }}>First Dose</div>
+                          </div>
+                          <div className="float-right">
+                            <img src={firstDosePath} alt="img" style={{ display: "block", width: "70px", height: "70px", borderRadius: "40px" }}></img>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-sm-4">
+                      <div className="card cursor-pointer">
+                        <div className={(selectedDose === 'Second Dose' ? 'selectedCard ' : '') + "card-body"} onClick={() => setselectedDose('Second Dose')}>
+                          <div className="float-left" style={{ lineHeight: "70px" }}>
+                            <div style={{ fontSize: "20px" }}>Second Dose</div>
+                          </div>
+                          <div className="float-right">
+                            <img src={secondDosePath} alt="img" style={{ display: "block", width: "70px", height: "70px", borderRadius: "40px" }}></img>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-sm-4">
+                      <div className="card cursor-pointer">
+                        <div className={(selectedDose === 'Booster Dose' ? 'selectedCard ' : '') + "card-body"} onClick={() => setselectedDose('Booster Dose')}>
+                          <div className="float-left" style={{ lineHeight: "70px" }}>
+                            <div style={{ fontSize: "20px" }}>Booster Dose</div>
+                          </div>
+                          <div className="float-right">
+                            <img src={boosterDosePath} alt="img" style={{ display: "block", width: "70px", height: "70px", borderRadius: "40px" }}></img>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  : null
+              }
+              {
+                selectedDose ?
+                  <div className={(selectedManufacturer ? 'container3 ' : '') + "row mb-3"}>
+                    <div className="col-sm-4">
+                      <div className="card cursor-pointer">
+                        <div className={(selectedManufacturer === 'Pfizer' ? 'selectedCard ' : '') + "card-body"} onClick={() => setselectedManufacturer('Pfizer')}>
+                          <div className="float-left" style={{ lineHeight: "70px" }}>
+                            <div style={{ fontSize: "20px" }}>Pfizer</div>
+                          </div>
+                          <div className="float-right">
+                            <img src={pfizerPath} alt="img" style={{ display: "block", width: "70px", height: "70px", borderRadius: "40px" }}></img>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-sm-4">
+                      <div className="card cursor-pointer">
+                        <div className={(selectedManufacturer === 'Moderna' ? 'selectedCard ' : '') + "card-body"} onClick={() => setselectedManufacturer('Moderna')}>
+                          <div className="float-left" style={{ lineHeight: "70px" }}>
+                            <div style={{ fontSize: "20px" }}>Moderna</div>
+                          </div>
+                          <div className="float-right">
+                            <img src={modernaPath} alt="img" style={{ display: "block", width: "70px", height: "70px", borderRadius: "40px" }}></img>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-sm-4">
+                      <div className="card cursor-pointer">
+                        <div className={(selectedManufacturer === 'Johson&Johnson' ? 'selectedCard ' : '') + "card-body"} onClick={() => setselectedManufacturer('Johson&Johnson')}>
+                          <div className="float-left" style={{ lineHeight: "70px" }}>
+                            <div style={{ fontSize: "20px" }}>{"Johson&Johnson"}</div>
+                          </div>
+                          <div className="float-right">
+                            <img src={jnjPath} alt="img" style={{ display: "block", width: "70px", height: "70px", borderRadius: "40px" }}></img>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  : null
+              }
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={onContinueClick} color="primary" disabled={!selectedService || (selectedService === 'Vaccine' && !selectedManufacturer)}>
               Continue
             </Button>
           </DialogActions>
