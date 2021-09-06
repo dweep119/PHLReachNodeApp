@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { AppContext } from "../store/app";
 import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
@@ -18,8 +18,9 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { sendOtp, verifyMobileOtp, verifyEmailOtp } from "../libs/api";
+import { sendOtp, verifyMobileOtp, verifyEmailOtp, documentsScan } from "../libs/api";
 import { Alert } from '@material-ui/lab';
+import { ClipLoader } from "react-spinners";
 import { Html5QrcodeScannerPlugin } from '../components/html5QrcodeScannerPlugin';
 
 const CryptoJS = require("crypto-js");
@@ -43,6 +44,10 @@ function Step2() {
   const relationShipList = state.relationshipList;
 
   // The first commit of Material-UI
+  const [selectedFrontPhoto, setselectedFrontPhoto] = useState(formData.Contact && formData.Contact.idProofFront ? formData.Contact.idProofFront : null);
+  const [documentFrontFile, setdocumentFrontFile] = useState(null);
+  const [documentRecognised, setdocumentRecognised] = useState(formData.Contact && formData.Contact.isDocumentRecognised ? formData.Contact.isDocumentRecognised : false);
+
   const [firstName, setfirstName] = useState(formData.Contact && formData.Contact.FirstName ? formData.Contact.FirstName : '');
   const [lastName, setlastName] = useState(formData.Contact && formData.Contact.LastName ? formData.Contact.LastName : '');
   const [selectedDOB, setselectedDOB] = useState(formData.Contact && formData.Contact.DateOfBirth ? formData.Contact.DateOfBirth : new Date('2014-08-18T21:11:54'));
@@ -65,17 +70,107 @@ function Step2() {
   const [resendOtp, setresendOtp] = useState(false);
   const [showVerifyModal, setshowVerifyModal] = useState(false);
   const [showVerifyMobileModal, setshowVerifyMobileModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  // eslint-disable-next-line
+  let [color, setColor] = useState("#940227eb");
+
+  useEffect(() => {
+    setselectedFrontPhoto(formData.Contact.idProofFront);
+  }, [formData])
 
   const handleDateChange = (date) => {
     setselectedDOB(date);
   };
 
+  const onFileChangeFront = async (event) => {
+    const selectedFile = event.target.files[0];
+    if (selectedFile === undefined) {
+      return;
+    } else if (selectedFile.size > 10000000) {
+      toast.error('Image size must be less than 10mb', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
+    }
+    setdocumentFrontFile(selectedFile);
+    const base64Image = await toBase64(selectedFile);
+    setselectedFrontPhoto(base64Image);
+  };
+
+  const toBase64 = file => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
+
+  const onSubmitDocuments = async () => {
+    const form_data = new FormData();
+    form_data.append('modelId', '50afe7a1-7b2f-4c62-bcaa-5532b67479e9');
+    form_data.append('file', documentFrontFile);
+    setLoading(true);
+    const data = await documentsScan(form_data);
+    console.log('data: ', data);
+    if (data.message) {
+      if (data && data.result && data.result.length > 0) {
+        if (data.result[0].prediction && data.result[0].prediction.length > 0) {
+          data.result[0].prediction.map(item => {
+            if (item.label === "Name") {
+              const str = item.ocr_text.split('\n');
+              console.log('str: ', str);
+              if (str && str.length > 0) {
+                setfirstName(str[0]);
+                setlastName(str[1]);
+              }
+            }
+            if (item.label === "DOB") {
+              let date = new Date(item.ocr_text)
+              setselectedDOB(date);
+            }
+            if (item.label === "Sex") {
+              formData.Demographics = {};
+              if (item.ocr_text === "M") {
+                formData.Demographics["Gender"] = "Male";
+              } else if (item.ocr_text === "F") {
+                formData.Demographics["Gender"] = "Female";
+              }
+            }
+            if (item.label === "Address") {
+              const str = item.ocr_text.split('\n');
+              console.log('str: ', str);
+              if (str && str.length > 0) {
+                setstreetAddress1(str[0]);
+              }
+              setselectedZipcode(item.ocr_text.slice(-5));
+              const event = {
+                target: {
+                  value: item.ocr_text.slice(-5)
+                }
+              }
+              onZipCodeChange(event);
+            }
+          });
+        }
+      }
+      setLoading(false);
+      setdocumentRecognised(true);
+    }
+  }
+
   const goToSummary = () => {
-    if (firstName && lastName && selectedDOB && streetAddress1 &&
+    if (selectedFrontPhoto && firstName && lastName && selectedDOB && streetAddress1 &&
       selectedstate && selectedcity && selectedZipcode && phoneNumber && email &&
       eContactName && eContactPhone && eContactRelation) {
       let obj = {
         "Contact": {
+          "idProofFront": selectedFrontPhoto,
+          "isDocumentRecognised": true,
           "FirstName": firstName,
           "LastName": lastName,
           "DateOfBirth": selectedDOB,
@@ -144,11 +239,13 @@ function Step2() {
   };
 
   const handleNext = () => {
-    if (firstName && lastName && selectedDOB && streetAddress1 &&
+    if (selectedFrontPhoto && firstName && lastName && selectedDOB && streetAddress1 &&
       selectedstate && selectedcity && selectedZipcode && phoneNumber && email &&
       eContactName && eContactPhone && eContactRelation) {
       let obj = {
         "Contact": {
+          "idProofFront": selectedFrontPhoto,
+          "isDocumentRecognised": true,
           "FirstName": firstName,
           "LastName": lastName,
           "DateOfBirth": selectedDOB,
@@ -217,7 +314,6 @@ function Step2() {
       return;
     }
 
-    // setButtonLoading(true);
     setresendOtp(false);
     const variables = {
       mobile: phoneNumber
@@ -225,14 +321,12 @@ function Step2() {
 
     const response = await sendOtp(variables);
     if (response.success) {
-      //   setButtonLoading(false);
 
       setshowVerifyMobileModal(true);
       setTimeout(() => {
         setresendOtp(true);
       }, 15000);
     } else {
-      // setButtonLoading(false);
 
       toast.error(response.message, {
         position: "top-right",
@@ -244,7 +338,6 @@ function Step2() {
         progress: undefined,
       });
     }
-    // setButtonLoading(false);
     // setotpError(null);
     // setisVerfiedMobile(true);
     // setisEdit(false);
@@ -298,21 +391,18 @@ function Step2() {
       return;
     }
 
-    // setButtonLoading(true);
     setresendOtp(false);
     const variables = {
       email: email,
     };
     const response = await sendOtp(variables);
     if (response.success) {
-      //   setButtonLoading(false);
 
       setshowVerifyModal(true);
       setTimeout(() => {
         setresendOtp(true);
       }, 15000);
     } else {
-      // setButtonLoading(false);
 
       toast.error(response.message, {
         position: "top-right",
@@ -324,7 +414,6 @@ function Step2() {
         progress: undefined,
       });
     }
-    // setButtonLoading(false);
     // setotpError(null);
     // setisVerfied(true);
     // setisEdit(false);
@@ -391,276 +480,318 @@ function Step2() {
     window.Html5QrcodeSupportedFormats.UPC_EAN_EXTENSION,
   ];
 
-
   const classes = useStyles();
+
+  if (loading) return <div style={{ textAlign: "center" }}><ClipLoader color={color} loading={loading} size={100} /></div>;
+  
   return (
     <div className="App">
       <ValidatorForm
         onError={errors => console.log(errors)}
         onSubmit={handleNext}
       >
-        <Html5QrcodeScannerPlugin
+        {/* <Html5QrcodeScannerPlugin
           fps={10}
           qrbox={250}
           disableFlip={false}
           formatsToSupport={formatsToSupport}
           qrCodeSuccessCallback={onScanSuccess}
-          qrCodeErrorCallback={onScanFailure} />
+          qrCodeErrorCallback={onScanFailure} /> */}
         <div className="row">
-          <div className="mb-5 overlap-group2 col-lg-4  col-md-4 col-12">
-            <label className="first-name-1 roboto-medium-black-24px w-100">First Name
-              <span className="roboto-medium-tia-maria-24px ml-1">*</span>
+          <div className="mb-5 overlap-group2 col-lg-10  col-md-10 col-10">
+            <label className="first-name-1 roboto-medium-black-24px w-100">Photo of ID (Driver's License)
             </label>
-            <TextValidator
-              onChange={(event) => setfirstName(event.target.value)}
-              InputProps={{ classes }}
-              value={firstName}
-              validators={['required', 'matchRegexp:^[a-zA-Z ]*$', 'minStringLength:2', 'maxStringLength:50']}
-              errorMessages={['This field is required', 'The field First Name should contain alphabets only.', 'The field First Name with a length of min 2', 'The field First Name with a length of max 50']}
-            />
-            {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="fname" name="lastname"
+            {
+              selectedFrontPhoto ?
+                <div>
+                  <div className="d-flex">
+                    <div style={{ position: "relative", height: 200, width: 300 }}>
+                      <img src={selectedFrontPhoto} style={{ display: "block", width: "100%", height: "100%" }} alt="img"></img>
+                      <div className="mr-1" style={{ position: "absolute", right: "0px", top: "5px", cursor: "pointer" }}>
+                        <i className="fa fa-times-circle-o fa-lg" aria-hidden="true" onClick={() => { setselectedFrontPhoto(null); setdocumentRecognised(false); setdocumentFrontFile(null) }}></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                :
+                <input type="file" className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="add" name="lastname"
+                  placeholder="Street Address" onChange={onFileChangeFront} accept="image/x-png,image/gif,image/jpeg" />
+            }
+          </div>
+          <div className="mb-5 overlap-group2 col-lg-2  col-md-2 col-2">
+            <label className="first-name-1 roboto-medium-black-24px w-100" style={{ height: "34px" }}></label>
+            {!documentRecognised ?
+              <div className="">
+                <button className={"border-1-4px-mercury p30h40 " + (!documentFrontFile ? "disabled" : '')} style={{ lineHeight: '36px' }}
+                  disabled={!documentFrontFile}
+                  onClick={() => {
+                    onSubmitDocuments();
+                  }}>Recognise</button>
+              </div>
+              : null
+            }
+          </div>
+        </div>
+        {
+          documentRecognised ?
+            <div>
+              <div className="row">
+                <div className="mb-5 overlap-group2 col-lg-4  col-md-4 col-12">
+                  <label className="first-name-1 roboto-medium-black-24px w-100">First Name
+                    <span className="roboto-medium-tia-maria-24px ml-1">*</span>
+                  </label>
+                  <TextValidator
+                    onChange={(event) => setfirstName(event.target.value)}
+                    InputProps={{ classes }}
+                    value={firstName}
+                    validators={['required', 'matchRegexp:^[a-zA-Z ]*$', 'minStringLength:2', 'maxStringLength:50']}
+                    errorMessages={['This field is required', 'The field First Name should contain alphabets only.', 'The field First Name with a length of min 2', 'The field First Name with a length of max 50']}
+                  />
+                  {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="fname" name="lastname"
               placeholder="First Name" /> */}
-          </div>
-          <div className="mb-5 overlap-group2 col-lg-4  col-md-4 col-12">
-            <label className="first-name-1 roboto-medium-black-24px w-100">Last Name
-              <span className="roboto-medium-tia-maria-24px ml-1">*</span>
-            </label>
-            <TextValidator
-              onChange={(event) => setlastName(event.target.value)}
-              InputProps={{ classes }}
-              value={lastName}
-              validators={['required', 'matchRegexp:^[a-zA-Z ]*$', 'minStringLength:2', 'maxStringLength:50']}
-              errorMessages={['This field is required', 'The field Last Name should contain alphabets only.', 'The field Last Name with a length of min 2', 'The field Last Name with a length of max 50']}
-            />
-            {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="lname" name="lastname"
+                </div>
+                <div className="mb-5 overlap-group2 col-lg-4  col-md-4 col-12">
+                  <label className="first-name-1 roboto-medium-black-24px w-100">Last Name
+                    <span className="roboto-medium-tia-maria-24px ml-1">*</span>
+                  </label>
+                  <TextValidator
+                    onChange={(event) => setlastName(event.target.value)}
+                    InputProps={{ classes }}
+                    value={lastName}
+                    validators={['required', 'matchRegexp:^[a-zA-Z ]*$', 'minStringLength:2', 'maxStringLength:50']}
+                    errorMessages={['This field is required', 'The field Last Name should contain alphabets only.', 'The field Last Name with a length of min 2', 'The field Last Name with a length of max 50']}
+                  />
+                  {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="lname" name="lastname"
               placeholder="Last Name" /> */}
-          </div>
-          <div className="mb-5 overlap-group2 col-lg-4  col-md-4 col-12">
-            <label className="first-name-1 roboto-medium-black-24px w-100">Date of Birth
-              <span className="roboto-medium-tia-maria-24px ml-1">*</span>
-            </label>
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-              <KeyboardDatePicker
-                margin="normal"
-                id="date-picker-dialog"
-                format="MM/dd/yyyy"
-                value={selectedDOB}
-                // disableFuture={true}
-                variant="inline"
-                maxDate={Date()}
-                minDate={"01/01/1921"}
-                onChange={handleDateChange}
-                InputProps={{ classes }}
-                autoOk={true}
-                KeyboardButtonProps={{
-                  'aria-label': 'change date',
-                }}
-              />
-            </MuiPickersUtilsProvider>
-            {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="DOB" name="lastname"
+                </div>
+                <div className="mb-5 overlap-group2 col-lg-4  col-md-4 col-12">
+                  <label className="first-name-1 roboto-medium-black-24px w-100">Date of Birth
+                    <span className="roboto-medium-tia-maria-24px ml-1">*</span>
+                  </label>
+                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    <KeyboardDatePicker
+                      margin="normal"
+                      id="date-picker-dialog"
+                      format="MM/dd/yyyy"
+                      value={selectedDOB}
+                      // disableFuture={true}
+                      variant="inline"
+                      maxDate={Date()}
+                      minDate={"01/01/1921"}
+                      onChange={handleDateChange}
+                      InputProps={{ classes }}
+                      autoOk={true}
+                      KeyboardButtonProps={{
+                        'aria-label': 'change date',
+                      }}
+                    />
+                  </MuiPickersUtilsProvider>
+                  {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="DOB" name="lastname"
             placeholder="Date of Birth" /> */}
-          </div>
-        </div>
-        <div className="row">
-          <div className="mb-5 overlap-group2 col-lg-6 col-md-6 col-12">
-            <label className="first-name-1 roboto-medium-black-24px w-100">Street Address
-              <span className="roboto-medium-tia-maria-24px ml-1">*</span>
-            </label>
-            <TextValidator
-              onChange={(event) => setstreetAddress1(event.target.value)}
-              InputProps={{ classes }}
-              value={streetAddress1}
-              validators={['required', 'maxStringLength:250']}
-              errorMessages={['This field is required', 'The field Street Address with a length of max 250']}
-            />
-            {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="add" name="lastname"
+                </div>
+              </div>
+              <div className="row">
+                <div className="mb-5 overlap-group2 col-lg-6 col-md-6 col-12">
+                  <label className="first-name-1 roboto-medium-black-24px w-100">Street Address
+                    <span className="roboto-medium-tia-maria-24px ml-1">*</span>
+                  </label>
+                  <TextValidator
+                    onChange={(event) => setstreetAddress1(event.target.value)}
+                    InputProps={{ classes }}
+                    value={streetAddress1}
+                    validators={['required', 'maxStringLength:250']}
+                    errorMessages={['This field is required', 'The field Street Address with a length of max 250']}
+                  />
+                  {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="add" name="lastname"
               placeholder="Street Address" /> */}
-          </div>
-          <div className="mb-5 overlap-group2 col-lg-6 col-md-6 col-12">
-            <label className="first-name-1 roboto-medium-black-24px w-100">Street Address 2
-            </label>
-            <TextValidator
-              onChange={(event) => setstreetAddress2(event.target.value)}
-              InputProps={{ classes }}
-              value={streetAddress2}
-            />
-            {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="add2" name="lastname"
+                </div>
+                <div className="mb-5 overlap-group2 col-lg-6 col-md-6 col-12">
+                  <label className="first-name-1 roboto-medium-black-24px w-100">Street Address 2
+                  </label>
+                  <TextValidator
+                    onChange={(event) => setstreetAddress2(event.target.value)}
+                    InputProps={{ classes }}
+                    value={streetAddress2}
+                  />
+                  {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="add2" name="lastname"
               placeholder="Street Address 2" /> */}
-          </div>
-        </div>
-        <div className="row">
-          <div className="mb-5 overlap-group2 col-lg-4 col-md-4 col-12">
-            <label className="first-name-1 roboto-medium-black-24px w-100">Zipcode
-              <span className="roboto-medium-tia-maria-24px ml-1">*</span>
-            </label>
-            <TextValidator
-              onChange={(event) => onZipCodeChange(event)}
-              InputProps={{ classes }}
-              value={selectedZipcode}
-              validators={['required', 'matchRegexp:^[0-9]*$', 'maxStringLength:15']}
-              errorMessages={['This field is required', 'Please enter a valid Zipcode', 'Please enter a valid Zipcode']}
-            />
-            {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="zipcode" name="lastname"
+                </div>
+              </div>
+              <div className="row">
+                <div className="mb-5 overlap-group2 col-lg-4 col-md-4 col-12">
+                  <label className="first-name-1 roboto-medium-black-24px w-100">Zipcode
+                    <span className="roboto-medium-tia-maria-24px ml-1">*</span>
+                  </label>
+                  <TextValidator
+                    onChange={(event) => onZipCodeChange(event)}
+                    InputProps={{ classes }}
+                    value={selectedZipcode}
+                    validators={['required', 'matchRegexp:^[0-9]*$', 'maxStringLength:15']}
+                    errorMessages={['This field is required', 'Please enter a valid Zipcode', 'Please enter a valid Zipcode']}
+                  />
+                  {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="zipcode" name="lastname"
               placeholder="Zipcode" /> */}
-          </div>
-          <div className="mb-5 overlap-group2 col-lg-4 col-md-4 col-12">
-            <label className="first-name-1 roboto-medium-black-24px w-100">City
-              <span className="roboto-medium-tia-maria-24px ml-1">*</span>
-            </label>
-            <TextValidator
-              onChange={(event) => setselectedcity(event.target.value)}
-              InputProps={{ classes }}
-              value={selectedcity}
-              validators={['required', 'maxStringLength:50']}
-              errorMessages={['This field is required', 'The field City with a length of max 50']}
-            />
-            {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="city" name="lastname"
+                </div>
+                <div className="mb-5 overlap-group2 col-lg-4 col-md-4 col-12">
+                  <label className="first-name-1 roboto-medium-black-24px w-100">City
+                    <span className="roboto-medium-tia-maria-24px ml-1">*</span>
+                  </label>
+                  <TextValidator
+                    onChange={(event) => setselectedcity(event.target.value)}
+                    InputProps={{ classes }}
+                    value={selectedcity}
+                    validators={['required', 'maxStringLength:50']}
+                    errorMessages={['This field is required', 'The field City with a length of max 50']}
+                  />
+                  {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="city" name="lastname"
               placeholder="City" /> */}
-          </div>
-          <div className="mb-5 overlap-group2 col-lg-4 col-md-4 col-12">
-            <label className="first-name-1 roboto-medium-black-24px w-100">State
-              <span className="roboto-medium-tia-maria-24px ml-1">*</span>
-            </label>
-            <TextValidator
-              onChange={(event) => setselectedstate(event.target.value)}
-              InputProps={{ classes }}
-              value={selectedstate}
-              validators={['required', 'maxStringLength:50']}
-              errorMessages={['This field is required', 'The field State with a length of max 50']}
-            />
-            {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="state" name="lastname"
+                </div>
+                <div className="mb-5 overlap-group2 col-lg-4 col-md-4 col-12">
+                  <label className="first-name-1 roboto-medium-black-24px w-100">State
+                    <span className="roboto-medium-tia-maria-24px ml-1">*</span>
+                  </label>
+                  <TextValidator
+                    onChange={(event) => setselectedstate(event.target.value)}
+                    InputProps={{ classes }}
+                    value={selectedstate}
+                    validators={['required', 'maxStringLength:50']}
+                    errorMessages={['This field is required', 'The field State with a length of max 50']}
+                  />
+                  {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="state" name="lastname"
               placeholder="State" /> */}
-          </div>
-        </div>
-        <div className="row">
-          <div className="mb-5 overlap-group2 col-lg-6 col-md-6 col-12">
-            <label className="first-name-1 roboto-medium-black-24px w-100">Phone Number
-              <span className="roboto-medium-tia-maria-24px ml-1">*</span>
-            </label>
-            <div className="w-100 d-flex mt-2">
-              <PhoneInput
-                defaultCountry="US"
-                label="Enter phone number"
-                // placeholder="Enter phone number"
-                value={phoneNumber}
-                style={{
-                  width: "100%",
-                }}
-                countries={['US', 'IN']}
-                //   onChange={(phone) => this.onPhoneChange(phone)}
-                onChange={setphoneNumber}
-                disabled={isVerfiedMobile}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    handleVerifyMobileClick();
-                  }
-                }}
-              />
-              {
-                isVerfiedMobile ?
-                  <i class="fa fa-check-circle-o check ml-3" style={{ fontSize: 25, color: "green", margin: "auto" }}></i>
-                  :
-                  <div className="verify-button cursor-pointer" onClick={() => {
-                    handleVerifyMobileClick();
-                  }}>
-                    <div className="verify roboto-bold-white-18px">Verify</div>
+                </div>
+              </div>
+              <div className="row">
+                <div className="mb-5 overlap-group2 col-lg-6 col-md-6 col-12">
+                  <label className="first-name-1 roboto-medium-black-24px w-100">Phone Number
+                    <span className="roboto-medium-tia-maria-24px ml-1">*</span>
+                  </label>
+                  <div className="w-100 d-flex mt-2">
+                    <PhoneInput
+                      defaultCountry="US"
+                      label="Enter phone number"
+                      // placeholder="Enter phone number"
+                      value={phoneNumber}
+                      style={{
+                        width: "100%",
+                      }}
+                      countries={['US', 'IN']}
+                      //   onChange={(phone) => this.onPhoneChange(phone)}
+                      onChange={setphoneNumber}
+                      disabled={isVerfiedMobile}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          handleVerifyMobileClick();
+                        }
+                      }}
+                    />
+                    {
+                      isVerfiedMobile ?
+                        <i className="fa fa-check-circle-o check ml-3" style={{ fontSize: 25, color: "green", margin: "auto" }}></i>
+                        :
+                        <div className="verify-button cursor-pointer" onClick={() => {
+                          handleVerifyMobileClick();
+                        }}>
+                          <div className="verify roboto-bold-white-18px">Verify</div>
+                        </div>
+                    }
                   </div>
-              }
-            </div>
-          </div>
-          <div className="mb-5 overlap-group2 col-lg-6 col-md-6 col-12">
-            <label className="first-name-1 roboto-medium-black-24px w-100">Email Address
-              <span className="roboto-medium-tia-maria-24px ml-1">*</span>
-            </label>
-            <div className="w-100 d-flex mt-2 phoneEmail">
-              <TextValidator
-                onChange={(event) => setemail(event.target.value)}
-                InputProps={{ classes }}
-                value={email}
-                disabled={isVerfied}
-                validators={['required', 'isEmail']}
-                errorMessages={['This field is required', 'Email is not valid']}
-              />
-              {/* <input className="overlap-group first-name-1 w-100 border-1px-mist-gray" id="email" name="lastname"
+                </div>
+                <div className="mb-5 overlap-group2 col-lg-6 col-md-6 col-12">
+                  <label className="first-name-1 roboto-medium-black-24px w-100">Email Address
+                    <span className="roboto-medium-tia-maria-24px ml-1">*</span>
+                  </label>
+                  <div className="w-100 d-flex mt-2 phoneEmail">
+                    <TextValidator
+                      onChange={(event) => setemail(event.target.value)}
+                      InputProps={{ classes }}
+                      value={email}
+                      disabled={isVerfied}
+                      validators={['required', 'isEmail']}
+                      errorMessages={['This field is required', 'Email is not valid']}
+                    />
+                    {/* <input className="overlap-group first-name-1 w-100 border-1px-mist-gray" id="email" name="lastname"
                 placeholder="Email Address" /> */}
-              {
-                isVerfied ?
-                  <i class="fa fa-check-circle-o check ml-3" style={{ fontSize: 25, color: "green", margin: "auto" }}></i>
-                  :
-                  <div className="verify-button cursor-pointer" onClick={() => {
-                    handleVerifyClick();
-                  }}>
-                    <div className="verify roboto-bold-white-18px">Verify</div>
+                    {
+                      isVerfied ?
+                        <i className="fa fa-check-circle-o check ml-3" style={{ fontSize: 25, color: "green", margin: "auto" }}></i>
+                        :
+                        <div className="verify-button cursor-pointer" onClick={() => {
+                          handleVerifyClick();
+                        }}>
+                          <div className="verify roboto-bold-white-18px">Verify</div>
+                        </div>
+                    }
                   </div>
-              }
-            </div>
-          </div>
-        </div>
-        <div>
-          <hr />
-          <div className="mt-5 mb-5 text-7 roboto-normal-black-36px">Emergency Contact Information</div>
-        </div>
-        <div className="row">
-          <div className="mb-5 overlap-group2 col-lg-4 col-md-4 col-12">
-            <label className="first-name-1 roboto-medium-black-24px w-100">Emergency Contact Name
-              <span className="roboto-medium-tia-maria-24px ml-1">*</span>
-            </label>
-            <TextValidator
-              onChange={(event) => seteContactName(event.target.value)}
-              InputProps={{ classes }}
-              value={eContactName}
-              validators={['required', 'matchRegexp:^[a-zA-Z ]*$', 'minStringLength:2', 'maxStringLength:50']}
-              errorMessages={['This field is required', 'The field Emergency Contact Name should contain alphabets only.', 'The field Emergency Contact Name with a length of min 2', 'The field Emergency Contact Name with a length of max 50']}
-            />
-            {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="ename" name="lastname"
+                </div>
+              </div>
+              <div>
+                <hr />
+                <div className="mt-5 mb-5 text-7 roboto-normal-black-36px">Emergency Contact Information</div>
+              </div>
+              <div className="row">
+                <div className="mb-5 overlap-group2 col-lg-4 col-md-4 col-12">
+                  <label className="first-name-1 roboto-medium-black-24px w-100">Emergency Contact Name
+                    <span className="roboto-medium-tia-maria-24px ml-1">*</span>
+                  </label>
+                  <TextValidator
+                    onChange={(event) => seteContactName(event.target.value)}
+                    InputProps={{ classes }}
+                    value={eContactName}
+                    validators={['required', 'matchRegexp:^[a-zA-Z ]*$', 'minStringLength:2', 'maxStringLength:50']}
+                    errorMessages={['This field is required', 'The field Emergency Contact Name should contain alphabets only.', 'The field Emergency Contact Name with a length of min 2', 'The field Emergency Contact Name with a length of max 50']}
+                  />
+                  {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="ename" name="lastname"
               placeholder="Emergency Contact Name" /> */}
-          </div>
-          <div className="mb-5 overlap-group2 col-lg-4 col-md-4 col-12">
-            <label className="first-name-1 roboto-medium-black-24px w-100">Emergency Contact Phone
-              <span className="roboto-medium-tia-maria-24px ml-1">*</span>
-            </label>
-            <PhoneInput
-              defaultCountry="US"
-              label="Enter phone number"
-              value={eContactPhone}
-              style={{
-                width: "100%",
-              }}
-              countries={['US', 'IN']}
-              onChange={seteContactPhone}
-            />
-            {/* <TextValidator
+                </div>
+                <div className="mb-5 overlap-group2 col-lg-4 col-md-4 col-12">
+                  <label className="first-name-1 roboto-medium-black-24px w-100">Emergency Contact Phone
+                    <span className="roboto-medium-tia-maria-24px ml-1">*</span>
+                  </label>
+                  <PhoneInput
+                    defaultCountry="US"
+                    label="Enter phone number"
+                    value={eContactPhone}
+                    style={{
+                      width: "100%",
+                    }}
+                    countries={['US', 'IN']}
+                    onChange={seteContactPhone}
+                  />
+                  {/* <TextValidator
               onChange={(event) => seteContactPhone(event.target.value)}
               InputProps={{ classes }}
               value={eContactPhone}
               validators={['required', 'matchRegexp:^[0-9]{10}$']}
               errorMessages={['This field is required', 'Please enter valid Emergency Contact Phone']}
             /> */}
-            {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="ephone" name="lastname"
+                  {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="ephone" name="lastname"
               placeholder="Emergency Contact Phone" /> */}
-          </div>
-          <div className="mb-5 overlap-group2 col-lg-4 col-md-4 col-12">
-            <label className="first-name-1 roboto-medium-black-24px w-100">Emergency Contact Relation
-              <span className="roboto-medium-tia-maria-24px ml-1">*</span>
-            </label>
-            <CreatableSelect
-              defaultValue={eContactRelation}
-              onChange={(newValue) => seteContactRelation(newValue)}
-              onInputChange={handleInputChange}
-              options={relationShipList}
-            />
-            {/* <TextValidator
+                </div>
+                <div className="mb-5 overlap-group2 col-lg-4 col-md-4 col-12">
+                  <label className="first-name-1 roboto-medium-black-24px w-100">Emergency Contact Relation
+                    <span className="roboto-medium-tia-maria-24px ml-1">*</span>
+                  </label>
+                  <CreatableSelect
+                    defaultValue={eContactRelation}
+                    onChange={(newValue) => seteContactRelation(newValue)}
+                    onInputChange={handleInputChange}
+                    options={relationShipList}
+                  />
+                  {/* <TextValidator
               onChange={(event) => seteContactRelation(event.target.value)}
               InputProps={{ classes }}
               value={eContactRelation}
               validators={['required', 'matchRegexp:^[a-zA-Z ]*$']}
               errorMessages={['This field is required', 'The field Emergency Contact Relation should contain alphabets only.']}
             /> */}
-            {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="ephone2" name="lastname"
+                  {/* <input className="overlap-group mt-2 first-name-1 w-100 border-1px-mist-gray" id="ephone2" name="lastname"
               placeholder="Emergency Contact Relation" /> */}
-          </div>
-        </div>
-
+                </div>
+              </div>
+            </div>
+            : null
+        }
         <div className="w-100 d-flex justify-content-end mt-5 mb-5 pb-5">
           <button className="overlap-group101 roboto-bold-white-20-3px" onClick={handleBack}>PREVIOUS</button>
           <button className="overlap-group13 border-1-4px-mercury roboto-bold-white-20-3px ml-3" onClick={handleNext}>NEXT</button>
@@ -670,6 +801,7 @@ function Step2() {
               : null
           }
         </div>
+
         <Dialog
           open={showVerifyMobileModal}
           onClose={() => setshowVerifyMobileModal(false)}

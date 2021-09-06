@@ -3,7 +3,7 @@ import React, { useReducer, createContext } from "react";
 export const AppContext = createContext();
 
 const initialState = {
-  step: 1,
+  step: 2,
   formData: {
   },
   eventList: [],
