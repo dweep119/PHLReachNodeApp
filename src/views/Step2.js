@@ -75,7 +75,9 @@ function Step2() {
   let [color, setColor] = useState("#940227eb");
 
   useEffect(() => {
-    setselectedFrontPhoto(formData.Contact.idProofFront);
+    if (formData && formData.Contact && formData.Contact.idProofFront) {
+      setselectedFrontPhoto(formData.Contact.idProofFront);
+    }
   }, [formData])
 
   const handleDateChange = (date) => {
