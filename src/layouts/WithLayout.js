@@ -45,6 +45,8 @@ export default (ComposedComponent, title, options) => {
     const [selectedDose, setselectedDose] = useState(null);
     const [selectedManufacturer, setselectedManufacturer] = useState(null);
 
+    const [step, setstep] = React.useState(1);
+
     const onPageLoad = () => {
       if (localStorage.getItem('formData')) {
         setOpen(true);
@@ -69,6 +71,14 @@ export default (ComposedComponent, title, options) => {
         state.formData = decryptedData;
       }
       setOpen(false);
+    }
+
+    const onPreviousClick = () => {
+      setstep(step - 1);
+    }
+
+    const onNextClick = () => {
+      setstep(step + 1);
     }
 
     const onContinueClick = () => {
@@ -211,63 +221,67 @@ export default (ComposedComponent, title, options) => {
           maxWidth='md'
           fullWidth={true}
         >
-          <DialogTitle id="alert-dialog-title">{"Prism Health Lab Notification"}</DialogTitle>
+          <DialogTitle id="alert-dialog-title">{"What is the primary reason for your visit?"}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              <div className={(selectedService ? 'container1 ' : '') + "row mb-3"}>
-                <div className="col-sm-4">
-                  <div className="card cursor-pointer">
-                    <div className={(selectedService === 'Vaccine' ? 'selectedCard ' : '') + "card-body"} onClick={() => setselectedService('Vaccine')}>
-                      <div className="float-left" style={{ lineHeight: "70px" }}>
-                        <div style={{ fontSize: "20px" }}>Vaccine</div>
-                      </div>
-                      <div className="float-right">
-                        <img src={vaccinePath} alt="img" style={{ display: "block", width: "70px", height: "70px", borderRadius: "40px" }}></img>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-sm-4">
-                  <div className="card cursor-pointer">
-                    <div className={(selectedService === 'PCR Test' ? 'selectedCard ' : '') + "card-body"} onClick={() => {
-                      setselectedDose(null);
-                      setselectedManufacturer(null);
-                      setselectedService('PCR Test');
-                    }}>
-                      <div className="float-left" style={{ lineHeight: "70px" }}>
-                        <div style={{ fontSize: "20px" }}>PCR Test</div>
-                      </div>
-                      <div className="float-right">
-                        <img src={pcrPath} alt="img" style={{ display: "block", width: "70px", height: "70px", borderRadius: "40px" }}></img>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-sm-4">
-                  <div className="card cursor-pointer">
-                    <div className={(selectedService === 'Rapid Test' ? 'selectedCard ' : '') + "card-body"} onClick={() => {
-                      setselectedDose(null);
-                      setselectedManufacturer(null);
-                      setselectedService('Rapid Test');
-                    }}>
-                      <div className="float-left" style={{ lineHeight: "70px" }}>
-                        <div style={{ fontSize: "20px" }}>Rapid Test</div>
-                      </div>
-                      <div className="float-right">
-                        <img src={rapidPath} alt="img" style={{ display: "block", width: "70px", height: "70px", borderRadius: "40px" }}></img>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
               {
-                selectedService === 'Vaccine' ?
+                step === 1 ?
+                  <div className={(selectedService ? 'container1 ' : '') + "row mb-3"}>
+                    <div className="col-sm-4">
+                      <div className="card cursor-pointer">
+                        <div className={(selectedService === 'Vaccine' ? 'selectedCard ' : '') + "card-body"} onClick={() => setselectedService('Vaccine')}>
+                          <div className="float-left" style={{ lineHeight: "70px" }}>
+                            <div style={{ fontSize: "20px", fontWeight: "500" }}>Vaccine</div>
+                          </div>
+                          <div className="float-right">
+                            <img src={vaccinePath} alt="img" style={{ display: "block", width: "70px", height: "70px", borderRadius: "40px" }}></img>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-sm-4">
+                      <div className="card cursor-pointer">
+                        <div className={(selectedService === 'PCR Test' ? 'selectedCard ' : '') + "card-body"} onClick={() => {
+                          setselectedDose(null);
+                          setselectedManufacturer(null);
+                          setselectedService('PCR Test');
+                        }}>
+                          <div className="float-left" style={{ lineHeight: "70px" }}>
+                            <div style={{ fontSize: "20px", fontWeight: "500" }}>PCR Test</div>
+                          </div>
+                          <div className="float-right">
+                            <img src={pcrPath} alt="img" style={{ display: "block", width: "70px", height: "70px", borderRadius: "40px" }}></img>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-sm-4">
+                      <div className="card cursor-pointer">
+                        <div className={(selectedService === 'Rapid Test' ? 'selectedCard ' : '') + "card-body"} onClick={() => {
+                          setselectedDose(null);
+                          setselectedManufacturer(null);
+                          setselectedService('Rapid Test');
+                        }}>
+                          <div className="float-left" style={{ lineHeight: "70px" }}>
+                            <div style={{ fontSize: "20px", fontWeight: "500" }}>Rapid Test</div>
+                          </div>
+                          <div className="float-right">
+                            <img src={rapidPath} alt="img" style={{ display: "block", width: "70px", height: "70px", borderRadius: "40px" }}></img>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  : null
+              }
+              {
+                selectedService === 'Vaccine' && step === 2 ?
                   <div className={(selectedDose ? 'container2 ' : '') + "row mb-3"}>
                     <div className="col-sm-4">
                       <div className="card cursor-pointer">
                         <div className={(selectedDose === 'First Dose' ? 'selectedCard ' : '') + "card-body"} onClick={() => setselectedDose('First Dose')}>
                           <div className="float-left" style={{ lineHeight: "70px" }}>
-                            <div style={{ fontSize: "20px" }}>First Dose</div>
+                            <div style={{ fontSize: "20px", fontWeight: "500" }}>First Dose</div>
                           </div>
                           <div className="float-right">
                             <img src={firstDosePath} alt="img" style={{ display: "block", width: "70px", height: "70px", borderRadius: "40px" }}></img>
@@ -279,7 +293,7 @@ export default (ComposedComponent, title, options) => {
                       <div className="card cursor-pointer">
                         <div className={(selectedDose === 'Second Dose' ? 'selectedCard ' : '') + "card-body"} onClick={() => setselectedDose('Second Dose')}>
                           <div className="float-left" style={{ lineHeight: "70px" }}>
-                            <div style={{ fontSize: "20px" }}>Second Dose</div>
+                            <div style={{ fontSize: "20px", fontWeight: "500" }}>Second Dose</div>
                           </div>
                           <div className="float-right">
                             <img src={secondDosePath} alt="img" style={{ display: "block", width: "70px", height: "70px", borderRadius: "40px" }}></img>
@@ -291,7 +305,7 @@ export default (ComposedComponent, title, options) => {
                       <div className="card cursor-pointer">
                         <div className={(selectedDose === 'Booster Dose' ? 'selectedCard ' : '') + "card-body"} onClick={() => setselectedDose('Booster Dose')}>
                           <div className="float-left" style={{ lineHeight: "70px" }}>
-                            <div style={{ fontSize: "20px" }}>Booster Dose</div>
+                            <div style={{ fontSize: "20px", fontWeight: "500" }}>Booster Dose</div>
                           </div>
                           <div className="float-right">
                             <img src={boosterDosePath} alt="img" style={{ display: "block", width: "70px", height: "70px", borderRadius: "40px" }}></img>
@@ -303,13 +317,13 @@ export default (ComposedComponent, title, options) => {
                   : null
               }
               {
-                selectedDose ?
+                selectedDose && step === 3 ?
                   <div className={(selectedManufacturer ? 'container3 ' : '') + "row mb-3"}>
                     <div className="col-sm-4">
                       <div className="card cursor-pointer">
                         <div className={(selectedManufacturer === 'Pfizer' ? 'selectedCard ' : '') + "card-body"} onClick={() => setselectedManufacturer('Pfizer')}>
                           <div className="float-left" style={{ lineHeight: "70px" }}>
-                            <div style={{ fontSize: "20px" }}>Pfizer</div>
+                            <div style={{ fontSize: "20px", fontWeight: "500" }}>Pfizer</div>
                           </div>
                           <div className="float-right">
                             <img src={pfizerPath} alt="img" style={{ display: "block", width: "70px", height: "70px", borderRadius: "40px" }}></img>
@@ -321,7 +335,7 @@ export default (ComposedComponent, title, options) => {
                       <div className="card cursor-pointer">
                         <div className={(selectedManufacturer === 'Moderna' ? 'selectedCard ' : '') + "card-body"} onClick={() => setselectedManufacturer('Moderna')}>
                           <div className="float-left" style={{ lineHeight: "70px" }}>
-                            <div style={{ fontSize: "20px" }}>Moderna</div>
+                            <div style={{ fontSize: "20px", fontWeight: "500" }}>Moderna</div>
                           </div>
                           <div className="float-right">
                             <img src={modernaPath} alt="img" style={{ display: "block", width: "70px", height: "70px", borderRadius: "40px" }}></img>
@@ -333,7 +347,7 @@ export default (ComposedComponent, title, options) => {
                       <div className="card cursor-pointer">
                         <div className={(selectedManufacturer === 'Johson&Johnson' ? 'selectedCard ' : '') + "card-body"} onClick={() => setselectedManufacturer('Johson&Johnson')}>
                           <div className="float-left" style={{ lineHeight: "70px" }}>
-                            <div style={{ fontSize: "20px" }}>{"Johson&Johnson"}</div>
+                            <div style={{ fontSize: "20px", fontWeight: "500" }}>{"Johson&Johnson"}</div>
                           </div>
                           <div className="float-right">
                             <img src={jnjPath} alt="img" style={{ display: "block", width: "70px", height: "70px", borderRadius: "40px" }}></img>
@@ -347,9 +361,23 @@ export default (ComposedComponent, title, options) => {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={onContinueClick} color="primary" disabled={!selectedService || (selectedService === 'Vaccine' && !selectedManufacturer)}>
-              Continue
-            </Button>
+            {
+              step !== 1 ?
+                <Button onClick={onPreviousClick} color="primary">
+                  Previous
+                </Button>
+                : null
+            }
+            {
+              (selectedService && selectedService !== 'Vaccine') || step === 3 ?
+                <Button onClick={onContinueClick} color="primary" disabled={selectedService === 'Vaccine' ? !selectedManufacturer : false}>
+                  Submit
+                </Button>
+                :
+                <Button onClick={onNextClick} color="primary" disabled={!selectedService || step === 2 ? !selectedDose : false}>
+                  Next
+                </Button>
+            }
           </DialogActions>
         </Dialog>
 

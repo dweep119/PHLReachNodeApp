@@ -1,5 +1,8 @@
 @import url("https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css");
 @import url("https://fonts.googleapis.com/css?family=Roboto:400,700,500");
+h2.MuiTypography-root.MuiTypography-h6 {
+  font-size: 1.5rem !important;
+}
 .p30h40.disabled {
   color: #b4b4b4 !important;
   background-color: #fafafa !important;
