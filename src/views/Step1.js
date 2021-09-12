@@ -20,8 +20,8 @@ function Step1() {
   // eslint-disable-next-line
   let [color, setColor] = useState("#940227eb");
   // eslint-disable-next-line
-  const [dates, setdates] = useState(state.eventDates);
-  const [selectedDate, setselectedDate] = useState(formData.DateOfService ? formData.DateOfService : state.eventDates[0].key);
+  const [dates, setdates] = useState(state.formData.eventDates);
+  const [selectedDate, setselectedDate] = useState(formData.DateOfService ? formData.DateOfService : state.formData.eventDates[0].key);
   const [selectedSlot, setselectedSlot] = useState(formData.TimeOfService ? formData.TimeOfService : null);
   const [availableSlots, setavailableSlots] = useState(null);
   const [showMoreTimes, setshowMoreTimes] = useState(true);
@@ -32,7 +32,7 @@ function Step1() {
   }, []);
 
   useEffect(() => {
-    setselectedDate(formData.DateOfService ? formData.DateOfService : state.eventDates[0].key);
+    setselectedDate(formData.DateOfService ? formData.DateOfService : state?.formData.eventDates[0].key);
     setselectedSlot(formData.TimeOfService ? formData.TimeOfService : null);
   }, [state, formData])
 
@@ -97,7 +97,7 @@ function Step1() {
 
     let slots = [];
     // eslint-disable-next-line
-    state.eventList.map(item => {
+    state.formData.eventList.map(item => {
       if (item.eventDate === date) {
         slots = item.slots;
       }

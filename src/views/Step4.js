@@ -33,7 +33,7 @@ function Step4() {
   console.log('formData: ', formData);
   const { relationshipList } = state;
 
-  const { insuranceCompanyList } = state;
+  const { insuranceCompanyList } = state.formData;
 
   const [isInsured, setisInsured] = useState(formData.Insurance && formData.Insurance.HasInsurance ? formData.Insurance.HasInsurance : false);
   const [selectedFrontPhoto, setselectedFrontPhoto] = useState(formData.Insurance && formData.Insurance.PhotoFront && !formData.Insurance.IsFrontCapture ? formData.Insurance.PhotoFront : null);

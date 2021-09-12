@@ -41,7 +41,7 @@ function Step2() {
   const [state, dispatch] = useContext(AppContext);
   const { formData } = state;
 
-  const relationShipList = state.relationshipList;
+  const relationShipList = state.formData.relationshipList;
 
   // The first commit of Material-UI
   const [selectedFrontPhoto, setselectedFrontPhoto] = useState(formData.Contact && formData.Contact.idProofFront ? formData.Contact.idProofFront : null);

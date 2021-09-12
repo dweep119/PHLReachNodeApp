@@ -5,16 +5,15 @@ export const AppContext = createContext();
 const initialState = {
   step: 1,
   formData: {
+    eventList: [],
+    eventDates: [],
+    demographics: [],
+    relationshipList: [],
+    insuranceCompanyList: [],
+    groupList: [],
+    questionList: [],
+    consentformList: []
   },
-  eventList: [],
-  eventDates: [],
-  locationList: [],
-  demographics: [],
-  relationshipList: [],
-  insuranceCompanyList: [],
-  groupList: [],
-  questionList: [],
-  consentformList: []
 };
 
 const reducer = (state, action) => {
@@ -29,6 +28,12 @@ const reducer = (state, action) => {
       return {
         ...state,
         formData: { ...state.formData, ...action.formData },
+      };
+    case "SET_EVENT_DATE":
+      // updateSession(action.formData);
+      return {
+        ...state,
+        eventDates: action.eventDates,
       };
     case "GET_SESSION":
       return {

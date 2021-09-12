@@ -267,9 +267,9 @@ function Step5() {
   const [state, dispatch] = useContext(AppContext);
   const { formData } = state;
 
-  const { groupList } = state;
+  const { groupList } = state.formData;
 
-  const { questionList } = state;
+  const { questionList } = state.formData;
 
   const [expanded, setExpanded] = React.useState('panel3');
 
