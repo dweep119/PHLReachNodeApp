@@ -48,6 +48,7 @@ export default (ComposedComponent, title, options) => {
     const [selectedService, setselectedService] = useState(null);
     const [selectedDose, setselectedDose] = useState(null);
     const [selectedManufacturer, setselectedManufacturer] = useState(null);
+    const [testList, settestList] = useState([]);
 
     const [step, setstep] = useState(1);
 
@@ -148,6 +149,7 @@ export default (ComposedComponent, title, options) => {
         response.data.questionList.sort(function (a, b) {
           return new Date(a.index) - new Date(b.index);
         });
+        settestList(response.data.testList);
         dispatch({
           type: "SET_FORM_DATA",
           formData: {
@@ -263,57 +265,63 @@ export default (ComposedComponent, title, options) => {
                   <div id="alert-dialog-description">
                     {
                       step === 1 ?
-                        <div className={(selectedService ? 'container1 ' : '') + "row mb-3"}>
-                          <div className="col-sm-4">
-                            <div className="card cursor-pointer">
-                              <div className={(selectedService === 'Vaccine' ? 'selectedCard ' : '') + "card-body"} onClick={() => setselectedService('Vaccine')}>
-                                <div className="float-left" style={{ lineHeight: "70px" }}>
-                                  <div style={{ fontSize: "20px", fontWeight: "500" }}>Vaccine</div>
-                                </div>
-                                <div className="float-right">
-                                  <img src={vaccinePath} alt="img" style={{ display: "block", width: "70px", height: "70px", borderRadius: "40px" }}></img>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="col-sm-4">
-                            <div className="card cursor-pointer">
-                              <div className={(selectedService === 'PCR Test' ? 'selectedCard ' : '') + "card-body"} onClick={() => {
-                                setselectedDose(null);
-                                setselectedManufacturer(null);
-                                setselectedService('PCR Test');
-                              }}>
-                                <div className="float-left" style={{ lineHeight: "70px" }}>
-                                  <div style={{ fontSize: "20px", fontWeight: "500" }}>PCR Test</div>
-                                </div>
-                                <div className="float-right">
-                                  <img src={pcrPath} alt="img" style={{ display: "block", width: "70px", height: "70px", borderRadius: "40px" }}></img>
+                        <div>
+                          {
+                            testList[0].testName === 'Vaccine' ?
+                              <div className="col-sm-6">
+                                <div className="card cursor-pointer">
+                                  <div className={(selectedService === 'Vaccine' ? 'selectedCard ' : '') + "card-body"} onClick={() => setselectedService('Vaccine')}>
+                                    <div className="float-left" style={{ lineHeight: "70px" }}>
+                                      <div style={{ fontSize: "20px", fontWeight: "500" }}>Vaccine</div>
+                                    </div>
+                                    <div className="float-right">
+                                      <img src={vaccinePath} alt="img" style={{ display: "block", width: "70px", height: "70px", borderRadius: "40px" }}></img>
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          </div>
-                          <div className="col-sm-4">
-                            <div className="card cursor-pointer">
-                              <div className={(selectedService === 'Rapid Test' ? 'selectedCard ' : '') + "card-body"} onClick={() => {
-                                setselectedDose(null);
-                                setselectedManufacturer(null);
-                                setselectedService('Rapid Test');
-                              }}>
-                                <div className="float-left" style={{ lineHeight: "70px" }}>
-                                  <div style={{ fontSize: "20px", fontWeight: "500" }}>Rapid Test</div>
+                              : testList[0].testName === 'PCR Test' ?
+                                <div className="col-sm-6">
+                                  <div className="card cursor-pointer">
+                                    <div className={(selectedService === 'PCR Test' ? 'selectedCard ' : '') + "card-body"} onClick={() => {
+                                      setselectedDose(null);
+                                      setselectedManufacturer(null);
+                                      setselectedService('PCR Test');
+                                    }}>
+                                      <div className="float-left" style={{ lineHeight: "70px" }}>
+                                        <div style={{ fontSize: "20px", fontWeight: "500" }}>PCR Test</div>
+                                      </div>
+                                      <div className="float-right">
+                                        <img src={pcrPath} alt="img" style={{ display: "block", width: "70px", height: "70px", borderRadius: "40px" }}></img>
+                                      </div>
+                                    </div>
+                                  </div>
                                 </div>
-                                <div className="float-right">
-                                  <img src={rapidPath} alt="img" style={{ display: "block", width: "70px", height: "70px", borderRadius: "40px" }}></img>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
+                                : testList[0].testName === 'PCR Test' ?
+                                  <div className="col-sm-6">
+                                    <div className="card cursor-pointer">
+                                      <div className={(selectedService === 'Rapid Test' ? 'selectedCard ' : '') + "card-body"} onClick={() => {
+                                        setselectedDose(null);
+                                        setselectedManufacturer(null);
+                                        setselectedService('Rapid Test');
+                                      }}>
+                                        <div className="float-left" style={{ lineHeight: "70px" }}>
+                                          <div style={{ fontSize: "20px", fontWeight: "500" }}>Rapid Test</div>
+                                        </div>
+                                        <div className="float-right">
+                                          <img src={rapidPath} alt="img" style={{ display: "block", width: "70px", height: "70px", borderRadius: "40px" }}></img>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  : null
+                          }
                         </div>
                         : null
                     }
                     {
                       selectedService === 'Vaccine' && step === 2 ?
-                        <div className={(selectedDose ? 'container2 ' : '') + "row mb-3"}>
+                        <div className="d-flex">
                           <div className="col-sm-4">
                             <div className="card cursor-pointer">
                               <div className={(selectedDose === 'First Dose' ? 'selectedCard ' : '') + "card-body"} onClick={() => setselectedDose('First Dose')}>
@@ -355,7 +363,7 @@ export default (ComposedComponent, title, options) => {
                     }
                     {
                       selectedDose && step === 3 ?
-                        <div className={(selectedManufacturer ? 'container3 ' : '') + "row mb-3"}>
+                        <div className="d-flex">
                           <div className="col-sm-4">
                             <div className="card cursor-pointer">
                               <div className={(selectedManufacturer === 'Pfizer' ? 'selectedCard ' : '') + "card-body"} onClick={() => setselectedManufacturer('Pfizer')}>
@@ -452,7 +460,7 @@ export default (ComposedComponent, title, options) => {
         }
       </div>
     );
-};
+  };
 
-return WithLayout;
+  return WithLayout;
 };
