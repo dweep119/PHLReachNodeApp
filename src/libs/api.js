@@ -1,6 +1,6 @@
 const javaURL = "https://api.prismtravelpassport.com/api/v1";
-// const url = "https://phl-react-api.prismtravelpassport.com/api/v1";
-const url = "http://localhost:8000/api/v1";
+const url = "https://phl-react-api.prismtravelpassport.com/api/v1";
+// const url = "http://localhost:8000/api/v1";
 
 export async function sendData() {
   const data = await fetch(`${url}/sendData`, {

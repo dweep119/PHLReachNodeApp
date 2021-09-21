@@ -34,6 +34,8 @@ const CryptoJS = require("crypto-js");
 // eslint-disable-next-line
 export default (ComposedComponent, title, options) => {
   const WithLayout = (props) => {
+    const queryParams = new URLSearchParams(window.location.search);
+    const locationId = queryParams.get('locationId');
 
     const [state, dispatch] = useContext(AppContext);
     const activeStep = _.find(steps_, { step_number: state.step });
@@ -127,6 +129,12 @@ export default (ComposedComponent, title, options) => {
       const result = await getLocations();
       if (result.status) {
         setlocationList(result.data.locationList);
+        if (locationId) {
+          const location = result.data.locationList.filter(item => item.value === locationId);
+          if (location.length > 0) {
+            setselectedLocation(location[0]);
+          }
+        }
       }
       setLoading(false);
     }
@@ -441,7 +449,7 @@ export default (ComposedComponent, title, options) => {
                       <Select
                         className="basic-single"
                         classNamePrefix="select"
-                        // defaultValue={locationList[0]}
+                        defaultValue={selectedLocation ? selectedLocation : locationList[0]}
                         isClearable={false}
                         isSearchable={true}
                         onChange={(newValue) => setselectedLocation(newValue)}
