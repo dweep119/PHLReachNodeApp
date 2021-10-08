@@ -143,18 +143,10 @@ export default (ComposedComponent, title, options) => {
           const location = result.data.locationList.filter(item => item.value === locationId);
           if (location.length > 0) {
             setselectedLocation(location[0]);
-            if (appointmentId && patientId) {
-              fetchAppointmentAndPatientData()
-            } else {
-              setLoading(false);
-            }
-          } else {
-            setLoading(false);
           }
         }
-      } else {
-        setLoading(false);
       }
+      setLoading(false);
     }
 
     const fetchAppointmentAndPatientData = async () => {
@@ -266,8 +258,11 @@ export default (ComposedComponent, title, options) => {
 
     useEffect(() => {
       setColor("#940227eb");
-
-      fetchLocations();
+      if (appointmentId && patientId) {
+        fetchAppointmentAndPatientData()
+      } else {
+        fetchLocations();
+      }
       // eslint-disable-next-line
     }, [])
 
