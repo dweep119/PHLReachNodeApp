@@ -31,7 +31,7 @@ function Step4() {
   const [state, dispatch] = useContext(AppContext);
   const { formData } = state;
   console.log('formData: ', formData);
-  const { relationshipList } = state;
+  const { relationshipList } = state.formData;
 
   const { insuranceCompanyList } = state.formData;
 

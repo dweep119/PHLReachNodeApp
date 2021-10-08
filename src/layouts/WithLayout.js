@@ -15,7 +15,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { ClipLoader } from "react-spinners";
 import moment from "moment";
-import { getData, getLocations } from "../libs/api";
+import { getData, getLocations, getAppointmentAndPatientData } from "../libs/api";
 import vaccinePath from "../assets/img/vaccine_image.jpg";
 import pcrPath from "../assets/img/pcr_test.jpg";
 import rapidPath from "../assets/img/rapid_test.jpg";
@@ -36,6 +36,8 @@ export default (ComposedComponent, title, options) => {
   const WithLayout = (props) => {
     const queryParams = new URLSearchParams(window.location.search);
     const locationId = queryParams.get('locationId');
+    const appointmentId = queryParams.get('appointmentId');
+    const patientId = queryParams.get('patientId');
 
     const [state, dispatch] = useContext(AppContext);
     const activeStep = _.find(steps_, { step_number: state.step });
@@ -55,10 +57,18 @@ export default (ComposedComponent, title, options) => {
     const [step, setstep] = useState(1);
 
     const onPageLoad = () => {
-      if (localStorage.getItem('formData')) {
-        setOpen(true);
+      if (appointmentId && patientId) {
+        fetchData(locationId);
+        dispatch({
+          type: "SET_STEP",
+          step: 2
+        });
       } else {
-        setopenSelectLocationModal(true);
+        if (localStorage.getItem('formData')) {
+          setOpen(true);
+        } else {
+          setopenSelectLocationModal(true);
+        }
       }
     }
 
@@ -76,7 +86,7 @@ export default (ComposedComponent, title, options) => {
       });
       setopenSelectLocationModal(false);
       setLoading(true);
-      fetchData();
+      fetchData(selectedLocation.value);
     }
 
     const handleClose = () => {
@@ -133,14 +143,90 @@ export default (ComposedComponent, title, options) => {
           const location = result.data.locationList.filter(item => item.value === locationId);
           if (location.length > 0) {
             setselectedLocation(location[0]);
+            if (appointmentId && patientId) {
+              fetchAppointmentAndPatientData()
+            } else {
+              setLoading(false);
+            }
+          } else {
+            setLoading(false);
           }
         }
+      } else {
+        setLoading(false);
+      }
+    }
+
+    const fetchAppointmentAndPatientData = async () => {
+      const response = await getAppointmentAndPatientData(appointmentId, patientId);
+      if (response.status) {
+        const appData = response.data.appointmentData[0];
+        const patientData = response.data.patientData[0];
+        const insuranceData = response.data.insuranceData[0];
+        setselectedService(appData.typeOfVisit);
+        if (appData.typeOfVisit === "Vaccine") {
+          setselectedDose(appData.dose);
+          setselectedManufacturer(appData.manufacturer);
+        }
+        dispatch({
+          type: "SET_FORM_DATA",
+          formData: {
+            DateOfService: moment(appData.appointmentDate).format("MM/DD/YYYY"),
+            TimeOfService: {
+              time_12hr: moment(appData.slot, ["HH:mm:ss"]).format("h:mm A")
+            },
+            Contact: {
+              FirstName: patientData.firstName,
+              LastName: patientData.lastName,
+              DateOfBirth: new Date(patientData.dob),
+              StreetAddress1: patientData.address,
+              Zipcode: patientData.zipCode,
+              City: patientData.city,
+              State: patientData.state,
+              PhoneNumber: patientData.phone,
+              EmailAddress: patientData.email,
+              EmergencyContact: {
+                ContactName: patientData.emergencyConatctName,
+                ContactPhone: patientData.emergencyConatctNumber,
+                ContactRelation: {
+                  label: patientData.emergencyConatctRelation,
+                  value: patientData.emergencyConatctRelation
+                }
+              },
+              // is_verified: true,
+              // is_verifiedMobile: true
+            },
+            Demographics: {
+              PreferredLanguage: patientData.preferredLanguage,
+              Race: patientData.race,
+              Ethnicity: patientData.ethnicity,
+              Gender: patientData.gender
+            },
+            Insurance: {
+              HasInsurance: insuranceData.insuranceId ? true : false,
+              PrimaryInsurance: {
+                label: insuranceData.primaryCompany,
+                value: insuranceData.primaryCompany
+              },
+              InsuranceId: insuranceData.insuranceId,
+              GroupNumber: insuranceData.groupNumber,
+              PlanName: insuranceData.planName,
+              SameInsuredPerson: insuranceData.isRelationInsured,
+              InsuredPersonRelation: insuranceData.isRelationInsured ? '' : insuranceData.patientInsuredRelation,
+              InsuredPersonDOB: insuranceData.isRelationInsured ? '' : insuranceData.dob,
+              InsuredPersonFirstName: insuranceData.isRelationInsured ? '' : insuranceData.firstName,
+              InsuredPersonLastName: insuranceData.isRelationInsured ? '' : insuranceData.lastName,
+              InsuredPersonMiddleName: insuranceData.isRelationInsured ? '' : insuranceData.middleName,
+              InsuredPersonSuffix: insuranceData.isRelationInsured ? '' : insuranceData.suffix
+            }
+          }
+        });
       }
       setLoading(false);
     }
 
-    const fetchData = async () => {
-      const response = await getData(selectedLocation.value);
+    const fetchData = async (locId) => {
+      const response = await getData(locId);
       if (response.status) {
         let eventDates = [];
         // eslint-disable-next-line
@@ -172,7 +258,9 @@ export default (ComposedComponent, title, options) => {
           }
         });
       }
-      setOpenServiceModal(true);
+      if (!appointmentId && !patientId) {
+        setOpenServiceModal(true);
+      }
       setLoading(false);
     }
 
@@ -449,7 +537,7 @@ export default (ComposedComponent, title, options) => {
                       <Select
                         className="basic-single"
                         classNamePrefix="select"
-                        defaultValue={selectedLocation ? selectedLocation : locationList[0]}
+                        defaultValue={selectedLocation ? selectedLocation : null}
                         isClearable={false}
                         isSearchable={true}
                         onChange={(newValue) => setselectedLocation(newValue)}

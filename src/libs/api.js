@@ -35,6 +35,17 @@ export async function getLocations() {
   return _data;
 }
 
+export async function getAppointmentAndPatientData(appointmentId, patientId) {
+  const data = await fetch(`${url}/getSQLData/${appointmentId}/${patientId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    }
+  });
+  const _data = await data.json();
+  return _data;
+}
+
 export async function documentsScan(formData) {
   const data = await fetch('https://app.nanonets.com/api/v2/OCR/Model/50afe7a1-7b2f-4c62-bcaa-5532b67479e9/LabelFile/', {
     headers: {

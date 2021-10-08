@@ -122,9 +122,11 @@ function Step8() {
     const obj = {
       "appointment": {
         "appointmentDate": moment(new Date(DateOfService)).format("YYYY-MM-DD") || "2021-01-18T16:45:26.260Z",
-        "locationId": "9c9a7ed0-5cb3-4a00-baa2-a0409553c274",
+        "locationId": formData.selectedLocation || "9c9a7ed0-5cb3-4a00-baa2-a0409553c274",
         "slot": TimeOfService.req_time || "08:30:00",
-        // typeOfVisit: selectedVisitType,
+        "typeOfVisit": formData.selectedService,
+        "dose": formData.selectedDose,
+        "manufacturer": formData.selectedManufacturer
         // isTravelling: isTravelling || false
       },
       "patientInsurance": _patientInsurance,

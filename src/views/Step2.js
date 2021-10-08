@@ -40,13 +40,16 @@ function Step2() {
 
   const [state, dispatch] = useContext(AppContext);
   const { formData } = state;
+  const queryParams = new URLSearchParams(window.location.search);
+  const appointmentId = queryParams.get('appointmentId');
+  const patientId = queryParams.get('patientId');
 
   const relationShipList = state.formData.relationshipList;
 
   // The first commit of Material-UI
   const [selectedFrontPhoto, setselectedFrontPhoto] = useState(formData.Contact && formData.Contact.idProofFront ? formData.Contact.idProofFront : null);
   const [documentFrontFile, setdocumentFrontFile] = useState(null);
-  const [documentRecognised, setdocumentRecognised] = useState(formData.Contact && formData.Contact.isDocumentRecognised ? formData.Contact.isDocumentRecognised : false);
+  const [documentRecognised, setdocumentRecognised] = useState(formData.Contact && formData.Contact.isDocumentRecognised ? formData.Contact.isDocumentRecognised : true);
 
   const [firstName, setfirstName] = useState(formData.Contact && formData.Contact.FirstName ? formData.Contact.FirstName : '');
   const [lastName, setlastName] = useState(formData.Contact && formData.Contact.LastName ? formData.Contact.LastName : '');
@@ -166,7 +169,8 @@ function Step2() {
   }
 
   const goToSummary = () => {
-    if (selectedFrontPhoto && firstName && lastName && selectedDOB && streetAddress1 &&
+    // selectedFrontPhoto
+    if (firstName && lastName && selectedDOB && streetAddress1 &&
       selectedstate && selectedcity && selectedZipcode && phoneNumber && email &&
       eContactName && eContactPhone && eContactRelation) {
       let obj = {
@@ -241,7 +245,9 @@ function Step2() {
   };
 
   const handleNext = () => {
-    if (selectedFrontPhoto && firstName && lastName && selectedDOB && streetAddress1 &&
+    console.log('selectedDOB: ', selectedDOB);
+    // selectedFrontPhoto
+    if (firstName && lastName && selectedDOB && streetAddress1 &&
       selectedstate && selectedcity && selectedZipcode && phoneNumber && email &&
       eContactName && eContactPhone && eContactRelation) {
       let obj = {
@@ -485,7 +491,7 @@ function Step2() {
   const classes = useStyles();
 
   if (loading) return <div style={{ textAlign: "center" }}><ClipLoader color={color} loading={loading} size={100} /></div>;
-  
+
   return (
     <div className="App">
       <ValidatorForm
@@ -680,7 +686,7 @@ function Step2() {
                       countries={['US', 'IN']}
                       //   onChange={(phone) => this.onPhoneChange(phone)}
                       onChange={setphoneNumber}
-                      disabled={isVerfiedMobile}
+                      disabled={!appointmentId && !patientId ? isVerfiedMobile : false}
                       onKeyDown={(e) => {
                         if (e.key === "Enter") {
                           handleVerifyMobileClick();
@@ -688,14 +694,16 @@ function Step2() {
                       }}
                     />
                     {
-                      isVerfiedMobile ?
-                        <i className="fa fa-check-circle-o check ml-3" style={{ fontSize: 25, color: "green", margin: "auto" }}></i>
-                        :
-                        <div className="verify-button cursor-pointer" onClick={() => {
-                          handleVerifyMobileClick();
-                        }}>
-                          <div className="verify roboto-bold-white-18px">Verify</div>
-                        </div>
+                      !appointmentId && !patientId ?
+                        isVerfiedMobile ?
+                          <i className="fa fa-check-circle-o check ml-3" style={{ fontSize: 25, color: "green", margin: "auto" }}></i>
+                          :
+                          <div className="verify-button cursor-pointer" onClick={() => {
+                            handleVerifyMobileClick();
+                          }}>
+                            <div className="verify roboto-bold-white-18px">Verify</div>
+                          </div>
+                        : null
                     }
                   </div>
                 </div>
@@ -708,21 +716,23 @@ function Step2() {
                       onChange={(event) => setemail(event.target.value)}
                       InputProps={{ classes }}
                       value={email}
-                      disabled={isVerfied}
+                      disabled={!appointmentId && !patientId ? isVerfied : false}
                       validators={['required', 'isEmail']}
                       errorMessages={['This field is required', 'Email is not valid']}
                     />
                     {/* <input className="overlap-group first-name-1 w-100 border-1px-mist-gray" id="email" name="lastname"
                 placeholder="Email Address" /> */}
                     {
-                      isVerfied ?
-                        <i className="fa fa-check-circle-o check ml-3" style={{ fontSize: 25, color: "green", margin: "auto" }}></i>
-                        :
-                        <div className="verify-button cursor-pointer" onClick={() => {
-                          handleVerifyClick();
-                        }}>
-                          <div className="verify roboto-bold-white-18px">Verify</div>
-                        </div>
+                      !appointmentId && !patientId ?
+                        isVerfied ?
+                          <i className="fa fa-check-circle-o check ml-3" style={{ fontSize: 25, color: "green", margin: "auto" }}></i>
+                          :
+                          <div className="verify-button cursor-pointer" onClick={() => {
+                            handleVerifyClick();
+                          }}>
+                            <div className="verify roboto-bold-white-18px">Verify</div>
+                          </div>
+                        : null
                     }
                   </div>
                 </div>
