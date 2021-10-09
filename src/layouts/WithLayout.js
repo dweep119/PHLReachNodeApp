@@ -160,6 +160,14 @@ export default (ComposedComponent, title, options) => {
           setselectedDose(appData.dose);
           setselectedManufacturer(appData.manufacturer);
         }
+        const question = [];
+        response.data.questionData.map(item => {
+          let object = {
+            QuestionId: item.questionId,
+            Answers: item.answers && item.answers.length > 1 ? item.answers.split(',') : [item.answers]
+          }
+          question.push(object);
+        });
         dispatch({
           type: "SET_FORM_DATA",
           formData: {
@@ -210,7 +218,8 @@ export default (ComposedComponent, title, options) => {
               InsuredPersonLastName: insuranceData.isRelationInsured ? '' : insuranceData.lastName,
               InsuredPersonMiddleName: insuranceData.isRelationInsured ? '' : insuranceData.middleName,
               InsuredPersonSuffix: insuranceData.isRelationInsured ? '' : insuranceData.suffix
-            }
+            },
+            MedicalQuestionnaire: question
           }
         });
       }

@@ -27,6 +27,7 @@ const RenderQuestions = (props) => {
   const [value, setvalue] = useState({ "QuestionId": question.id, "Answers": question.type === "Choice" ? [] : [question.default] });
 
   useEffect(() => {
+    console.log('formData.MedicalQuestionnaire: ', formData.MedicalQuestionnaire);
     if (formData.MedicalQuestionnaire && formData.MedicalQuestionnaire.length > 0) {
       let result = formData.MedicalQuestionnaire.filter(item => item.QuestionId === question.id);
       if (result.length > 0) {
@@ -271,7 +272,7 @@ function Step5() {
 
   const { questionList } = state.formData;
 
-  const [expanded, setExpanded] = React.useState('panel3');
+  const [expanded, setExpanded] = React.useState('panel1');
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
