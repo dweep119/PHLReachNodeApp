@@ -1,12 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import Steps from "../components/Stepper/Steps";
 import Select from 'react-select';
-import {
-  StepsFlex
-} from "../components/styledComponents";
-import Footer from "../components/Footers/Footer";
-import Header from "../components/Headers/Header";
-import { AppContext } from "../store/app";
+import Cookies from 'js-cookie'
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -15,6 +10,13 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { ClipLoader } from "react-spinners";
 import moment from "moment";
+
+import {
+  StepsFlex
+} from "../components/styledComponents";
+import Footer from "../components/Footers/Footer";
+import Header from "../components/Headers/Header";
+import { AppContext } from "../store/app";
 import { getData, getLocations, getAppointmentAndPatientData } from "../libs/api";
 import vaccinePath from "../assets/img/vaccine_image.jpg";
 import pcrPath from "../assets/img/pcr_test.jpg";
@@ -35,7 +37,7 @@ const CryptoJS = require("crypto-js");
 export default (ComposedComponent, title, options) => {
   const WithLayout = (props) => {
     const queryParams = new URLSearchParams(window.location.search);
-    const locationId = queryParams.get('locationId');
+    const locationId = queryParams.get('locationId') ? queryParams.get('locationId') : Cookies.get('location');
     const appointmentId = queryParams.get('appointmentId');
     const patientId = queryParams.get('patientId');
 
@@ -57,7 +59,7 @@ export default (ComposedComponent, title, options) => {
     const [step, setstep] = useState(1);
 
     const onPageLoad = () => {
-      if (appointmentId && patientId) {
+      if (appointmentId || patientId) {
         fetchData(locationId);
         dispatch({
           type: "SET_STEP",
@@ -226,6 +228,83 @@ export default (ComposedComponent, title, options) => {
       setLoading(false);
     }
 
+    const fetchPatientData = async () => {
+      const response = await getAppointmentAndPatientData(appointmentId, patientId);
+      if (response.status) {
+        const appData = response.data.appointmentData[0];
+        const patientData = response.data.patientData[0];
+        const insuranceData = response.data.insuranceData[0];
+        setselectedService(appData.typeOfVisit);
+        if (appData.typeOfVisit === "Vaccine") {
+          setselectedDose(appData.dose);
+          setselectedManufacturer(appData.manufacturer);
+        }
+        const question = [];
+        response.data.questionData.map(item => {
+          let object = {
+            QuestionId: item.questionId,
+            Answers: item.answers && item.answers.length > 1 ? item.answers.split(',') : [item.answers]
+          }
+          question.push(object);
+        });
+        dispatch({
+          type: "SET_FORM_DATA",
+          formData: {
+            DateOfService: moment(appData.appointmentDate).format("MM/DD/YYYY"),
+            TimeOfService: {
+              time_12hr: moment(appData.slot, ["HH:mm:ss"]).format("h:mm A")
+            },
+            Contact: {
+              FirstName: patientData.firstName,
+              LastName: patientData.lastName,
+              DateOfBirth: new Date(patientData.dob),
+              StreetAddress1: patientData.address,
+              Zipcode: patientData.zipCode,
+              City: patientData.city,
+              State: patientData.state,
+              PhoneNumber: patientData.phone,
+              EmailAddress: patientData.email,
+              EmergencyContact: {
+                ContactName: patientData.emergencyConatctName,
+                ContactPhone: patientData.emergencyConatctNumber,
+                ContactRelation: {
+                  label: patientData.emergencyConatctRelation,
+                  value: patientData.emergencyConatctRelation
+                }
+              },
+              // is_verified: true,
+              // is_verifiedMobile: true
+            },
+            Demographics: {
+              PreferredLanguage: patientData.preferredLanguage,
+              Race: patientData.race,
+              Ethnicity: patientData.ethnicity,
+              Gender: patientData.gender
+            },
+            Insurance: {
+              HasInsurance: insuranceData.insuranceId ? true : false,
+              PrimaryInsurance: {
+                label: insuranceData.primaryCompany,
+                value: insuranceData.primaryCompany
+              },
+              InsuranceId: insuranceData.insuranceId,
+              GroupNumber: insuranceData.groupNumber,
+              PlanName: insuranceData.planName,
+              SameInsuredPerson: insuranceData.isRelationInsured,
+              InsuredPersonRelation: insuranceData.isRelationInsured ? '' : insuranceData.patientInsuredRelation,
+              InsuredPersonDOB: insuranceData.isRelationInsured ? '' : insuranceData.dob,
+              InsuredPersonFirstName: insuranceData.isRelationInsured ? '' : insuranceData.firstName,
+              InsuredPersonLastName: insuranceData.isRelationInsured ? '' : insuranceData.lastName,
+              InsuredPersonMiddleName: insuranceData.isRelationInsured ? '' : insuranceData.middleName,
+              InsuredPersonSuffix: insuranceData.isRelationInsured ? '' : insuranceData.suffix
+            },
+            MedicalQuestionnaire: question
+          }
+        });
+      }
+      setLoading(false);
+    }
+
     const fetchData = async (locId) => {
       const response = await getData(locId);
       if (response.status) {
@@ -269,6 +348,8 @@ export default (ComposedComponent, title, options) => {
       setColor("#940227eb");
       if (appointmentId && patientId) {
         fetchAppointmentAndPatientData()
+      } else if (patientId) {
+        fetchPatientData()
       } else {
         fetchLocations();
       }
