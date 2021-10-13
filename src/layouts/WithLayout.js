@@ -17,7 +17,7 @@ import {
 import Footer from "../components/Footers/Footer";
 import Header from "../components/Headers/Header";
 import { AppContext } from "../store/app";
-import { getData, getLocations, getAppointmentAndPatientData } from "../libs/api";
+import { getData, getLocations, getAppointmentAndPatientData, getPatientDataById } from "../libs/api";
 import vaccinePath from "../assets/img/vaccine_image.jpg";
 import pcrPath from "../assets/img/pcr_test.jpg";
 import rapidPath from "../assets/img/rapid_test.jpg";
@@ -38,6 +38,7 @@ export default (ComposedComponent, title, options) => {
   const WithLayout = (props) => {
     const queryParams = new URLSearchParams(window.location.search);
     const locationId = queryParams.get('locationId') ? queryParams.get('locationId') : Cookies.get('location');
+    console.log('locationId: ', locationId);
     const appointmentId = queryParams.get('appointmentId');
     const patientId = queryParams.get('patientId');
 
@@ -59,12 +60,14 @@ export default (ComposedComponent, title, options) => {
     const [step, setstep] = useState(1);
 
     const onPageLoad = () => {
-      if (appointmentId || patientId) {
+      if (appointmentId && patientId) {
         fetchData(locationId);
         dispatch({
           type: "SET_STEP",
           step: 2
         });
+      } else if (patientId) {
+        setopenSelectLocationModal(false);
       } else {
         if (localStorage.getItem('formData')) {
           setOpen(true);
@@ -134,6 +137,12 @@ export default (ComposedComponent, title, options) => {
           ...obj
         }
       });
+      if (patientId) {
+        dispatch({
+          type: "SET_STEP",
+          step: 2
+        });
+      }
       setOpenServiceModal(false);
     }
 
@@ -229,16 +238,15 @@ export default (ComposedComponent, title, options) => {
     }
 
     const fetchPatientData = async () => {
-      const response = await getAppointmentAndPatientData(appointmentId, patientId);
+      const response = await getPatientDataById(patientId);
       if (response.status) {
-        const appData = response.data.appointmentData[0];
         const patientData = response.data.patientData[0];
         const insuranceData = response.data.insuranceData[0];
-        setselectedService(appData.typeOfVisit);
-        if (appData.typeOfVisit === "Vaccine") {
-          setselectedDose(appData.dose);
-          setselectedManufacturer(appData.manufacturer);
-        }
+        // setselectedService(appData.typeOfVisit);
+        // if (appData.typeOfVisit === "Vaccine") {
+        //   setselectedDose(appData.dose);
+        //   setselectedManufacturer(appData.manufacturer);
+        // }
         const question = [];
         response.data.questionData.map(item => {
           let object = {
@@ -250,9 +258,9 @@ export default (ComposedComponent, title, options) => {
         dispatch({
           type: "SET_FORM_DATA",
           formData: {
-            DateOfService: moment(appData.appointmentDate).format("MM/DD/YYYY"),
+            DateOfService: moment(new Date()).format("MM/DD/YYYY"),
             TimeOfService: {
-              time_12hr: moment(appData.slot, ["HH:mm:ss"]).format("h:mm A")
+              time_12hr: moment(moment(), ["HH:mm:ss"]).format("h:mm A")
             },
             Contact: {
               FirstName: patientData.firstName,
@@ -340,6 +348,8 @@ export default (ComposedComponent, title, options) => {
       }
       if (!appointmentId && !patientId) {
         setOpenServiceModal(true);
+      } else if (!appointmentId && patientId) {
+        setOpenServiceModal(true);
       }
       setLoading(false);
     }
@@ -349,6 +359,8 @@ export default (ComposedComponent, title, options) => {
       if (appointmentId && patientId) {
         fetchAppointmentAndPatientData()
       } else if (patientId) {
+        setLoading(true);
+        fetchData(locationId);
         fetchPatientData()
       } else {
         fetchLocations();

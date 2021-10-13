@@ -26,8 +26,8 @@ function Step8() {
   let [color, setColor] = useState("#940227eb");
   const [state, dispatch] = useContext(AppContext);
   const { formData } = state;
-  const { groupList } = state;
-  const { questionList } = state;
+  const { groupList } = formData;
+  const { questionList } = formData;
   console.log('formData: ', formData);
   const signatureImage = formData.ConsentForms.Signature;
   const DateOfService = formData.DateOfService;
