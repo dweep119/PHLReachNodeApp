@@ -38,7 +38,6 @@ export default (ComposedComponent, title, options) => {
   const WithLayout = (props) => {
     const queryParams = new URLSearchParams(window.location.search);
     const locationId = queryParams.get('locationId') ? queryParams.get('locationId') : Cookies.get('location');
-    console.log('locationId: ', locationId);
     const appointmentId = queryParams.get('appointmentId');
     const patientId = queryParams.get('patientId');
 
@@ -60,13 +59,11 @@ export default (ComposedComponent, title, options) => {
     const [step, setstep] = useState(1);
 
     const onPageLoad = () => {
-      if (appointmentId && patientId) {
-        fetchData(locationId);
-        dispatch({
-          type: "SET_STEP",
-          step: 2
-        });
-      } else if (patientId) {
+      if (appointmentId && patientId && locationId) {
+        setopenSelectLocationModal(false);
+      } else if (patientId && locationId) {
+        setopenSelectLocationModal(false);
+      } else if (locationId) {
         setopenSelectLocationModal(false);
       } else {
         if (localStorage.getItem('formData')) {
@@ -137,7 +134,7 @@ export default (ComposedComponent, title, options) => {
           ...obj
         }
       });
-      if (patientId) {
+      if (appointmentId || patientId || locationId) {
         dispatch({
           type: "SET_STEP",
           step: 2
@@ -247,14 +244,14 @@ export default (ComposedComponent, title, options) => {
         //   setselectedDose(appData.dose);
         //   setselectedManufacturer(appData.manufacturer);
         // }
-        const question = [];
-        response.data.questionData.map(item => {
-          let object = {
-            QuestionId: item.questionId,
-            Answers: item.answers && item.answers.length > 1 ? item.answers.split(',') : [item.answers]
-          }
-          question.push(object);
-        });
+        // const question = [];
+        // response.data.questionData.map(item => {
+        //   let object = {
+        //     QuestionId: item.questionId,
+        //     Answers: item.answers && item.answers.length > 1 ? item.answers.split(',') : [item.answers]
+        //   }
+        //   question.push(object);
+        // });
         dispatch({
           type: "SET_FORM_DATA",
           formData: {
@@ -306,7 +303,7 @@ export default (ComposedComponent, title, options) => {
               InsuredPersonMiddleName: insuranceData.isRelationInsured ? '' : insuranceData.middleName,
               InsuredPersonSuffix: insuranceData.isRelationInsured ? '' : insuranceData.suffix
             },
-            MedicalQuestionnaire: question
+            // MedicalQuestionnaire: question
           }
         });
       }
@@ -345,23 +342,28 @@ export default (ComposedComponent, title, options) => {
             consentformList: response.data.consentformList
           }
         });
-      }
-      if (!appointmentId && !patientId) {
-        setOpenServiceModal(true);
-      } else if (!appointmentId && patientId) {
         setOpenServiceModal(true);
       }
+      // if (!appointmentId && !patientId) {
+      //   setOpenServiceModal(true);
+      // } else if (!appointmentId && patientId) {
+      //   setOpenServiceModal(true);
+      // }
       setLoading(false);
     }
 
     useEffect(() => {
       setColor("#940227eb");
       if (appointmentId && patientId) {
+        setLoading(true);
+        fetchData(locationId);
         fetchAppointmentAndPatientData()
       } else if (patientId) {
         setLoading(true);
         fetchData(locationId);
         fetchPatientData()
+      } else if (locationId) {
+        fetchData(locationId);
       } else {
         fetchLocations();
       }
