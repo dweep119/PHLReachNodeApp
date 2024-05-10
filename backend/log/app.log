@@ -1,0 +1,38 @@
+[2021-08-26T13:31:12.533] [DEBUG] setSQLDataController - In the getSQLData module.
+[2021-08-26T13:39:22.568] [DEBUG] getSQLDataController - In the getSQLData module.
+[2021-08-26T13:40:44.847] [DEBUG] setSQLDataController - In the setSQLData module.
+[2021-08-26T13:40:44.847] [INFO] setSQLDataController - save appointment data {"appointment":{"appointmentDate":"2021-08-06","locationId":"9c9a7ed0-5cb3-4a00-baa2-a0409553c274","slot":"16:00:00"},"patientInsurance":{"primaryCompany":"NA","insuranceId":"NA","groupNumber":"NA","planName":"NA","firstName":"NA","lastName":"NA","middleName":"NA","suffix":"NA","dob":"NA","patientInsuredRelation":"NA","insuranceImageFront":"NA","insuranceImageBack":"NA"},"patientQuestions":[],"patientDemographic":{"firstName":"Dweep","lastName":"Patel","email":"asd@asd.asd","phone":"+919978532084","address":"Vadodara","city":"LINCOLNWOOD","state":"IL","zipCode":"60712","dob":"1995-08-11","emergencyConatctName":"Dweep","emergencyConatctNumber":"+919978632084","emergencyConatctRelation":"Self","preferredLanguage":"English","race":"American Indian or Alaskan Native","gender":"Male","ethnicity":"Hispanic or Latinx"}}
+[2021-08-26T14:33:30.634] [DEBUG] getSQLDataController - In the getSQLData module.
+[2021-08-26T14:33:44.165] [DEBUG] getSQLDataController - In the getSQLData module.
+[2021-08-26T14:34:47.144] [DEBUG] getSQLDataController - In the getSQLData module.
+[2021-08-26T14:35:48.120] [DEBUG] getSQLDataController - In the getSQLData module.
+[2021-08-26T14:46:09.395] [DEBUG] getSQLDataController - In the getSQLData module.
+[2021-08-26T14:46:26.563] [DEBUG] getSQLDataController - In the getSQLData module.
+[2021-08-26T14:48:48.824] [DEBUG] getSQLDataController - In the getSQLData module.
+[2021-08-27T07:50:04.552] [DEBUG] getSQLDataController - In the getSQLData module.
+[2021-08-27T08:04:59.159] [DEBUG] getSQLDataController - In the getSQLData module.
+[2021-08-27T08:30:10.624] [DEBUG] getSQLDataController - In the getSQLData module.
+[2021-08-27T08:31:11.459] [DEBUG] getSQLDataController - In the getSQLData module.
+[2021-08-27T08:39:38.835] [DEBUG] getSQLDataController - In the getSQLData module.
+[2021-08-27T11:04:28.754] [DEBUG] getSQLDataController - In the getSQLData module.
+[2021-08-27T11:09:53.749] [DEBUG] getSQLDataController - In the getSQLData module.
+[2021-09-04T15:33:30.815] [INFO] setSQLDataController - save appointment data {}
+[2021-09-04T15:33:31.312] [ERROR] app - Something went wrong: Not Found
+[2021-09-04T16:04:20.957] [ERROR] app - Something went wrong: Not Found
+[2021-09-04T16:04:56.461] [ERROR] app - Something went wrong: Not Found
+[2021-09-04T16:06:02.912] [ERROR] app - Something went wrong: Not Found
+[2021-09-04T16:06:05.818] [ERROR] app - Something went wrong: Not Found
+[2021-09-04T16:07:06.040] [ERROR] app - Something went wrong: Not Found
+[2021-09-06T16:02:34.748] [ERROR] app - Something went wrong: Not Found
+[2021-09-07T08:07:18.072] [DEBUG] getSQLDataController - In the getSQLData module.
+[2021-09-07T08:07:23.175] [ERROR] app - Something went wrong: Not Found
+[2021-09-07T16:13:01.950] [DEBUG] getSQLDataController - In the getSQLData module.
+[2021-09-07T16:13:06.806] [ERROR] app - Something went wrong: Not Found
+[2021-09-07T16:18:53.616] [DEBUG] getSQLDataController - In the getSQLData module.
+[2021-09-07T16:20:36.021] [DEBUG] getSQLDataController - In the getSQLData module.
+[2021-09-07T16:21:13.667] [DEBUG] getSQLDataController - In the getSQLData module.
+[2021-09-07T16:21:46.927] [DEBUG] getSQLDataController - In the getSQLData module.
+[2021-09-07T16:22:50.866] [DEBUG] getSQLDataController - In the getSQLData module.
+[2021-09-07T16:23:08.501] [DEBUG] getSQLDataController - In the getSQLData module.
+[2021-09-07T16:24:09.721] [DEBUG] getSQLDataController - In the getSQLData module.
+[2021-09-07T16:26:26.889] [DEBUG] getSQLDataController - In the getSQLData module.
